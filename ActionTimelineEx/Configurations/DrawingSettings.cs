@@ -1,0 +1,73 @@
+﻿using Dalamud.Interface.Colors;
+using System.Numerics;
+
+namespace ActionTimelineEx.Configurations;
+
+public class DrawingSettings
+{
+    public bool Enable = true;
+    public bool IsRotation = false;
+
+    public bool Locked = false;
+    public Vector4 LockedBackgroundColor = new Vector4(0f, 0f, 0f, 0.5f);
+    public Vector4 UnlockedBackgroundColor = new Vector4(0f, 0f, 0f, 0.75f);
+
+    public float SizePerSecond = 60;
+    public float CenterOffset = 0;
+
+    public int TimeOffsetSetting = 2;
+    public int TimeOffset => IsRotation ? 0 : TimeOffsetSetting;
+    public int GCDIconSize = 40;
+
+    public bool ShowOGCD = true;
+    public int OGCDIconSize = 30;
+    public float OGCDOffset = 0.1f;
+
+    public bool ShowAutoAttack = true;
+    public int AutoAttackIconSize = 15;
+    public float AutoAttackOffset = 0.1f;
+
+    public bool ShowStatus = true;
+    public int StatusIconSize = 15;
+    public float StatusIconAlpha = 0.5f;
+    public Vector4 StatusGainColor = ImGuiColors.HealerGreen;
+    public Vector4 StatusLoseColor = ImGuiColors.DalamudRed;
+
+    public bool ShowDamageType = true;
+    public Vector4 CriticalColor = ImGuiColors.DalamudOrange;
+    public Vector4 DirectColor = ImGuiColors.DalamudYellow;
+    public Vector4 CriticalDirectColor = ImGuiColors.DPSRed;
+
+    public Vector4 BackgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 0.5f);
+    public Vector4 GCDBorderColor = new Vector4(0.9f, 0.9f, 0.9f, 1f);
+    public float GCDThickness = 1.5f;
+
+    public Vector4 CastInProgressColor = new Vector4(0.2f, 0.8f, 0.2f, 1f);
+    public Vector4 CastFinishedColor = new Vector4(0.5f, 0.5f, 0.5f, 1f);
+    public Vector4 CastCanceledColor = new Vector4(0.8f, 0.2f, 0.2f, 1f);
+
+    public bool ShowAnimationLock = true;
+    public Vector4 AnimationLockColor = new Vector4(0.8f, 0.7f, 0.6f, 1f);
+
+    public bool ShowStatusLine = true;
+    public float StatusLineSize = 24;
+
+    public bool ShowGrid = true;
+    public bool ShowGridCenterLine = false;
+    public bool GridDivideBySeconds = true;
+    public bool GridShowSecondsText = true;
+    public bool GridSubdivideSeconds = true;
+    public int GridSubdivisionCount = 2;
+    public float GridLineWidth = 1;
+    public float GridStartLineWidth = 3;
+    public float GridSubdivisionLineWidth = 1;
+    public Vector4 GridLineColor = new Vector4(0.3f, 0.3f, 0.3f, 1f);
+    public Vector4 GridStartLineColor = new Vector4(0.3f, 0.5f, 0.2f, 1f);
+    public Vector4 GridSubdivisionLineColor = new Vector4(0.3f, 0.3f, 0.3f, 0.2f);
+
+    public bool ShowGCDClippingSetting = true;
+    public bool ShowGCDClipping => IsRotation ? false : ShowGCDClippingSetting;
+    public float GCDClippingThreshold = 0.15f;
+    public int GCDClippingMaxTime = 5;
+    public Vector4 GCDClippingColor = new Vector4(1f, 0.2f, 0.2f, 0.3f);
+}

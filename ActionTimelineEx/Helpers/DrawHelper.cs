@@ -1,0 +1,131 @@
+﻿using ActionTimelineEx.Timeline;
+using Dalamud.Interface.Colors;
+using ECommons.DalamudServices;
+using ECommons.ImGuiMethods;
+using ImGuiNET;
+using ImGuiScene;
+using Lumina.Data.Files;
+using System.Numerics;
+
+namespace ActionTimeline.Helpers;
+
+internal static class DrawHelper
+{
+    private static readonly Vector2 _uv1 = new Vector2(96 * 5 / 852f, 0),
+    _uv2 = new Vector2((96 * 5 + 144) / 852f, 0.5f);
+
+    private static TextureWrap? _roundTex;
+    public static void Init()
+    {
+        var tex = Svc.Data.GetFile<TexFile>("ui/uld/icona_frame_hr1.tex");
+        if (tex == null) return;
+        byte[] imageData = tex.ImageData;
+        byte[] array = new byte[imageData.Length];
+
+        for (int i = 0; i < imageData.Length; i += 4)
+        {
+            array[i] = array[i + 1] = array[i + 2] = byte.MaxValue;
+            array[i + 3] = imageData[i + 3];
+        }
+
+        _roundTex = Svc.PluginInterface.UiBuilder.LoadImageRaw(array, tex!.Header.Width, tex!.Header.Height, 4);
+    }
+
+    public static void DrawDamage(this ImDrawListPtr drawList, Vector2 position, float size, uint  lightCol)
+    {
+        if(_roundTex == null) return;
+
+        var pixPerUnit = size / 82;
+
+        var outPos = position - new Vector2(pixPerUnit * 31, pixPerUnit * 31);
+        drawList.AddImage(_roundTex.ImGuiHandle, outPos, outPos + new Vector2(pixPerUnit * 144, pixPerUnit * 154),
+        _uv1, _uv2, lightCol);
+    }
+
+    public static void DrawActionIcon(this ImDrawListPtr drawList, uint iconId, Vector2 position, float size)
+    {
+        TextureWrap? texture = GetTextureFromIconId(iconId);
+        if (texture == null) return;
+
+        var pixPerUnit = size / 82;
+
+        drawList.AddImage(texture.ImGuiHandle, position, position + new Vector2(size));
+
+        //Cover.
+        if (ThreadLoadImageHandler.TryGetTextureWrap("ui/uld/icona_frame_hr1.tex", out var frameText))
+        {
+            var coverPos = position - new Vector2(pixPerUnit * 3, pixPerUnit * 4);
+            drawList.AddImage(frameText.ImGuiHandle, coverPos, coverPos + new Vector2(pixPerUnit * 88, pixPerUnit * 96),
+                new Vector2(4f / frameText.Width, 0f / frameText.Height), new Vector2(92f / frameText.Width, 96f / frameText.Height));
+        }
+    }
+
+    public static Vector4 ChangeAlpha(this Vector4 color, float alpha)
+    {
+        color.Z = alpha;
+        return color;
+    }
+
+    public static TextureWrap? GetTextureFromIconId(uint iconId, bool highQuality = false)
+        => ThreadLoadImageHandler.TryGetIconTextureWrap(iconId, highQuality, out var texture) ? texture 
+        : ThreadLoadImageHandler.TryGetIconTextureWrap(0, highQuality, out texture) ? texture : null;
+
+    private static Dictionary<uint, uint> textureColorCache = new ();
+    private static Queue<uint> calculating = new ();
+    public static uint GetTextureAverageColor(uint iconId)
+    {
+        if (textureColorCache.TryGetValue(iconId, out var color)) return color;
+
+        if (!calculating.Contains(iconId)) calculating.Enqueue(iconId);
+
+        CalculateColor();
+        return uint.MaxValue;
+    }
+
+    private static bool _run;
+    private static void CalculateColor()
+    {
+        if (_run) return;
+        _run = true;
+
+        Task.Run(() =>
+        {
+            while(calculating.TryDequeue(out var icon))
+            {
+                var tex = Svc.Data.GetIcon(icon, false);
+
+
+                Svc.Data.GetImGuiTexture(tex);
+
+                if(tex == null)
+                {
+                    textureColorCache[icon] = uint.MaxValue;
+                    continue;
+                }
+
+                byte[] imageData = tex.ImageData;
+                float whole = 0, r = 0, g = 0, b = 0;
+                for (int i = 0; i < imageData.Length; i += 4)
+                {
+                    var alpha = imageData[i + 3] / (float)byte.MaxValue;
+                    b += imageData[i] / (float)byte.MaxValue * alpha;
+                    g += imageData[i + 1] / (float)byte.MaxValue * alpha;
+                    r += imageData[i + 2] / (float)byte.MaxValue * alpha;
+
+                    whole += alpha;
+                }
+
+                textureColorCache[icon] = ImGui.ColorConvertFloat4ToU32(new Vector4(r / whole, g / whole, b / whole, 1));
+            }
+            _run = false;
+        });
+    }
+
+    public static void SetTooltip(string message)
+    {
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip(message);
+        }
+    }
+}
