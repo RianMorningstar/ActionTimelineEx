@@ -127,9 +127,9 @@ public class TimelineItem : ITimelineItem
 
             case TimelineLayer.General:
                 //Get Info.
-                float highPos = 0.5f;
-                float lowPos = 0.8f;
-                float rounding = 2f;
+                float highPos = setting.GCDHeightLow;
+                float lowPos = setting.GCDHeightHigh;
+                float rounding = setting.GCDRound;
 
                 var leftTop = new Vector2(centerPos.X, centerPos.Y - iconSize / 2 + highPos * iconSize);
                 var leftBottom = new Vector2(centerPos.X, centerPos.Y - iconSize / 2 + lowPos * iconSize);

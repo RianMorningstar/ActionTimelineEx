@@ -34,7 +34,7 @@ public class StatusLineItem : ITimelineItem
 
         var statusHeight = setting.StatusLineSize;
         var flag = ImDrawFlags.RoundCornersAll;
-        var rounding = 2;
+        var rounding = setting.GCDRound;
 
         TextureWrap? texture = DrawHelper.GetTextureFromIconId(Icon);
         if (texture == null) return;

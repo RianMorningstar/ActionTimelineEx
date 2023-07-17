@@ -19,6 +19,8 @@ public class Plugin : IDalamudPlugin
 
         { 10155, 1 }, //PLD Fight or Flight.
 
+        { 12556, 1 }, //WAR Inner Strength.
+
         { 17926, 1 }, //DRK Blood Weapon.
 
         { 13601, 1 }, //GNB No mercy.
@@ -93,9 +95,33 @@ public class Plugin : IDalamudPlugin
     }
 
     [Cmd("/atl", "Opens the ActionTimeline configuration window.")]
+    [SubCmd("lock", "Lock all windows")]
+    [SubCmd("unlock", "Unlock all windows")]
     private void PluginCommand(string command, string arguments)
     {
-        _settingsWindow.IsOpen = !_settingsWindow.IsOpen;
+        var sub = arguments.Split(' ').FirstOrDefault();
+        if(string.Equals("unlock", sub, StringComparison.OrdinalIgnoreCase))
+        {
+            foreach (var window in _windowSystem.Windows)
+            {
+                if (window is not TimelineWindow tWindow) continue;
+
+                tWindow.Setting.Locked = false;
+            }
+        }
+        else if (string.Equals("lock", sub, StringComparison.OrdinalIgnoreCase))
+        {
+            foreach (var window in _windowSystem.Windows)
+            {
+                if (window is not TimelineWindow tWindow) continue;
+
+                tWindow.Setting.Locked = true;
+            }
+        }
+        else
+        {
+            _settingsWindow.IsOpen = !_settingsWindow.IsOpen;
+        }
     }
 
     private void CreateWindows()

@@ -9,9 +9,9 @@ public class Settings : IPluginConfiguration
 {
     public bool ShowTimelineOnlyInDuty = false;
     public bool ShowTimelineOnlyInCombat = false;
-    public float StatusCheckDelay = 0.1f;
+    //public float StatusCheckDelay = 0.1f;
     public DrawingSettings TimelineSetting = new DrawingSettings();
-
+    public HashSet<ushort> HideStatusIds = new HashSet<ushort>();
     public int Version { get; set; } = 6;
 
     public void Save()

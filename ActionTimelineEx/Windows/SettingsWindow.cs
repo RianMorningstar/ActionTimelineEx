@@ -1,9 +1,12 @@
 ﻿using ActionTimeline.Helpers;
+using ActionTimeline.Timeline;
 using ActionTimelineEx.Configurations;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
+using ECommons.Commands;
+using ECommons.DalamudServices;
 using ImGuiNET;
-using System.Drawing;
+using Lumina.Excel.GeneratedSheets;
 using System.Numerics;
 
 namespace ActionTimeline.Windows
@@ -40,21 +43,109 @@ namespace ActionTimeline.Windows
                 DrawTimelineSetting(Settings.TimelineSetting);
                 ImGui.EndTabItem();
             }
+            if (ImGui.BeginTabItem("Help"))
+            {
+                CmdManager.DrawHelp();
+                ImGui.EndTabItem();
+            }
             ImGui.EndTabBar();
         }
 
+        private ushort _aboutAdd = 0;
         private void DrawGeneralSetting()
         {
             ImGui.Checkbox("Show Only In Duty", ref Settings.ShowTimelineOnlyInDuty);
             ImGui.Checkbox("Show Only In Combat", ref Settings.ShowTimelineOnlyInCombat);
 
+            //ImGui.NewLine();
+
+            //ImGui.DragFloat("Status checking delay (seconds)", ref Settings.StatusCheckDelay, 0.01f, 0, 1);
+
             ImGui.NewLine();
 
-            ImGui.DragFloat("Status checking delay (seconds)", ref Settings.StatusCheckDelay, 0.01f, 0, 1);
+            var index = 0;
+
+            if(ImGui.CollapsingHeader("Showed Statuses"))
+            {
+                foreach (var statusId in TimelineManager.ShowedStatusId)
+                {
+                    var status = Svc.Data.GetExcelSheet<Status>()?.GetRow(statusId);
+                    var texture = DrawHelper.GetTextureFromIconId(status?.Icon ?? 0);
+                    if (texture != null)
+                    {
+                        ImGui.Image(texture.ImGuiHandle, new Vector2(18, 24));
+                        var tips = $"{status?.Name ?? string.Empty} [{status?.RowId ?? 0}]";
+                        DrawHelper.SetTooltip(tips);
+                        if (++index % 10 != 0) ImGui.SameLine();
+                    }
+                }
+            }
+
+            ImGui.SameLine();
+            ImGui.NewLine();
+
+            ImGui.Text("Don't show these status.");
+
+            if (ImGui.BeginChild("ExceptStatus", new Vector2(0f, -1f), true))
+            {
+                ushort removeId = 0, addId = 0;
+                index = 0;
+                foreach (var statusId in Plugin.Settings.HideStatusIds)
+                {
+                    var status = Svc.Data.GetExcelSheet<Status>()?.GetRow(statusId);
+                    var texture = DrawHelper.GetTextureFromIconId(status?.Icon ?? 0);
+                    if (texture != null)
+                    {
+                        ImGui.Image(texture.ImGuiHandle, new Vector2(24, 30));
+                        DrawHelper.SetTooltip(status?.Name ?? string.Empty);
+                        ImGui.SameLine();
+                    }
+
+                    var id = statusId.ToString();
+                    ImGui.SetNextItemWidth(100 * _scale);
+                    if (ImGui.InputText($"##Status{index++}", ref id, 8) && ushort.TryParse(id, out var newId))
+                    {
+                        removeId = statusId;
+                        addId = newId;
+                    }
+
+                    ImGui.SameLine();
+
+                    ImGui.PushFont(UiBuilder.IconFont);
+                    if (ImGui.Button($"{FontAwesomeIcon.Ban.ToIconString()}##Remove{statusId}"))
+                    {
+                        removeId = statusId;
+                    }
+                    ImGui.PopFont();
+                }
+                var oneId = string.Empty;
+                ImGui.SetNextItemWidth(100 * _scale);
+                if (ImGui.InputText($"##AddOne", ref oneId, 8) && ushort.TryParse(oneId, out var newOneId))
+                {
+                    _aboutAdd = newOneId;
+                }
+                ImGui.SameLine();
+
+                ImGui.PushFont(UiBuilder.IconFont);
+                if (ImGui.Button($"{FontAwesomeIcon.Plus.ToIconString()}##AddNew"))
+                {
+                    addId = _aboutAdd;
+                }
+                ImGui.PopFont();
+
+                if (removeId != 0)
+                {
+                    Plugin.Settings.HideStatusIds.Remove(removeId);
+                }
+                if (addId != 0)
+                {
+                    Plugin.Settings.HideStatusIds.Add(addId);
+                }
+                ImGui.EndChild();
+            }
         }
 
         #region Timeline
-
         private void DrawTimelineSetting(DrawingSettings settings)
         {
             if (!ImGui.BeginTabBar("##Timeline_Settings_TabBar"))
@@ -124,8 +215,6 @@ namespace ActionTimeline.Windows
                 DrawHelper.SetTooltip("This is the advanced time about action using");
             }
             ImGui.DragFloat("Drawing Center offset", ref settings.CenterOffset, 0.3f, -500, 500);
-
-
         }
 
         private void DrawIconsTab(DrawingSettings settings)
@@ -184,7 +273,8 @@ namespace ActionTimeline.Windows
             ImGui.ColorEdit4("Bar Background Color", ref settings.BackgroundColor, ImGuiColorEditFlags.NoInputs);
             ImGui.ColorEdit4("GCD Border Color", ref settings.GCDBorderColor, ImGuiColorEditFlags.NoInputs);
             ImGui.DragFloat("GCD Border Thickness", ref settings.GCDThickness, 0.01f, 0, 10);
-
+            ImGui.DragFloat("GCD Border Round", ref settings.GCDRound, 0.01f, 0, 10);
+            ImGui.DragFloatRange2("GCD Bar Height", ref settings.GCDHeightLow, ref settings.GCDHeightHigh, 0.01f, 0, 1);
             ImGui.NewLine();
 
             ImGui.ColorEdit4("Cast In Progress Color", ref settings.CastInProgressColor, ImGuiColorEditFlags.NoInputs);
@@ -218,14 +308,24 @@ namespace ActionTimeline.Windows
         {
             ImGui.Checkbox("Enabled", ref settings.ShowGrid);
 
-            ImGui.DragFloat("Start Line Width", ref settings.GridStartLineWidth, 0.5f, 1, 5);
+            ImGui.DragFloat("Start Line Width", ref settings.GridStartLineWidth, 0.1f, 0.1f, 10);
             ImGui.ColorEdit4("Start Line Color", ref settings.GridStartLineColor, ImGuiColorEditFlags.NoInputs);
 
-
             if (!settings.ShowGrid) { return; }
+            ImGui.NewLine();
 
             ImGui.Checkbox("Show Center Line", ref settings.ShowGridCenterLine);
-            ImGui.DragFloat("Line Width", ref settings.GridLineWidth, 0.5f, 1, 5);
+            if (settings.ShowGridCenterLine)
+            {
+                ImGui.Indent();
+                ImGui.DragFloat("Center Line Width", ref settings.GridCenterLineWidth, 0.1f, 0.1f, 10);
+                ImGui.ColorEdit4("Center Line Color", ref settings.GridCenterLineColor, ImGuiColorEditFlags.NoInputs);
+                ImGui.Unindent();
+            }
+
+            ImGui.NewLine();
+
+            ImGui.DragFloat("Line Width", ref settings.GridLineWidth, 0.1f, 0.1f, 10);
             ImGui.ColorEdit4("Line Color", ref settings.GridLineColor, ImGuiColorEditFlags.NoInputs);
 
             ImGui.NewLine();
@@ -240,7 +340,7 @@ namespace ActionTimeline.Windows
 
             if (!settings.GridSubdivideSeconds) { return; }
 
-            ImGui.DragInt("Sub-Division Count", ref settings.GridSubdivisionCount, 0.5f, 2, 8);
+            ImGui.DragInt("Sub-Division Count", ref settings.GridSubdivisionCount, 0.2f, 2, 8);
             ImGui.DragFloat("Sub-Division Line Width", ref settings.GridSubdivisionLineWidth, 0.5f, 1, 5);
             ImGui.ColorEdit4("Sub-Division Line Color", ref settings.GridSubdivisionLineColor, ImGuiColorEditFlags.NoInputs);
         }

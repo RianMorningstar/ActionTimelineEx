@@ -139,40 +139,41 @@ internal class TimelineWindow : Window
         uint lineColor = ImGui.ColorConvertFloat4ToU32(Setting.GridLineColor);
         uint subdivisionLineColor = ImGui.ColorConvertFloat4ToU32(Setting.GridSubdivisionLineColor);
 
-        if (Setting.ShowGridCenterLine)
+        if (Setting.GridDivideBySeconds)
         {
-            drawList.AddLine(new Vector2(pos.X, pos.Y + height / 2f), new Vector2(pos.X + width, pos.Y + height / 2f), lineColor, Setting.GridLineWidth);
-        }
+            float step = Setting.SizePerSecond;
 
-        if (!Setting.GridDivideBySeconds) return;
-
-        float step = Setting.SizePerSecond;
-
-        for (int i = 0; i < width / step; i++)
-        {
-            float x = step * i;
-            var start = pos.X + width - x;
-
-            if (Setting.GridSubdivideSeconds && Setting.GridSubdivisionCount > 1)
+            for (int i = 0; i < width / step; i++)
             {
-                float subStep = step * 1f / Setting.GridSubdivisionCount;
-                for (int j = 1; j < Setting.GridSubdivisionCount; j++)
+                float x = step * i;
+                var start = pos.X + width - x;
+
+                if (Setting.GridSubdivideSeconds && Setting.GridSubdivisionCount > 1)
                 {
-                    drawList.AddLine(new Vector2(start + subStep * j, pos.Y), new Vector2(start + subStep * j, pos.Y + height), subdivisionLineColor, Setting.GridSubdivisionLineWidth);
+                    float subStep = step * 1f / Setting.GridSubdivisionCount;
+                    for (int j = 1; j < Setting.GridSubdivisionCount; j++)
+                    {
+                        drawList.AddLine(new Vector2(start + subStep * j, pos.Y), new Vector2(start + subStep * j, pos.Y + height), subdivisionLineColor, Setting.GridSubdivisionLineWidth);
+                    }
+                }
+                var time = -i + Setting.TimeOffset;
+
+                if (time != 0)
+                {
+                    drawList.AddLine(new Vector2(start, pos.Y), new Vector2(start, pos.Y + height), lineColor, Setting.GridLineWidth);
+                }
+
+                if (Setting.GridShowSecondsText)
+                {
+                    drawList.AddText(new Vector2(start + 2, pos.Y), lineColor, $" {time}s");
                 }
             }
-            var time = -i + Setting.TimeOffset;
-
-            if (time != 0)
-            {
-                drawList.AddLine(new Vector2(start, pos.Y), new Vector2(start, pos.Y + height), lineColor, Setting.GridLineWidth);
-            }
-
-            if (Setting.GridShowSecondsText)
-            {
-                drawList.AddText(new Vector2(start + 2, pos.Y), lineColor, $" {time}s");
-            }
         }
-        return;
+
+        lineColor = ImGui.ColorConvertFloat4ToU32(Setting.GridCenterLineColor);
+        if (Setting.ShowGridCenterLine)
+        {
+            drawList.AddLine(new Vector2(pos.X, pos.Y + height / 2f + Setting.CenterOffset), new Vector2(pos.X + width, pos.Y + height / 2f + Setting.CenterOffset), lineColor, Setting.GridCenterLineWidth);
+        }
     }
 }

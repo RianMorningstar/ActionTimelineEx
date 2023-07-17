@@ -41,6 +41,9 @@ public class DrawingSettings
     public Vector4 BackgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 0.5f);
     public Vector4 GCDBorderColor = new Vector4(0.9f, 0.9f, 0.9f, 1f);
     public float GCDThickness = 1.5f;
+    public float GCDHeightLow = 0.5f;
+    public float GCDHeightHigh = 0.8f;
+    public float GCDRound = 2;
 
     public Vector4 CastInProgressColor = new Vector4(0.2f, 0.8f, 0.2f, 1f);
     public Vector4 CastFinishedColor = new Vector4(0.5f, 0.5f, 0.5f, 1f);
@@ -50,7 +53,7 @@ public class DrawingSettings
     public Vector4 AnimationLockColor = new Vector4(0.8f, 0.7f, 0.6f, 1f);
 
     public bool ShowStatusLine = true;
-    public float StatusLineSize = 24;
+    public float StatusLineSize = 18;
 
     public bool ShowGrid = true;
     public bool ShowGridCenterLine = false;
@@ -59,9 +62,11 @@ public class DrawingSettings
     public bool GridSubdivideSeconds = true;
     public int GridSubdivisionCount = 2;
     public float GridLineWidth = 1;
+    public float GridCenterLineWidth = 0.1f;
     public float GridStartLineWidth = 3;
     public float GridSubdivisionLineWidth = 1;
     public Vector4 GridLineColor = new Vector4(0.3f, 0.3f, 0.3f, 1f);
+    public Vector4 GridCenterLineColor = new Vector4(0.5f, 0.5f, 0.5f, 0.3f);
     public Vector4 GridStartLineColor = new Vector4(0.3f, 0.5f, 0.2f, 1f);
     public Vector4 GridSubdivisionLineColor = new Vector4(0.3f, 0.3f, 0.3f, 0.2f);
 
