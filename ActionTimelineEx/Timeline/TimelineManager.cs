@@ -258,9 +258,21 @@ public class TimelineManager
             });
         }
 
-        Svc.Chat.Print(set.Header.ActionID.ToString());
-
+        var now = DateTime.Now;
         var type = GetActionType(set.Header.ActionID, set.Header.ActionType);
+
+        if (Plugin.Settings.PrintClipping && type == TimelineItemType.GCD)
+        {
+            var lastGcd = _items.LastOrDefault(i => i.Type == TimelineItemType.GCD);
+            if(lastGcd != null)
+            {
+                var time = (int)(now - lastGcd.EndTime).TotalMilliseconds;
+                if(time >= Plugin.Settings.PrintClippingMin &&  time <= Plugin.Settings.PrintClippingMax)
+                {
+                    Svc.Chat.Print($"Clipping: {time} ms ({lastGcd.Name} - {set.Name})");
+                }
+            }
+        }
 
         if (_lastItem != null && _lastItem.CastingTime > 0 && type == TimelineItemType.GCD
             && _lastItem.State == TimelineItemState.Casting) // Finish the casting.
@@ -271,7 +283,7 @@ public class TimelineManager
         {
             AddItem(new TimelineItem()
             {
-                StartTime = DateTime.Now,
+                StartTime = now,
                 AnimationLockTime = type == TimelineItemType.AutoAttack ? 0 : set.Header.AnimationLockTime,
                 GCDTime = type == TimelineItemType.GCD ? GCD : 0,
                 Type = type,

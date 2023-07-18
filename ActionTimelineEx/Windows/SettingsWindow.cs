@@ -91,6 +91,12 @@ namespace ActionTimeline.Windows
         {
             ImGui.Checkbox("Show Only In Duty", ref Settings.ShowTimelineOnlyInDuty);
             ImGui.Checkbox("Show Only In Combat", ref Settings.ShowTimelineOnlyInCombat);
+            ImGui.Checkbox("Print Clipping Time On Chat", ref Settings.PrintClipping);
+            if (Settings.PrintClipping)
+            {
+                ImGui.SameLine();
+                ImGui.DragIntRange2("Clipping Range", ref Settings.PrintClippingMin, ref Settings.PrintClippingMax);
+            }
 
             //ImGui.NewLine();
 
@@ -390,7 +396,7 @@ namespace ActionTimeline.Windows
             int clippingThreshold = (int)(settings.GCDClippingThreshold * 1000f);
             if (ImGui.DragInt("Threshold (ms)", ref clippingThreshold, 0.1f, 0, 1000))
             {
-                settings.GCDClippingThreshold = (float)clippingThreshold / 1000f;
+                settings.GCDClippingThreshold = clippingThreshold / 1000f;
             }
             DrawHelper.SetTooltip("This can be used filter out \"false positives\" due to latency or other factors. Any GCD clipping detected that is shorter than this value will be ignored.\nIt is strongly recommended that you test out different values and find out what works best for your setup.");
 
