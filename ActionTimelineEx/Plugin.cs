@@ -130,7 +130,7 @@ public class Plugin : IDalamudPlugin
 
         _windowSystem = new WindowSystem("ActionTimeline_Windows");
         _windowSystem.AddWindow(_settingsWindow);
-        _windowSystem.AddWindow(new TimelineWindow("Timeline")
+        _windowSystem.AddWindow(new TimelineWindow("Timeline1")
         {
             Setting = Settings.TimelineSetting,
         });
