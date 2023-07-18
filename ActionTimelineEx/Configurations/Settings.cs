@@ -12,6 +12,9 @@ public class Settings : IPluginConfiguration
     //public float StatusCheckDelay = 0.1f;
     public DrawingSettings TimelineSetting = new DrawingSettings();
     public HashSet<ushort> HideStatusIds = new HashSet<ushort>();
+    public bool PrintClipping = false;
+    public int PrintClippingMin = 150;
+    public int PrintClippingMax = 2000;
     public int Version { get; set; } = 6;
 
     public void Save()

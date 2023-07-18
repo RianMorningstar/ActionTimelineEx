@@ -73,6 +73,7 @@ public class DrawingSettings
     public bool ShowGCDClippingSetting = true;
     public bool ShowGCDClipping => IsRotation ? false : ShowGCDClippingSetting;
     public float GCDClippingThreshold = 0.15f;
-    public int GCDClippingMaxTime = 5;
+    public int GCDClippingMaxTime = 2;
     public Vector4 GCDClippingColor = new Vector4(1f, 0.2f, 0.2f, 0.3f);
+    public Vector4 GCDClippingTextColor = new Vector4(0.9f, 0.9f, 0.9f, 1f);
 }

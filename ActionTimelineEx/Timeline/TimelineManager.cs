@@ -32,7 +32,7 @@ public class TimelineManager
             _onActorControlHook?.Enable();
             _onCastHook?.Enable();
 
-            ActionEffect.ActionEffectEvent += ActionFromSelfAsync;
+            ActionEffect.ActionEffectEvent += ActionFromSelf;
         }
         catch (Exception e)
         {
@@ -60,7 +60,7 @@ public class TimelineManager
 
         _items.Clear();
 
-        ActionEffect.ActionEffectEvent -= ActionFromSelfAsync;
+        ActionEffect.ActionEffectEvent -= ActionFromSelf;
 
         _onActorControlHook?.Disable();
         _onActorControlHook?.Dispose();
@@ -215,7 +215,7 @@ public class TimelineManager
         }
     }
 
-    private void ActionFromSelfAsync(ActionEffectSet set)
+    private void ActionFromSelf(ActionEffectSet set)
     {
         if (!Player.Available) return;
 
@@ -258,39 +258,50 @@ public class TimelineManager
             });
         }
 
-        Svc.Chat.Print(set.Header.ActionID.ToString());
-
+        var now = DateTime.Now;
         var type = GetActionType(set.Header.ActionID, set.Header.ActionType);
+
+        if (Plugin.Settings.PrintClipping && type == TimelineItemType.GCD)
+        {
+            var lastGcd = _items.LastOrDefault(i => i.Type == TimelineItemType.GCD);
+            if(lastGcd != null)
+            {
+                var time = (int)(now - lastGcd.EndTime).TotalMilliseconds;
+                if(time >= Plugin.Settings.PrintClippingMin &&  time <= Plugin.Settings.PrintClippingMax)
+                {
+                    Svc.Chat.Print($"Clipping: {time}ms ({lastGcd.Name} - {set.Name})");
+                }
+            }
+        }
 
         if (_lastItem != null && _lastItem.CastingTime > 0 && type == TimelineItemType.GCD
             && _lastItem.State == TimelineItemState.Casting) // Finish the casting.
         {
-            _lastItem.State = TimelineItemState.Finished;
             _lastItem.AnimationLockTime = set.Header.AnimationLockTime;
             _lastItem.Name = set.Name;
             _lastItem.Icon = set.IconId;
             _lastItem.Damage = damage;
+            _lastItem.State = TimelineItemState.Finished;
         }
         else
         {
-            var item = new TimelineItem()
+            AddItem(new TimelineItem()
             {
-                Name = set.Name,
-                Icon = set.IconId,
-                StartTime = DateTime.Now,
+                StartTime = now,
                 AnimationLockTime = type == TimelineItemType.AutoAttack ? 0 : set.Header.AnimationLockTime,
                 GCDTime = type == TimelineItemType.GCD ? GCD : 0,
                 Type = type,
-                State = TimelineItemState.Finished,
+                Name = set.Name,
+                Icon = set.IconId,
                 Damage = damage,
-            };
-
-            AddItem(item);
+                State = TimelineItemState.Finished,
+            });
         }
         var effectItem = _lastItem;
 
-
         if (effectItem == null) return;
+
+        effectItem.IsHq = set.Header.ActionType == ActionType.Item && set.Header.ActionID > 1000000;
 
         foreach (var i in statusGain)
         {

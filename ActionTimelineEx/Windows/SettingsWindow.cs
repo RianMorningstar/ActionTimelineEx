@@ -3,6 +3,7 @@ using ActionTimeline.Timeline;
 using ActionTimelineEx.Configurations;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
+using Dalamud.Utility;
 using ECommons.Commands;
 using ECommons.DalamudServices;
 using ImGuiNET;
@@ -45,10 +46,44 @@ namespace ActionTimeline.Windows
             }
             if (ImGui.BeginTabItem("Help"))
             {
-                CmdManager.DrawHelp();
+                DrawHelp();
                 ImGui.EndTabItem();
             }
             ImGui.EndTabBar();
+        }
+
+        private void DrawHelp() 
+        {
+            ImGui.PushFont(UiBuilder.IconFont);
+            if (ImGui.Button($"{FontAwesomeIcon.Code.ToIconString()}##Github"))
+            {
+                Util.OpenLink("https://github.com/ArchiDog1998/ActionTimelineEx");
+            }
+
+            ImGui.SameLine();
+
+            if (ImGui.Button($"{FontAwesomeIcon.History.ToIconString()}##ChangeLog"))
+            {
+                Util.OpenLink("https://github.com/ArchiDog1998/ActionTimelineEx/blob/release/CHANGELOG.md");
+            }
+            ImGui.SameLine();
+
+            ImGui.PushStyleColor(ImGuiCol.Button, 0xFF5E5BFF);
+            ImGui.PushStyleColor(ImGuiCol.ButtonActive, 0xDD5E5BFF);
+            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, 0xAA5E5BFF);
+            if (ImGui.Button($"{FontAwesomeIcon.Coffee.ToIconString()}##Support"))
+            {
+                Util.OpenLink("https://ko-fi.com/archited");
+            }
+
+            ImGui.PopStyleColor(3);
+            ImGui.PopFont();
+
+            if (ImGui.BeginChild("Help Information", new Vector2(0f, -1f), true))
+            {
+                CmdManager.DrawHelp();
+                ImGui.EndChild();
+            }
         }
 
         private ushort _aboutAdd = 0;
@@ -56,6 +91,13 @@ namespace ActionTimeline.Windows
         {
             ImGui.Checkbox("Show Only In Duty", ref Settings.ShowTimelineOnlyInDuty);
             ImGui.Checkbox("Show Only In Combat", ref Settings.ShowTimelineOnlyInCombat);
+            ImGui.Checkbox("Print Clipping Time On Chat", ref Settings.PrintClipping);
+            if (Settings.PrintClipping)
+            {
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(100 * _scale);
+                ImGui.DragIntRange2("Clipping Range", ref Settings.PrintClippingMin, ref Settings.PrintClippingMax);
+            }
 
             //ImGui.NewLine();
 
@@ -355,7 +397,7 @@ namespace ActionTimeline.Windows
             int clippingThreshold = (int)(settings.GCDClippingThreshold * 1000f);
             if (ImGui.DragInt("Threshold (ms)", ref clippingThreshold, 0.1f, 0, 1000))
             {
-                settings.GCDClippingThreshold = (float)clippingThreshold / 1000f;
+                settings.GCDClippingThreshold = clippingThreshold / 1000f;
             }
             DrawHelper.SetTooltip("This can be used filter out \"false positives\" due to latency or other factors. Any GCD clipping detected that is shorter than this value will be ignored.\nIt is strongly recommended that you test out different values and find out what works best for your setup.");
 
@@ -363,6 +405,8 @@ namespace ActionTimeline.Windows
             DrawHelper.SetTooltip("Any GCD clip longer than this will be capped");
 
             ImGui.ColorEdit4("Color", ref settings.GCDClippingColor, ImGuiColorEditFlags.NoInputs);
+
+            ImGui.ColorEdit4("Text Color", ref settings.GCDClippingTextColor, ImGuiColorEditFlags.NoInputs);
         }
         #endregion
     }
