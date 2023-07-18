@@ -1,5 +1,4 @@
 ﻿using ActionTimelineEx.Timeline;
-using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Hooking;
 using Dalamud.Logging;
@@ -85,6 +84,8 @@ public class TimelineManager
     private static int kMaxItemCount = 128;
     private readonly Queue<TimelineItem> _items = new Queue<TimelineItem>(kMaxItemCount);
     private TimelineItem? _lastItem = null;
+
+    private DateTime _lastTime = DateTime.MinValue;
     private void AddItem(TimelineItem item)
     {
         if (item == null) return;
@@ -93,7 +94,8 @@ public class TimelineManager
             _items.Dequeue();
         }
         _items.Enqueue(item);
-        if(item.Type != TimelineItemType.AutoAttack) _lastItem = item;
+        if (item.Type != TimelineItemType.AutoAttack) _lastItem = item;
+        _lastTime = DateTime.Now;
         UpdateEndTime(item.EndTime);
     }
 
@@ -232,26 +234,31 @@ public class TimelineManager
                 : hasDirect ? DamageType.Direct : DamageType.None;
         }
 
-        List<uint> statusGain = new List<uint>(), statusLose = new List<uint>();
-        var isTargetMe = set.TargetEffects[0].TargetID == Player.Object.ObjectId;
-        set.TargetEffects[0].ForEach(x =>
-        {
-            switch (x.type)
-            {
-                case ActionEffectType.ApplyStatusEffectTarget:
-                case ActionEffectType.ApplyStatusEffectSource when isTargetMe:
-                case ActionEffectType.GpGain:
-                    var icon = GetStatusIcon(x.value, true);
-                    if (icon != 0) statusGain.Add(icon);
-                    break;
+        SortedSet<uint> statusGain = new (), statusLose = new ();
 
-                case ActionEffectType.LoseStatusEffectTarget:
-                case ActionEffectType.LoseStatusEffectSource when isTargetMe:
-                    icon = GetStatusIcon(x.value, false);
-                    if (icon != 0) statusLose.Add(icon);
-                    break;
-            }
-        });
+        for (int i = 0; i < set.Header.TargetCount; i++)
+        {
+            set.TargetEffects[i].ForEach(x =>
+            {
+                switch (x.type)
+                {
+                    case ActionEffectType.ApplyStatusEffectTarget:
+                    case ActionEffectType.ApplyStatusEffectSource:
+                    case ActionEffectType.GpGain:
+                        var icon = GetStatusIcon(x.value, true);
+                        if (icon != 0) statusGain.Add(icon);
+                        break;
+
+                    case ActionEffectType.LoseStatusEffectTarget:
+                    case ActionEffectType.LoseStatusEffectSource:
+                        icon = GetStatusIcon(x.value, false);
+                        if (icon != 0) statusLose.Add(icon);
+                        break;
+                }
+            });
+        }
+
+        Svc.Chat.Print(set.Header.ActionID.ToString());
 
         var type = GetActionType(set.Header.ActionID, set.Header.ActionType);
 
@@ -263,8 +270,6 @@ public class TimelineManager
             _lastItem.Name = set.Name;
             _lastItem.Icon = set.IconId;
             _lastItem.Damage = damage;
-            statusGain.ForEach(i => _lastItem.StatusGainIcon.Add(i));
-            statusLose.ForEach(i => _lastItem.StatusLoseIcon.Add(i));
         }
         else
         {
@@ -280,20 +285,26 @@ public class TimelineManager
                 Damage = damage,
             };
 
-            statusGain.ForEach(i => item.StatusGainIcon.Add(i));
-            statusLose.ForEach(i => item.StatusLoseIcon.Add(i));
-
             AddItem(item);
         }
-
         var effectItem = _lastItem;
 
-        if( effectItem != null)
+
+        if (effectItem == null) return;
+
+        foreach (var i in statusGain)
         {
-            UpdateEndTime(effectItem.EndTime);
+            effectItem.StatusGainIcon.Add(i);
+        }
+        foreach (var i in statusLose)
+        {
+            effectItem.StatusLoseIcon.Add(i);
         }
 
-        if (effectItem?.Type is TimelineItemType.AutoAttack) return;
+        if (effectItem.Type is TimelineItemType.AutoAttack) return;
+
+        UpdateEndTime(effectItem.EndTime);
+
 
         //int statusDelay = 0;
         //if (Plugin.Settings.StatusCheckDelay is > 0 and < 0.5f)
@@ -341,7 +352,7 @@ public class TimelineManager
     {
         if (effectItem == null) return;
 
-        await Task.Delay(100);
+        await Task.Delay(50);
 
         if (!effectItem.StatusGainIcon.Any()) return;
 
@@ -368,7 +379,7 @@ public class TimelineManager
             statusList = statusList.Union(b.StatusList.Where(s => s.SourceId == Player.Object.ObjectId));
         }
 
-        await Task.Delay(900);
+        await Task.Delay(950);
 
         foreach (var status in statusList)
         {
@@ -387,46 +398,63 @@ public class TimelineManager
 
     private async void OnActorControl(uint entityId, ActorControlCategory type, uint buffID, uint direct, uint actionId, uint sourceId, uint arg4, uint arg5, ulong targetId, byte a10)
     {
-        var stack = Player.Object.StatusList.FirstOrDefault(s => s.StatusId == buffID && s.SourceId == Player.Object.ObjectId)?.StackCount ?? 0;
+        var stack = Player.Object?.StatusList.FirstOrDefault(s => s.StatusId == buffID && s.SourceId == Player.Object.ObjectId)?.StackCount ?? 0;
 
         _onActorControlHook?.Original(entityId, type, buffID, direct, actionId, sourceId, arg4, arg5, targetId, a10);
 
 //#if DEBUG
-//        if (type is ActorControlCategory.UpdateEffect)
+//        if (buffID == 122)
 //        {
 //            Svc.Chat.Print($"Type: {type}, Buff: {buffID}, Direct: {direct}, Action: {actionId}, Source: {sourceId}, Arg4: {arg4}, Arg5: {arg5}, Target: {targetId}, a10: {a10}");
 //        }
 //#endif
 
-        if (entityId == Player.Object.ObjectId)
+        if (entityId != Player.Object?.ObjectId) return;
+
+        switch (type)
         {
-            switch (type)
-            {
-                case ActorControlCategory.CancelAbility:
-                    CancelCasting();
-                    break;
+            case ActorControlCategory.CancelAbility:
+                CancelCasting();
+                break;
 
-                case ActorControlCategory.LoseEffect:
-                    await Task.Delay(50);
+            case ActorControlCategory.LoseEffect:
+                var icon = GetStatusIcon((ushort)buffID, false, stack);
+                if (icon == 0) break;
+                var now = DateTime.Now;
 
-                    var icon = GetStatusIcon((ushort)buffID, false, stack);
-                    if (icon != 0) _lastItem?.StatusLoseIcon.Add(icon);
-                    break;
+                //Refine Status.
+                var status = _statusItems.LastOrDefault(i => i.Icon == icon);
+                if (status != null)
+                {
+                    status.TimeDuration = (float)(now - status.StartTime).TotalSeconds;
+                }
 
-                //case ActorControlCategory.UpdateEffect:
-                //    await Task.Delay(50);
+                await Task.Delay(10);
 
-                //    icon = GetStatusIcon((ushort)direct, false, (byte)actionId);
-                //    if (icon != 0) _lastItem?.StatusLoseIcon.Add(icon);
-                //    break;
+                if (_lastItem != null && now < _lastTime)
+                {
+                    _lastItem.StatusLoseIcon.Add(icon);
+                }
+                break;
 
-                case ActorControlCategory.GainEffect:
-                    await Task.Delay(50);
+            //case ActorControlCategory.UpdateEffect:
+            //    await Task.Delay(10);
 
-                    icon = GetStatusIcon((ushort)buffID, true);
-                    if (icon != 0) _lastItem?.StatusGainIcon.Add(icon);
-                    break;
-            }
+            //    icon = GetStatusIcon((ushort)direct, false, (byte)actionId);
+            //    if (icon != 0) _lastItem?.StatusLoseIcon.Add(icon);
+            //    break;
+
+            case ActorControlCategory.GainEffect:
+                icon = GetStatusIcon((ushort)buffID, true);
+                if (icon == 0) break;
+                now = DateTime.Now;
+                await Task.Delay(10);
+
+                if (_lastItem != null && now < _lastTime + TimeSpan.FromSeconds(0.01))
+                {
+                    _lastItem?.StatusGainIcon.Add(icon);
+                }
+                break;
         }
     }
 
@@ -434,8 +462,7 @@ public class TimelineManager
     {
         _onCastHook?.Original(sourceId, ptr);
 
-        PlayerCharacter? player = Player.Object;
-        if (player == null || sourceId != player.ObjectId) { return; }
+        if (sourceId != Player.Object?.ObjectId) return;
 
         var actionId = *(ushort*)ptr;
 

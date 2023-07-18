@@ -1,8 +1,6 @@
-﻿using ActionTimeline;
-using ActionTimeline.Helpers;
+﻿using ActionTimeline.Helpers;
 using ActionTimelineEx.Configurations;
 using Dalamud.Interface;
-using Dalamud.Interface.Colors;
 using ImGuiNET;
 using ImGuiScene;
 using System.Numerics;
