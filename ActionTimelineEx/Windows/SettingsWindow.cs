@@ -95,6 +95,7 @@ namespace ActionTimeline.Windows
             if (Settings.PrintClipping)
             {
                 ImGui.SameLine();
+                ImGui.SetNextItemWidth(100 * _scale);
                 ImGui.DragIntRange2("Clipping Range", ref Settings.PrintClippingMin, ref Settings.PrintClippingMax);
             }
 
@@ -404,6 +405,8 @@ namespace ActionTimeline.Windows
             DrawHelper.SetTooltip("Any GCD clip longer than this will be capped");
 
             ImGui.ColorEdit4("Color", ref settings.GCDClippingColor, ImGuiColorEditFlags.NoInputs);
+
+            ImGui.ColorEdit4("Text Color", ref settings.GCDClippingTextColor, ImGuiColorEditFlags.NoInputs);
         }
         #endregion
     }

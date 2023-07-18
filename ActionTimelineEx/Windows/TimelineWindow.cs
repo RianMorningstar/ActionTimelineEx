@@ -4,6 +4,7 @@ using ActionTimelineEx.Timeline;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using System.Numerics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace ActionTimeline.Windows;
 
@@ -87,9 +88,12 @@ internal class TimelineWindow : Window
 
                 if (last != DateTime.MinValue && span >= threshold && span < max)
                 {
-                    ImGui.GetWindowDrawList().AddRectFilled(
-                        pos + new Vector2(size.X - (Setting.TimeOffset + (float)(now - last).TotalSeconds) * sizePerSecond, 0),
+                    var drawingLeftTop = pos + new Vector2(size.X - (Setting.TimeOffset + (float)(now - last).TotalSeconds) * sizePerSecond, 0);
+                    ImGui.GetWindowDrawList().AddRectFilled( drawingLeftTop,
                         pos + new Vector2(size.X - (Setting.TimeOffset + (float)(now - start).TotalSeconds) * sizePerSecond, size.Y), gcdClippingColor);
+                    ImGui.GetWindowDrawList().AddText(drawingLeftTop, 
+                        ImGui.ColorConvertFloat4ToU32(Setting.GCDClippingTextColor),
+                        $"{(int)span.TotalMilliseconds}ms");
                 }
 
                 last = item.EndTime;

@@ -32,7 +32,7 @@ public class TimelineManager
             _onActorControlHook?.Enable();
             _onCastHook?.Enable();
 
-            ActionEffect.ActionEffectEvent += ActionFromSelfAsync;
+            ActionEffect.ActionEffectEvent += ActionFromSelf;
         }
         catch (Exception e)
         {
@@ -60,7 +60,7 @@ public class TimelineManager
 
         _items.Clear();
 
-        ActionEffect.ActionEffectEvent -= ActionFromSelfAsync;
+        ActionEffect.ActionEffectEvent -= ActionFromSelf;
 
         _onActorControlHook?.Disable();
         _onActorControlHook?.Dispose();
@@ -215,7 +215,7 @@ public class TimelineManager
         }
     }
 
-    private void ActionFromSelfAsync(ActionEffectSet set)
+    private void ActionFromSelf(ActionEffectSet set)
     {
         if (!Player.Available) return;
 
@@ -269,7 +269,7 @@ public class TimelineManager
                 var time = (int)(now - lastGcd.EndTime).TotalMilliseconds;
                 if(time >= Plugin.Settings.PrintClippingMin &&  time <= Plugin.Settings.PrintClippingMax)
                 {
-                    Svc.Chat.Print($"Clipping: {time} ms ({lastGcd.Name} - {set.Name})");
+                    Svc.Chat.Print($"Clipping: {time}ms ({lastGcd.Name} - {set.Name})");
                 }
             }
         }
@@ -278,6 +278,10 @@ public class TimelineManager
             && _lastItem.State == TimelineItemState.Casting) // Finish the casting.
         {
             _lastItem.AnimationLockTime = set.Header.AnimationLockTime;
+            _lastItem.Name = set.Name;
+            _lastItem.Icon = set.IconId;
+            _lastItem.Damage = damage;
+            _lastItem.State = TimelineItemState.Finished;
         }
         else
         {
@@ -287,16 +291,16 @@ public class TimelineManager
                 AnimationLockTime = type == TimelineItemType.AutoAttack ? 0 : set.Header.AnimationLockTime,
                 GCDTime = type == TimelineItemType.GCD ? GCD : 0,
                 Type = type,
+                Name = set.Name,
+                Icon = set.IconId,
+                Damage = damage,
+                State = TimelineItemState.Finished,
             });
         }
         var effectItem = _lastItem;
 
         if (effectItem == null) return;
 
-        effectItem.Name = set.Name;
-        effectItem.Icon = set.IconId;
-        effectItem.State = TimelineItemState.Finished;
-        effectItem.Damage = damage;
         effectItem.IsHq = set.Header.ActionType == ActionType.Item && set.Header.ActionID > 1000000;
 
         foreach (var i in statusGain)
