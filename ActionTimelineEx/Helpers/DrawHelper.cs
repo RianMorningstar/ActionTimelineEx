@@ -40,9 +40,9 @@ internal static class DrawHelper
         _uv1, _uv2, lightCol);
     }
 
-    public static void DrawActionIcon(this ImDrawListPtr drawList, uint iconId, Vector2 position, float size)
+    public static void DrawActionIcon(this ImDrawListPtr drawList, uint iconId, bool isHq, Vector2 position, float size)
     {
-        TextureWrap? texture = GetTextureFromIconId(iconId);
+        TextureWrap? texture = GetTextureFromIconId(iconId, isHq);
         if (texture == null) return;
 
         var pixPerUnit = size / 82;

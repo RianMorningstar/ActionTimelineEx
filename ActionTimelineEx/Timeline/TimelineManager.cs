@@ -265,32 +265,27 @@ public class TimelineManager
         if (_lastItem != null && _lastItem.CastingTime > 0 && type == TimelineItemType.GCD
             && _lastItem.State == TimelineItemState.Casting) // Finish the casting.
         {
-            _lastItem.State = TimelineItemState.Finished;
             _lastItem.AnimationLockTime = set.Header.AnimationLockTime;
-            _lastItem.Name = set.Name;
-            _lastItem.Icon = set.IconId;
-            _lastItem.Damage = damage;
         }
         else
         {
-            var item = new TimelineItem()
+            AddItem(new TimelineItem()
             {
-                Name = set.Name,
-                Icon = set.IconId,
                 StartTime = DateTime.Now,
                 AnimationLockTime = type == TimelineItemType.AutoAttack ? 0 : set.Header.AnimationLockTime,
                 GCDTime = type == TimelineItemType.GCD ? GCD : 0,
                 Type = type,
-                State = TimelineItemState.Finished,
-                Damage = damage,
-            };
-
-            AddItem(item);
+            });
         }
         var effectItem = _lastItem;
 
-
         if (effectItem == null) return;
+
+        effectItem.Name = set.Name;
+        effectItem.Icon = set.IconId;
+        effectItem.State = TimelineItemState.Finished;
+        effectItem.Damage = damage;
+        effectItem.IsHq = set.Header.ActionType == ActionType.Item && set.Header.ActionID > 1000000;
 
         foreach (var i in statusGain)
         {

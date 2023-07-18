@@ -11,7 +11,7 @@ public class TimelineItem : ITimelineItem
 {
     public string? Name { get; set; }
     public ushort Icon { get; set; }
-
+    public bool IsHq { get; set; }
     public DateTime StartTime { get; init; }
 
     public float AnimationLockTime { get; set; }
@@ -88,7 +88,7 @@ public class TimelineItem : ITimelineItem
         switch (icon)
         {
             case TimelineLayer.Icon:
-                drawList.DrawActionIcon(Icon, new Vector2(centerPos.X, centerPos.Y - iconSize / 2), iconSize);
+                drawList.DrawActionIcon(Icon, IsHq, new Vector2(centerPos.X, centerPos.Y - iconSize / 2), iconSize);
                 return;
 
             case TimelineLayer.Status when setting.ShowStatus:
