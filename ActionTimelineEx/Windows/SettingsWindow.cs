@@ -3,6 +3,7 @@ using ActionTimeline.Timeline;
 using ActionTimelineEx.Configurations;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
+using Dalamud.Utility;
 using ECommons.Commands;
 using ECommons.DalamudServices;
 using ImGuiNET;
@@ -45,10 +46,44 @@ namespace ActionTimeline.Windows
             }
             if (ImGui.BeginTabItem("Help"))
             {
-                CmdManager.DrawHelp();
+                DrawHelp();
                 ImGui.EndTabItem();
             }
             ImGui.EndTabBar();
+        }
+
+        private void DrawHelp() 
+        {
+            ImGui.PushFont(UiBuilder.IconFont);
+            if (ImGui.Button($"{FontAwesomeIcon.Code.ToIconString()}##Github"))
+            {
+                Util.OpenLink("https://github.com/ArchiDog1998/ActionTimelineEx");
+            }
+
+            ImGui.SameLine();
+
+            if (ImGui.Button($"{FontAwesomeIcon.History.ToIconString()}##ChangeLog"))
+            {
+                Util.OpenLink("https://github.com/ArchiDog1998/ActionTimelineEx/blob/release/CHANGELOG.md");
+            }
+            ImGui.SameLine();
+
+            ImGui.PushStyleColor(ImGuiCol.Button, 0xFF5E5BFF);
+            ImGui.PushStyleColor(ImGuiCol.ButtonActive, 0xDD5E5BFF);
+            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, 0xAA5E5BFF);
+            if (ImGui.Button($"{FontAwesomeIcon.Coffee.ToIconString()}##Support"))
+            {
+                Util.OpenLink("https://ko-fi.com/archited");
+            }
+
+            ImGui.PopStyleColor(3);
+            ImGui.PopFont();
+
+            if (ImGui.BeginChild("Help Information", new Vector2(0f, -1f), true))
+            {
+                CmdManager.DrawHelp();
+                ImGui.EndChild();
+            }
         }
 
         private ushort _aboutAdd = 0;
