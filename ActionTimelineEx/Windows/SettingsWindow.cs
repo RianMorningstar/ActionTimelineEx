@@ -330,11 +330,10 @@ namespace ActionTimeline.Windows
             ImGui.DragFloat("Size per second", ref settings.SizePerSecond, 0.3f, 20, 150);
             DrawHelper.SetTooltip("This is the width of every second drawn on the window.");
 
-            if (!settings.IsRotation)
-            {
-                ImGui.DragInt("Offset Time (seconds)", ref settings.TimeOffsetSetting, 0.1f, 0, 10);
-                DrawHelper.SetTooltip("This is the advanced time about action using");
-            }
+            ImGui.DragInt("Offset Time (seconds)", ref settings.TimeOffsetSetting, 0.1f, 0, 1000);
+            DrawHelper.SetTooltip(settings.IsRotation ? "The Offset time of rotation."
+                : "This is the advanced time about action using");
+
             ImGui.DragFloat("Drawing Center offset", ref settings.CenterOffset, 0.3f, -500, 500);
 
             return result;

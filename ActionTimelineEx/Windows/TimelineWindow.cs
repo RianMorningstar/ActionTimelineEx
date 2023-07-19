@@ -52,7 +52,7 @@ internal static class TimelineWindow
         var pos = ImGui.GetWindowPos();
         var size = ImGui.GetWindowSize();
 
-        var now = setting.IsRotation ? TimelineManager.Instance?.EndTime ?? DateTime.Now : DateTime.Now;
+        var now = setting.IsRotation ? (TimelineManager.Instance?.EndTime ?? DateTime.Now - TimeSpan.FromSeconds(setting.TimeOffsetSetting)) : DateTime.Now;
 
         var endTime = now - TimeSpan.FromSeconds(size.X / setting.SizePerSecond - setting.TimeOffset);
 
