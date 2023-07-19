@@ -81,7 +81,7 @@ public class TimelineManager
     public static SortedSet<ushort> ShowedStatusId { get; } = new SortedSet<ushort>();
 
     public DateTime EndTime { get; private set; } = DateTime.Now;
-    private static int kMaxItemCount = 128;
+    private static int kMaxItemCount = 2048;
     private readonly Queue<TimelineItem> _items = new Queue<TimelineItem>(kMaxItemCount);
     private TimelineItem? _lastItem = null;
 
@@ -109,7 +109,7 @@ public class TimelineManager
         return GetItems(_items, time, out lastEndTime);
     }
 
-    private static int kMaxStatusCount = 16;
+    private static int kMaxStatusCount = 256;
     private readonly Queue<StatusLineItem> _statusItems = new Queue<StatusLineItem>(kMaxStatusCount);
     private void AddItem(StatusLineItem item)
     {
@@ -156,7 +156,6 @@ public class TimelineManager
 
     private static TimelineItemType GetActionType(uint actionId, ActionType type)
     {
-
         switch (type)
         {
             case ActionType.Spell:
@@ -316,46 +315,6 @@ public class TimelineManager
 
         UpdateEndTime(effectItem.EndTime);
 
-
-        //int statusDelay = 0;
-        //if (Plugin.Settings.StatusCheckDelay is > 0 and < 0.5f)
-        //{
-        //    statusDelay = (int)(Plugin.Settings.StatusCheckDelay * 1000);
-        //    var previousStatus = Player.Object.StatusList
-        //        .Where(s => s.SourceId == Player.Object.ObjectId && (s.RemainingTime > Plugin.Settings.StatusCheckDelay || s.RemainingTime <= 0))
-        //        .Select(s => (s.StatusId, s.StackCount))
-        //        .ToArray();
-
-        //    await Task.Delay(statusDelay);
-
-        //    var nowStatus = Player.Object.StatusList
-        //    .Where(s => s.SourceId == Player.Object.ObjectId)
-        //    .Select(s => (s.StatusId, s.StackCount))
-        //    .ToArray();
-
-        //    foreach (var pre in previousStatus)
-        //    {
-        //        var status = Svc.Data.GetExcelSheet<Status>()?.GetRow(pre.StatusId);
-        //        if (status == null) continue;
-        //        var now = nowStatus.FirstOrDefault(i => i.StatusId == pre.StatusId);
-        //        if (now.StatusId == 0 || now.StackCount < pre.StackCount)
-        //        {
-        //            effectItem?.StatusLoseIcon.Add(status.Icon + (uint)Math.Max(0, pre.StackCount - 1));
-        //        }
-        //    }
-
-        //    foreach (var now in nowStatus)
-        //    {
-        //        var status = Svc.Data.GetExcelSheet<Status>()?.GetRow(now.StatusId);
-        //        if (status == null) continue;
-        //        var pre = previousStatus.FirstOrDefault(i => i.StatusId == now.StatusId);
-        //        if (pre.StatusId == 0)
-        //        {
-        //            effectItem?.StatusGainIcon.Add(status.Icon + (uint)Math.Max(0, now.StackCount - 1));
-        //        }
-        //    }
-        //}
-
         AddStatusLine(effectItem, set.TargetEffects[0].TargetID);
     }
 
@@ -413,12 +372,12 @@ public class TimelineManager
 
         _onActorControlHook?.Original(entityId, type, buffID, direct, actionId, sourceId, arg4, arg5, targetId, a10);
 
-//#if DEBUG
-//        if (buffID == 122)
-//        {
-//            Svc.Chat.Print($"Type: {type}, Buff: {buffID}, Direct: {direct}, Action: {actionId}, Source: {sourceId}, Arg4: {arg4}, Arg5: {arg5}, Target: {targetId}, a10: {a10}");
-//        }
-//#endif
+        //#if DEBUG
+        //        if (buffID == 122)
+        //        {
+        //            Svc.Chat.Print($"Type: {type}, Buff: {buffID}, Direct: {direct}, Action: {actionId}, Source: {sourceId}, Arg4: {arg4}, Arg5: {arg5}, Target: {targetId}, a10: {a10}");
+        //        }
+        //#endif
 
         if (entityId != Player.Object?.ObjectId) return;
 

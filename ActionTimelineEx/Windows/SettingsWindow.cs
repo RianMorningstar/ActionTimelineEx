@@ -45,14 +45,18 @@ namespace ActionTimeline.Windows
             int index = 0;
             DrawingSettings? removingSetting = null;
 
+            if (!Settings.TimelineSettings.Any()) Settings.TimelineSettings.Add(new DrawingSettings());
+
             foreach (var setting in Settings.TimelineSettings)
             {
                 var duplicated = showedName.Contains(setting.Name);
-                if (duplicated) ImGui.PushStyleColor(ImGuiCol.Text, ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudRed));
+                if (duplicated) ImGui.PushStyleColor(ImGuiCol.Text, ImGui.ColorConvertFloat4ToU32(ImGuiColors.DPSRed));
 
-                if (ImGui.BeginTabItem($"TL:{setting.Name}"))
+                var showTab = ImGui.BeginTabItem($"TL:{index}");
+                if (duplicated) ImGui.PopStyleColor();
+
+                if (showTab)
                 {
-                    if(duplicated) ImGui.PopStyleColor();
                     if (DrawTimelineSetting(setting))
                     {
                         removingSetting = setting;
@@ -114,7 +118,7 @@ namespace ActionTimeline.Windows
         private ushort _aboutAdd = 0;
         private void DrawGeneralSetting()
         {
-            if(ImGui.Button("Add One Timeline"))
+            if (ImGui.Button("Add One Timeline"))
             {
                 Settings.TimelineSettings.Add(new DrawingSettings()
                 {
@@ -284,7 +288,7 @@ namespace ActionTimeline.Windows
             if (isLast) ImGui.PushStyleColor(ImGuiCol.Text, isTime ? ImGuiColors.HealerGreen : ImGuiColors.DPSRed);
 
             ImGui.PushFont(UiBuilder.IconFont);
-            if (ImGui.Button($"{(isLast ? FontAwesomeIcon.Check : FontAwesomeIcon.Undo).ToIconString()}##Remove{name}"))
+            if (ImGui.Button($"{(isLast ? FontAwesomeIcon.Check : FontAwesomeIcon.Ban).ToIconString()}##Remove{name}"))
             {
                 if (isLast && isTime)
                 {

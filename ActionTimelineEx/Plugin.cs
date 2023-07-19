@@ -3,6 +3,7 @@ using ActionTimeline.Timeline;
 using ActionTimeline.Windows;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Interface.Windowing;
+using Dalamud.Logging;
 using Dalamud.Plugin;
 using ECommons;
 using ECommons.Commands;
@@ -138,21 +139,11 @@ public class Plugin : IDalamudPlugin
 
         if (!ShowTimeline()) return;
 
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
-
-        HashSet<string> showedName = new HashSet<string>();
+        int index = 0;
         foreach (var setting in Settings.TimelineSettings)
         {
-            if (showedName.Contains(setting.Name)) continue;
-
-            TimelineWindow.Draw(setting);
-
-            showedName.Add(setting.Name);
+            TimelineWindow.Draw(setting, index++);
         }
-
-        ImGui.PopStyleColor();
-        ImGui.PopStyleVar(2);
     }
 
     private bool ShowTimeline()

@@ -15,7 +15,7 @@ internal static class TimelineWindow
                                         | ImGuiWindowFlags.NoNav
                                         | ImGuiWindowFlags.NoScrollWithMouse;
 
-    public static void Draw(DrawingSettings setting)
+    public static void Draw(DrawingSettings setting, int index)
     {
         if (!setting.Enable || string.IsNullOrEmpty(setting.Name)) return;
 
@@ -31,11 +31,16 @@ internal static class TimelineWindow
         ImGui.SetNextWindowSize(new Vector2(560, 100) * ImGuiHelpers.GlobalScale, ImGuiCond.FirstUseEver);
         ImGui.SetNextWindowPos(new Vector2(200, 200) * ImGuiHelpers.GlobalScale, ImGuiCond.FirstUseEver);
 
-        if (ImGui.Begin($"Timeline: {setting.Name}", flag))
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
+
+        if (ImGui.Begin($"Timeline: {index}", flag))
         {
             DrawContent(setting);
             ImGui.End();
         }
+
+        ImGui.PopStyleVar(2);
 
         ImGui.PopStyleColor();
     }
@@ -52,7 +57,7 @@ internal static class TimelineWindow
         var pos = ImGui.GetWindowPos();
         var size = ImGui.GetWindowSize();
 
-        var now = setting.IsRotation ? (TimelineManager.Instance?.EndTime ?? DateTime.Now - TimeSpan.FromSeconds(setting.TimeOffsetSetting)) : DateTime.Now;
+        var now = setting.IsRotation ? (TimelineManager.Instance?.EndTime ?? DateTime.Now - TimeSpan.FromSeconds(setting.TimeOffset)) : DateTime.Now;
 
         var endTime = now - TimeSpan.FromSeconds(size.X / setting.SizePerSecond - setting.TimeOffset);
 
@@ -115,10 +120,14 @@ internal static class TimelineWindow
             }
         }
 
-        uint lineColor = ImGui.ColorConvertFloat4ToU32(setting.GridStartLineColor);
+        if (!setting.IsRotation)
+        {
+            uint lineColor = ImGui.ColorConvertFloat4ToU32(setting.GridStartLineColor);
 
-        var x = pos.X + size.X - setting.TimeOffset * setting.SizePerSecond;
-        ImGui.GetWindowDrawList().AddLine(new Vector2(x, pos.Y), new Vector2(x, pos.Y + size.Y), lineColor, setting.GridStartLineWidth);
+            var x = pos.X + size.X - setting.TimeOffset * setting.SizePerSecond;
+
+            ImGui.GetWindowDrawList().AddLine(new Vector2(x, pos.Y), new Vector2(x, pos.Y + size.Y), lineColor, setting.GridStartLineWidth);
+        }
 
         if (!setting.Locked) ImGui.Text(setting.Name);
     }
@@ -153,11 +162,12 @@ internal static class TimelineWindow
                 }
                 var time = -i + setting.TimeOffset;
 
-                if (time != 0)
+                if (time != 0 || setting.IsRotation)
                 {
                     drawList.AddLine(new Vector2(start, pos.Y), new Vector2(start, pos.Y + height), lineColor, setting.GridLineWidth);
                 }
 
+                if (setting.IsRotation) time -= setting.TimeOffsetSetting;
                 if (setting.GridShowSecondsText)
                 {
                     drawList.AddText(new Vector2(start + 2, pos.Y), lineColor, $" {time}s");
