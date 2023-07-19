@@ -94,9 +94,12 @@ public class TimelineManager
             _items.Dequeue();
         }
         _items.Enqueue(item);
-        if (item.Type != TimelineItemType.AutoAttack) _lastItem = item;
-        _lastTime = DateTime.Now;
-        UpdateEndTime(item.EndTime);
+        if (item.Type != TimelineItemType.AutoAttack)
+        {
+            _lastItem = item;
+            _lastTime = DateTime.Now;
+            UpdateEndTime(item.EndTime);
+        }
     }
 
     private void UpdateEndTime(DateTime endTime)
