@@ -116,6 +116,7 @@ namespace ActionTimeline.Windows
                     Name = (Settings.TimelineSettings.Count + 1).ToString(),
                 });
             }
+            ImGui.Checkbox("Record Data", ref Settings.Record);
             ImGui.Checkbox("Show Only In Duty", ref Settings.ShowTimelineOnlyInDuty);
             ImGui.Checkbox("Show Only In Combat", ref Settings.ShowTimelineOnlyInCombat);
             ImGui.Checkbox("Print Clipping Time On Chat", ref Settings.PrintClipping);

@@ -221,7 +221,7 @@ public class TimelineManager
 #if DEBUG
         //Svc.Chat.Print($"Id: {set.Header.ActionID}; {set.Header.ActionType}; Source: {set.Source.ObjectId}");
 #endif 
-        if (set.Source.ObjectId != Player.Object.ObjectId) return;
+        if (set.Source.ObjectId != Player.Object.ObjectId || !Plugin.Settings.Record) return;
 
         DamageType damage = DamageType.None;
         if(set.TargetEffects[0][0].type is ActionEffectType.Damage or ActionEffectType.Heal)
@@ -379,7 +379,7 @@ public class TimelineManager
         //        }
         //#endif
 
-        if (entityId != Player.Object?.ObjectId) return;
+        if (entityId != Player.Object?.ObjectId || !Plugin.Settings.Record) return;
 
         switch (type)
         {
@@ -432,7 +432,7 @@ public class TimelineManager
     {
         _onCastHook?.Original(sourceId, ptr);
 
-        if (sourceId != Player.Object?.ObjectId) return;
+        if (sourceId != Player.Object?.ObjectId || !Plugin.Settings.Record) return;
 
         var actionId = *(ushort*)ptr;
 
