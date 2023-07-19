@@ -5,6 +5,8 @@ namespace ActionTimelineEx.Configurations;
 
 public class DrawingSettings
 {
+    public string Name = "Major";
+
     public bool Enable = true;
     public bool IsRotation = false;
 
@@ -16,7 +18,7 @@ public class DrawingSettings
     public float CenterOffset = 0;
 
     public int TimeOffsetSetting = 2;
-    public int TimeOffset => IsRotation ? 0 : TimeOffsetSetting;
+    public int TimeOffset => IsRotation ? -TimeOffsetSetting : TimeOffsetSetting;
     public int GCDIconSize = 40;
 
     public bool ShowOGCD = true;
@@ -62,7 +64,7 @@ public class DrawingSettings
     public bool GridSubdivideSeconds = true;
     public int GridSubdivisionCount = 2;
     public float GridLineWidth = 1;
-    public float GridCenterLineWidth = 0.1f;
+    public float GridCenterLineWidth = 1f;
     public float GridStartLineWidth = 3;
     public float GridSubdivisionLineWidth = 1;
     public Vector4 GridLineColor = new Vector4(0.3f, 0.3f, 0.3f, 1f);
