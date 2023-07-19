@@ -151,7 +151,7 @@ namespace ActionTimeline.Windows
             ImGui.SameLine();
             ImGui.NewLine();
 
-            ImGui.Text("Don't show these status.");
+            ImGui.Text("Don't record these status.");
 
             if (ImGui.BeginChild("ExceptStatus", new Vector2(0f, -1f), true))
             {
