@@ -369,9 +369,18 @@ public class TimelineManager
         }
     }
 
+    private const string WarningOnActorControl = "Something wrong with OnActorControl!";
     private async void OnActorControl(uint entityId, ActorControlCategory type, uint buffID, uint direct, uint actionId, uint sourceId, uint arg4, uint arg5, ulong targetId, byte a10)
     {
-        var stack = Player.Object?.StatusList.FirstOrDefault(s => s.StatusId == buffID && s.SourceId == Player.Object.ObjectId)?.StackCount ?? 0;
+        byte stack = 0;
+        try
+        {
+            stack = Player.Object?.StatusList.FirstOrDefault(s => s.StatusId == buffID && s.SourceId == Player.Object.ObjectId)?.StackCount ?? 0;
+        }
+        catch(Exception ex)
+        {
+            PluginLog.Warning(ex, WarningOnActorControl);
+        }
 
         _onActorControlHook?.Original(entityId, type, buffID, direct, actionId, sourceId, arg4, arg5, targetId, a10);
 
@@ -382,52 +391,61 @@ public class TimelineManager
         //        }
         //#endif
 
-        if (entityId != Player.Object?.ObjectId || !Plugin.Settings.Record) return;
-
-        switch (type)
+        try
         {
-            case ActorControlCategory.CancelAbility:
-                CancelCasting();
-                break;
+            if (entityId != Player.Object?.ObjectId || !Plugin.Settings.Record) return;
 
-            case ActorControlCategory.LoseEffect:
-                var icon = GetStatusIcon((ushort)buffID, false, stack);
-                if (icon == 0) break;
-                var now = DateTime.Now;
+            switch (type)
+            {
+                case ActorControlCategory.CancelAbility:
+                    CancelCasting();
+                    break;
 
-                //Refine Status.
-                var status = _statusItems.LastOrDefault(i => i.Icon == icon);
-                if (status != null)
-                {
-                    status.TimeDuration = (float)(now - status.StartTime).TotalSeconds;
-                }
+                case ActorControlCategory.LoseEffect:
+                    var icon = GetStatusIcon((ushort)buffID, false, stack);
+                    if (icon == 0) break;
+                    var now = DateTime.Now;
 
-                await Task.Delay(10);
+                    //Refine Status.
+                    var status = _statusItems.LastOrDefault(i => i.Icon == icon);
+                    if (status != null)
+                    {
+                        status.TimeDuration = (float)(now - status.StartTime).TotalSeconds;
+                    }
 
-                if (_lastItem != null && now < _lastTime)
-                {
-                    _lastItem.StatusLoseIcon.Add(icon);
-                }
-                break;
+                    await Task.Delay(10);
 
-            //case ActorControlCategory.UpdateEffect:
-            //    await Task.Delay(10);
+                    if (_lastItem != null && now < _lastTime)
+                    {
+                        _lastItem.StatusLoseIcon.Add(icon);
+                    }
+                    break;
 
-            //    icon = GetStatusIcon((ushort)direct, false, (byte)actionId);
-            //    if (icon != 0) _lastItem?.StatusLoseIcon.Add(icon);
-            //    break;
+                //case ActorControlCategory.UpdateEffect:
+                //    await Task.Delay(10);
 
-            case ActorControlCategory.GainEffect:
-                icon = GetStatusIcon((ushort)buffID, true);
-                if (icon == 0) break;
-                now = DateTime.Now;
-                await Task.Delay(10);
+                //    icon = GetStatusIcon((ushort)direct, false, (byte)actionId);
+                //    if (icon != 0) _lastItem?.StatusLoseIcon.Add(icon);
+                //    break;
 
-                if (_lastItem != null && now < _lastTime + TimeSpan.FromSeconds(0.01))
-                {
-                    _lastItem?.StatusGainIcon.Add(icon);
-                }
-                break;
+                case ActorControlCategory.GainEffect:
+                    icon = GetStatusIcon((ushort)buffID, true);
+                    if (icon == 0) break;
+                    now = DateTime.Now;
+                    await Task.Delay(10);
+
+                    if (_lastItem != null && now < _lastTime + TimeSpan.FromSeconds(0.01))
+                    {
+                        _lastItem?.StatusGainIcon.Add(icon);
+                    }
+                    break;
+
+            }
+        }
+
+        catch (Exception ex)
+        {
+            PluginLog.Warning(ex, WarningOnActorControl);
         }
     }
 
@@ -435,24 +453,31 @@ public class TimelineManager
     {
         _onCastHook?.Original(sourceId, ptr);
 
-        if (sourceId != Player.Object?.ObjectId || !Plugin.Settings.Record) return;
-
-        var actionId = *(ushort*)ptr;
-
-        var action = Svc.Data.GetExcelSheet<Action>()?.GetRow(actionId);
-
-        var icon = actionId == 4 ? (ushort)118 //Mount
-                : action?.Icon ?? 0;
-
-        AddItem(new TimelineItem()
+        try
         {
-            Name = action?.Name ?? string.Empty,
-            Icon = icon,
-            StartTime = DateTime.Now,
-            GCDTime = GCD,
-            CastingTime = Player.Object.TotalCastTime - Player.Object.CurrentCastTime,
-            Type = TimelineItemType.GCD,
-            State = TimelineItemState.Casting,
-        });
+            if (sourceId != Player.Object?.ObjectId || !Plugin.Settings.Record) return;
+
+            var actionId = *(ushort*)ptr;
+
+            var action = Svc.Data.GetExcelSheet<Action>()?.GetRow(actionId);
+
+            var icon = actionId == 4 ? (ushort)118 //Mount
+                    : action?.Icon ?? 0;
+
+            AddItem(new TimelineItem()
+            {
+                Name = action?.Name ?? string.Empty,
+                Icon = icon,
+                StartTime = DateTime.Now,
+                GCDTime = GCD,
+                CastingTime = Player.Object.TotalCastTime - Player.Object.CurrentCastTime,
+                Type = TimelineItemType.GCD,
+                State = TimelineItemState.Casting,
+            });
+        }
+        catch(Exception ex)
+        {
+            PluginLog.Warning(ex, "Something wrong with OnCast1");
+        }
     }
 }
