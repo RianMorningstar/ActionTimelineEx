@@ -41,7 +41,6 @@ namespace ActionTimeline.Windows
                 ImGui.EndTabItem();
             }
 
-            HashSet<string> showedName = new HashSet<string>();
             int index = 0;
             DrawingSettings? removingSetting = null;
 
@@ -49,13 +48,7 @@ namespace ActionTimeline.Windows
 
             foreach (var setting in Settings.TimelineSettings)
             {
-                var duplicated = showedName.Contains(setting.Name);
-                if (duplicated) ImGui.PushStyleColor(ImGuiCol.Text, ImGui.ColorConvertFloat4ToU32(ImGuiColors.DPSRed));
-
-                var showTab = ImGui.BeginTabItem($"TL:{index}");
-                if (duplicated) ImGui.PopStyleColor();
-
-                if (showTab)
+                if (ImGui.BeginTabItem($"TL:{index}"))
                 {
                     if (DrawTimelineSetting(setting))
                     {
@@ -63,8 +56,6 @@ namespace ActionTimeline.Windows
                     }
                     ImGui.EndTabItem();
                 }
-
-                showedName.Add(setting.Name);
                 index++;
             }
 
@@ -134,10 +125,6 @@ namespace ActionTimeline.Windows
                 ImGui.SetNextItemWidth(100 * _scale);
                 ImGui.DragIntRange2("Clipping Range", ref Settings.PrintClippingMin, ref Settings.PrintClippingMax);
             }
-
-            //ImGui.NewLine();
-
-            //ImGui.DragFloat("Status checking delay (seconds)", ref Settings.StatusCheckDelay, 0.01f, 0, 1);
 
             ImGui.NewLine();
 
@@ -318,7 +305,7 @@ namespace ActionTimeline.Windows
         private bool DrawGeneralTab(DrawingSettings settings)
         {
             ImGui.InputText("Name: ", ref settings.Name, 32);
-            var result = RemoveValue(settings.Name);
+            var result = Plugin.Settings.TimelineSettings.Any() ? RemoveValue(settings.Name) : false;
 
             ImGui.Checkbox("Enable", ref settings.Enable);
             ImGui.Checkbox("Is Rotation", ref settings.IsRotation);
