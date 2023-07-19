@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.2.0...v1.2.1) (2023-07-19)
+
+
+### Bug Fixes
+
+* more `Try catch.` ([319a13f](https://github.com/ArchiDog1998/ActionTimelineEx/commit/319a13f46c875a85d2b106f9e823da70c0c1e6ca))
+
 ## [1.2.0](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.1.0...v1.2.0) (2023-07-19)
 
 
