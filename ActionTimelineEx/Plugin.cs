@@ -8,6 +8,8 @@ using ECommons;
 using ECommons.Commands;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
+using ImGuiNET;
+using System.Numerics;
 
 namespace ActionTimeline;
 
@@ -102,20 +104,16 @@ public class Plugin : IDalamudPlugin
         var sub = arguments.Split(' ').FirstOrDefault();
         if(string.Equals("unlock", sub, StringComparison.OrdinalIgnoreCase))
         {
-            foreach (var window in _windowSystem.Windows)
+            foreach (var setting in Settings.TimelineSettings)
             {
-                if (window is not TimelineWindow tWindow) continue;
-
-                tWindow.Setting.Locked = false;
+                setting.Locked = false;
             }
         }
         else if (string.Equals("lock", sub, StringComparison.OrdinalIgnoreCase))
         {
-            foreach (var window in _windowSystem.Windows)
+            foreach (var setting in Settings.TimelineSettings)
             {
-                if (window is not TimelineWindow tWindow) continue;
-
-                tWindow.Setting.Locked = true;
+                setting.Locked = true;
             }
         }
         else
@@ -130,43 +128,46 @@ public class Plugin : IDalamudPlugin
 
         _windowSystem = new WindowSystem("ActionTimeline_Windows");
         _windowSystem.AddWindow(_settingsWindow);
-        _windowSystem.AddWindow(new TimelineWindow("Timeline1")
-        {
-            Setting = Settings.TimelineSetting,
-        });
     }
 
     private void Draw()
     {
         if (Settings == null || !Player.Available) return;
 
-        UpdateTimeline();
-
         _windowSystem?.Draw();
+
+        if (!ShowTimeline()) return;
+
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
+
+        HashSet<string> showedName = new HashSet<string>();
+        foreach (var setting in Settings.TimelineSettings)
+        {
+            if (showedName.Contains(setting.Name)) continue;
+
+            TimelineWindow.Draw(setting);
+
+            showedName.Add(setting.Name);
+        }
+
+        ImGui.PopStyleColor();
+        ImGui.PopStyleVar(2);
     }
 
-    private void UpdateTimeline()
+    private bool ShowTimeline()
     {
-        foreach (var window in _windowSystem.Windows)
+        if (Settings.ShowTimelineOnlyInCombat && !Svc.Condition[ConditionFlag.InCombat])
         {
-            if (window is not TimelineWindow tWindow) continue;
-
-            bool show = tWindow.Setting.Enable;
-            if (show)
-            {
-                if (Settings.ShowTimelineOnlyInCombat && !Svc.Condition[ConditionFlag.InCombat])
-                {
-                    show = false;
-                }
-
-                if (Settings.ShowTimelineOnlyInDuty && !Svc.Condition[ConditionFlag.BoundByDuty])
-                {
-                    show = false;
-                }
-            }
-
-            tWindow.IsOpen = show;
+            return false;
         }
+
+        if (Settings.ShowTimelineOnlyInDuty && !Svc.Condition[ConditionFlag.BoundByDuty])
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public static void OpenConfigUi()
@@ -176,10 +177,7 @@ public class Plugin : IDalamudPlugin
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!disposing)
-        {
-            return;
-        }
+        if (!disposing) return;
 
         Settings.Save();
 

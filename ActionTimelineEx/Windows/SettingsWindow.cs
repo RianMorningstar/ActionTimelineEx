@@ -2,6 +2,7 @@
 using ActionTimeline.Timeline;
 using ActionTimelineEx.Configurations;
 using Dalamud.Interface;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
 using Dalamud.Utility;
 using ECommons.Commands;
@@ -39,11 +40,35 @@ namespace ActionTimeline.Windows
                 DrawGeneralSetting();
                 ImGui.EndTabItem();
             }
-            if (ImGui.BeginTabItem("Timeline"))
+
+            HashSet<string> showedName = new HashSet<string>();
+            int index = 0;
+            DrawingSettings? removingSetting = null;
+
+            foreach (var setting in Settings.TimelineSettings)
             {
-                DrawTimelineSetting(Settings.TimelineSetting);
-                ImGui.EndTabItem();
+                var duplicated = showedName.Contains(setting.Name);
+                if (duplicated) ImGui.PushStyleColor(ImGuiCol.Text, ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudRed));
+
+                if (ImGui.BeginTabItem($"TL:{setting.Name}"))
+                {
+                    if(duplicated) ImGui.PopStyleColor();
+                    if (DrawTimelineSetting(setting))
+                    {
+                        removingSetting = setting;
+                    }
+                    ImGui.EndTabItem();
+                }
+
+                showedName.Add(setting.Name);
+                index++;
             }
+
+            if(removingSetting != null)
+            {
+                Settings.TimelineSettings.Remove(removingSetting);
+            }
+
             if (ImGui.BeginTabItem("Help"))
             {
                 DrawHelp();
@@ -89,6 +114,13 @@ namespace ActionTimeline.Windows
         private ushort _aboutAdd = 0;
         private void DrawGeneralSetting()
         {
+            if(ImGui.Button("Add One Timeline"))
+            {
+                Settings.TimelineSettings.Add(new DrawingSettings()
+                {
+                    Name = (Settings.TimelineSettings.Count + 1).ToString(),
+                });
+            }
             ImGui.Checkbox("Show Only In Duty", ref Settings.ShowTimelineOnlyInDuty);
             ImGui.Checkbox("Show Only In Combat", ref Settings.ShowTimelineOnlyInCombat);
             ImGui.Checkbox("Print Clipping Time On Chat", ref Settings.PrintClipping);
@@ -188,11 +220,12 @@ namespace ActionTimeline.Windows
         }
 
         #region Timeline
-        private void DrawTimelineSetting(DrawingSettings settings)
+        private bool DrawTimelineSetting(DrawingSettings settings)
         {
+            var result = false;
             if (!ImGui.BeginTabBar("##Timeline_Settings_TabBar"))
             {
-                return;
+                return result;
             }
 
             ImGui.PushItemWidth(80 * _scale);
@@ -200,7 +233,7 @@ namespace ActionTimeline.Windows
             // general
             if (ImGui.BeginTabItem("General##Timeline_General"))
             {
-                DrawGeneralTab(settings);
+                result = DrawGeneralTab(settings);
                 ImGui.EndTabItem();
             }
 
@@ -233,10 +266,56 @@ namespace ActionTimeline.Windows
             }
 
             ImGui.EndTabBar();
+
+            return result;
         }
 
-        private void DrawGeneralTab(DrawingSettings settings)
+        private string _undoName = string.Empty;
+        private DateTime _lastTime = DateTime.MinValue;
+        private bool RemoveValue(string name)
         {
+            ImGui.SameLine();
+
+            bool isLast = name == _undoName && DateTime.Now - _lastTime < TimeSpan.FromSeconds(2);
+            bool isTime = DateTime.Now - _lastTime > TimeSpan.FromSeconds(0.5);
+
+            bool result = false;
+
+            if (isLast) ImGui.PushStyleColor(ImGuiCol.Text, isTime ? ImGuiColors.HealerGreen : ImGuiColors.DPSRed);
+
+            ImGui.PushFont(UiBuilder.IconFont);
+            if (ImGui.Button($"{(isLast ? FontAwesomeIcon.Check : FontAwesomeIcon.Undo).ToIconString()}##Remove{name}"))
+            {
+                if (isLast && isTime)
+                {
+                    result = true;
+                    _lastTime = DateTime.MinValue;
+                }
+                else
+                {
+                    _lastTime = DateTime.Now;
+                    _undoName = name;
+                }
+            }
+
+            ImGui.PopFont();
+
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.SetTooltip(!isTime ? "Please wait for a second." :
+                isLast ? "Are you sure to remove this timeline?"
+                : "Click to remove this timeline.");
+            }
+
+            if (isLast) ImGui.PopStyleColor();
+            return result;
+        }
+
+        private bool DrawGeneralTab(DrawingSettings settings)
+        {
+            ImGui.InputText("Name: ", ref settings.Name, 32);
+            var result = RemoveValue(settings.Name);
+
             ImGui.Checkbox("Enable", ref settings.Enable);
             ImGui.Checkbox("Is Rotation", ref settings.IsRotation);
 
@@ -257,6 +336,8 @@ namespace ActionTimeline.Windows
                 DrawHelper.SetTooltip("This is the advanced time about action using");
             }
             ImGui.DragFloat("Drawing Center offset", ref settings.CenterOffset, 0.3f, -500, 500);
+
+            return result;
         }
 
         private void DrawIconsTab(DrawingSettings settings)

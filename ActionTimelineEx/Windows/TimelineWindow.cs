@@ -1,57 +1,46 @@
 ﻿using ActionTimeline.Timeline;
 using ActionTimelineEx.Configurations;
 using ActionTimelineEx.Timeline;
-using Dalamud.Interface.Windowing;
+using Dalamud.Interface;
 using ImGuiNET;
 using System.Numerics;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace ActionTimeline.Windows;
 
-internal class TimelineWindow : Window
+internal static class TimelineWindow
 {
-    public DrawingSettings Setting { get; set; } = new DrawingSettings();
-
-    private ImGuiWindowFlags _baseFlags = ImGuiWindowFlags.NoScrollbar
+    private const ImGuiWindowFlags _baseFlags = ImGuiWindowFlags.NoScrollbar
                                         | ImGuiWindowFlags.NoCollapse
                                         | ImGuiWindowFlags.NoTitleBar
                                         | ImGuiWindowFlags.NoNav
                                         | ImGuiWindowFlags.NoScrollWithMouse;
 
-    public TimelineWindow(string name) : base(name)
+    public static void Draw(DrawingSettings setting)
     {
-        Flags = _baseFlags;
+        if (!setting.Enable || string.IsNullOrEmpty(setting.Name)) return;
 
-        Size = new Vector2(560, 100);
-        SizeCondition = ImGuiCond.FirstUseEver;
-
-        Position = new Vector2(200, 200);
-        PositionCondition = ImGuiCond.FirstUseEver;
-    }
-
-    public override void PreDraw()
-    {
-        Vector4 bgColor = Setting.Locked ? Setting.LockedBackgroundColor : Setting.UnlockedBackgroundColor;
-        ImGui.PushStyleColor(ImGuiCol.WindowBg, bgColor);
-
-        Flags = _baseFlags;
-
-        if (Setting.Locked)
+        var flag = _baseFlags;
+        if (setting.Locked)
         {
-            Flags |= ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoMouseInputs;
+            flag |= ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoMouseInputs;
         }
 
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
-    }
+        Vector4 bgColor = setting.Locked ? setting.LockedBackgroundColor : setting.UnlockedBackgroundColor;
+        ImGui.PushStyleColor(ImGuiCol.WindowBg, bgColor);
 
-    public override void PostDraw()
-    {
+        ImGui.SetNextWindowSize(new Vector2(560, 100) * ImGuiHelpers.GlobalScale, ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowPos(new Vector2(200, 200) * ImGuiHelpers.GlobalScale, ImGuiCond.FirstUseEver);
+
+        if (ImGui.Begin($"Timeline: {setting.Name}", flag))
+        {
+            DrawContent(setting);
+            ImGui.End();
+        }
+
         ImGui.PopStyleColor();
-        ImGui.PopStyleVar(2);
     }
 
-    public override void Draw()
+    private static void DrawContent(DrawingSettings setting)
     {
         if (ImGui.IsWindowHovered())
         {
@@ -63,21 +52,21 @@ internal class TimelineWindow : Window
         var pos = ImGui.GetWindowPos();
         var size = ImGui.GetWindowSize();
 
-        var now = Setting.IsRotation ? TimelineManager.Instance?.EndTime ?? DateTime.Now : DateTime.Now;
+        var now = setting.IsRotation ? TimelineManager.Instance?.EndTime ?? DateTime.Now : DateTime.Now;
 
-        var endTime = now - TimeSpan.FromSeconds(size.X / Setting.SizePerSecond - Setting.TimeOffset);
+        var endTime = now - TimeSpan.FromSeconds(size.X / setting.SizePerSecond - setting.TimeOffset);
 
         var last = now;
         var list = TimelineManager.Instance?.GetItems(endTime, out last);
 
-        DrawGrid(pos, size);
+        DrawGrid(pos, size, setting);
 
-        if (Setting.ShowGCDClipping && list != null) //Clipping
+        if (setting.ShowGCDClipping && list != null) //Clipping
         {
-            var gcdClippingColor = ImGui.ColorConvertFloat4ToU32(Setting.GCDClippingColor);
-            var threshold = TimeSpan.FromSeconds(Setting.GCDClippingThreshold);
-            var max = TimeSpan.FromSeconds(Setting.GCDClippingMaxTime);
-            var sizePerSecond = Setting.SizePerSecond;
+            var gcdClippingColor = ImGui.ColorConvertFloat4ToU32(setting.GCDClippingColor);
+            var threshold = TimeSpan.FromSeconds(setting.GCDClippingThreshold);
+            var max = TimeSpan.FromSeconds(setting.GCDClippingMaxTime);
+            var sizePerSecond = setting.SizePerSecond;
 
             foreach (var item in list)
             {
@@ -88,11 +77,11 @@ internal class TimelineWindow : Window
 
                 if (last != DateTime.MinValue && span >= threshold && span < max)
                 {
-                    var drawingLeftTop = pos + new Vector2(size.X - (Setting.TimeOffset + (float)(now - last).TotalSeconds) * sizePerSecond, 0);
+                    var drawingLeftTop = pos + new Vector2(size.X - (setting.TimeOffset + (float)(now - last).TotalSeconds) * sizePerSecond, 0);
                     ImGui.GetWindowDrawList().AddRectFilled( drawingLeftTop,
-                        pos + new Vector2(size.X - (Setting.TimeOffset + (float)(now - start).TotalSeconds) * sizePerSecond, size.Y), gcdClippingColor);
+                        pos + new Vector2(size.X - (setting.TimeOffset + (float)(now - start).TotalSeconds) * sizePerSecond, size.Y), gcdClippingColor);
                     ImGui.GetWindowDrawList().AddText(drawingLeftTop, 
-                        ImGui.ColorConvertFloat4ToU32(Setting.GCDClippingTextColor),
+                        ImGui.ColorConvertFloat4ToU32(setting.GCDClippingTextColor),
                         $"{(int)span.TotalMilliseconds}ms");
                 }
 
@@ -104,80 +93,82 @@ internal class TimelineWindow : Window
         {
             foreach (var item in list)
             {
-                item.Draw(now, pos, size, TimelineLayer.General, Setting);
+                item.Draw(now, pos, size, TimelineLayer.General, setting);
             }
             foreach (var item in list)
             {
-                item.Draw(now, pos, size, TimelineLayer.Status, Setting);
+                item.Draw(now, pos, size, TimelineLayer.Status, setting);
             }
 
             var status = TimelineManager.Instance?.GetStatus(endTime, out _);
-            if (status != null && Setting.ShowStatusLine)
+            if (status != null && setting.ShowStatusLine)
             {
                 foreach (var item in status)
                 {
-                    item.Draw(now, pos, size, Setting);
+                    item.Draw(now, pos, size, setting);
                 }
             }
 
             foreach (var item in list)
             {
-                item.Draw(now, pos, size, TimelineLayer.Icon, Setting);
+                item.Draw(now, pos, size, TimelineLayer.Icon, setting);
             }
         }
 
-        uint lineColor = ImGui.ColorConvertFloat4ToU32(Setting.GridStartLineColor);
+        uint lineColor = ImGui.ColorConvertFloat4ToU32(setting.GridStartLineColor);
 
-        var x = pos.X + size.X - Setting.TimeOffset * Setting.SizePerSecond;
-        ImGui.GetWindowDrawList().AddLine(new Vector2(x, pos.Y), new Vector2(x, pos.Y + size.Y), lineColor, Setting.GridStartLineWidth);
+        var x = pos.X + size.X - setting.TimeOffset * setting.SizePerSecond;
+        ImGui.GetWindowDrawList().AddLine(new Vector2(x, pos.Y), new Vector2(x, pos.Y + size.Y), lineColor, setting.GridStartLineWidth);
+
+        if (!setting.Locked) ImGui.Text(setting.Name);
     }
 
-    private void DrawGrid(Vector2 pos, Vector2 size)
+    private static void DrawGrid(Vector2 pos, Vector2 size, DrawingSettings setting)
     {
-        if (!Setting.ShowGrid) return;
+        if (!setting.ShowGrid) return;
 
         ImDrawListPtr drawList = ImGui.GetWindowDrawList();
         float width = size.X;
         float height = size.Y;
 
-        uint lineColor = ImGui.ColorConvertFloat4ToU32(Setting.GridLineColor);
-        uint subdivisionLineColor = ImGui.ColorConvertFloat4ToU32(Setting.GridSubdivisionLineColor);
+        uint lineColor = ImGui.ColorConvertFloat4ToU32(setting.GridLineColor);
+        uint subdivisionLineColor = ImGui.ColorConvertFloat4ToU32(setting.GridSubdivisionLineColor);
 
-        if (Setting.GridDivideBySeconds)
+        if (setting.GridDivideBySeconds)
         {
-            float step = Setting.SizePerSecond;
+            float step = setting.SizePerSecond;
 
             for (int i = 0; i < width / step; i++)
             {
                 float x = step * i;
                 var start = pos.X + width - x;
 
-                if (Setting.GridSubdivideSeconds && Setting.GridSubdivisionCount > 1)
+                if (setting.GridSubdivideSeconds && setting.GridSubdivisionCount > 1)
                 {
-                    float subStep = step * 1f / Setting.GridSubdivisionCount;
-                    for (int j = 1; j < Setting.GridSubdivisionCount; j++)
+                    float subStep = step * 1f / setting.GridSubdivisionCount;
+                    for (int j = 1; j < setting.GridSubdivisionCount; j++)
                     {
-                        drawList.AddLine(new Vector2(start + subStep * j, pos.Y), new Vector2(start + subStep * j, pos.Y + height), subdivisionLineColor, Setting.GridSubdivisionLineWidth);
+                        drawList.AddLine(new Vector2(start + subStep * j, pos.Y), new Vector2(start + subStep * j, pos.Y + height), subdivisionLineColor, setting.GridSubdivisionLineWidth);
                     }
                 }
-                var time = -i + Setting.TimeOffset;
+                var time = -i + setting.TimeOffset;
 
                 if (time != 0)
                 {
-                    drawList.AddLine(new Vector2(start, pos.Y), new Vector2(start, pos.Y + height), lineColor, Setting.GridLineWidth);
+                    drawList.AddLine(new Vector2(start, pos.Y), new Vector2(start, pos.Y + height), lineColor, setting.GridLineWidth);
                 }
 
-                if (Setting.GridShowSecondsText)
+                if (setting.GridShowSecondsText)
                 {
                     drawList.AddText(new Vector2(start + 2, pos.Y), lineColor, $" {time}s");
                 }
             }
         }
 
-        lineColor = ImGui.ColorConvertFloat4ToU32(Setting.GridCenterLineColor);
-        if (Setting.ShowGridCenterLine)
+        lineColor = ImGui.ColorConvertFloat4ToU32(setting.GridCenterLineColor);
+        if (setting.ShowGridCenterLine)
         {
-            drawList.AddLine(new Vector2(pos.X, pos.Y + height / 2f + Setting.CenterOffset), new Vector2(pos.X + width, pos.Y + height / 2f + Setting.CenterOffset), lineColor, Setting.GridCenterLineWidth);
+            drawList.AddLine(new Vector2(pos.X, pos.Y + height / 2f + setting.CenterOffset), new Vector2(pos.X + width, pos.Y + height / 2f + setting.CenterOffset), lineColor, setting.GridCenterLineWidth);
         }
     }
 }

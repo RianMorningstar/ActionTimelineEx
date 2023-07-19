@@ -10,7 +10,7 @@ public class Settings : IPluginConfiguration
     public bool ShowTimelineOnlyInDuty = false;
     public bool ShowTimelineOnlyInCombat = false;
     //public float StatusCheckDelay = 0.1f;
-    public DrawingSettings TimelineSetting = new DrawingSettings();
+    public List<DrawingSettings> TimelineSettings = new() { new DrawingSettings() };
     public HashSet<ushort> HideStatusIds = new HashSet<ushort>();
     public bool PrintClipping = false;
     public int PrintClippingMin = 150;

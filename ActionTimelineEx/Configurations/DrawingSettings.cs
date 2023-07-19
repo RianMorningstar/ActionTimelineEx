@@ -5,6 +5,8 @@ namespace ActionTimelineEx.Configurations;
 
 public class DrawingSettings
 {
+    public string Name = "Major";
+
     public bool Enable = true;
     public bool IsRotation = false;
 
