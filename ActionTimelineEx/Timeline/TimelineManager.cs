@@ -237,17 +237,21 @@ public class TimelineManager
 
         for (int i = 0; i < set.Header.TargetCount; i++)
         {
-            set.TargetEffects[i].ForEach(x =>
+            var effect = set.TargetEffects[i];
+            var recordTarget = Plugin.Settings.RecordTargetStatus 
+                || effect.TargetID == Player.Object.ObjectId;
+
+            effect.ForEach(x =>
             {
                 switch (x.type)
                 {
-                    case (ActionEffectType)14 when Plugin.Settings.RecordTargetStatus: // ApplyStatusEffectTarget
+                    case (ActionEffectType)14 when recordTarget: // ApplyStatusEffectTarget
                     case (ActionEffectType)15: // ApplyStatusEffectSource
                         var icon = GetStatusIcon(x.value, true);
                         if (icon != 0) statusGain.Add(icon);
                         break;
 
-                    case ActionEffectType.LoseStatusEffectTarget when Plugin.Settings.RecordTargetStatus:
+                    case ActionEffectType.LoseStatusEffectTarget when recordTarget:
                     case ActionEffectType.LoseStatusEffectSource:
                         icon = GetStatusIcon(x.value, false);
                         if (icon != 0) statusLose.Add(icon);
