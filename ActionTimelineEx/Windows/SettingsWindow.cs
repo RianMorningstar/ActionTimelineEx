@@ -128,6 +128,7 @@ namespace ActionTimeline.Windows
             }
 
             ImGui.NewLine();
+            ImGui.Checkbox("Record Target Status", ref Settings.RecordTargetStatus);
 
             var index = 0;
 

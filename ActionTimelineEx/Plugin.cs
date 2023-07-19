@@ -3,14 +3,11 @@ using ActionTimeline.Timeline;
 using ActionTimeline.Windows;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Interface.Windowing;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using ECommons;
 using ECommons.Commands;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
-using ImGuiNET;
-using System.Numerics;
 
 namespace ActionTimeline;
 

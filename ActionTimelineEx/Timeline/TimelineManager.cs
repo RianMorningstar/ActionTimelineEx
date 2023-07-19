@@ -241,14 +241,13 @@ public class TimelineManager
             {
                 switch (x.type)
                 {
-                    case ActionEffectType.ApplyStatusEffectTarget:
-                    case ActionEffectType.ApplyStatusEffectSource:
-                    case ActionEffectType.GpGain:
+                    case (ActionEffectType)14 when Plugin.Settings.RecordTargetStatus: // ApplyStatusEffectTarget
+                    case (ActionEffectType)15: // ApplyStatusEffectSource
                         var icon = GetStatusIcon(x.value, true);
                         if (icon != 0) statusGain.Add(icon);
                         break;
 
-                    case ActionEffectType.LoseStatusEffectTarget:
+                    case ActionEffectType.LoseStatusEffectTarget when Plugin.Settings.RecordTargetStatus:
                     case ActionEffectType.LoseStatusEffectSource:
                         icon = GetStatusIcon(x.value, false);
                         if (icon != 0) statusLose.Add(icon);
