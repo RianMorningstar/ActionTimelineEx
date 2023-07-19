@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.2.1...v1.2.2) (2023-07-19)
+
+
+### Bug Fixes
+
+* fixed rotation window timeline showcase. ([d423b6e](https://github.com/ArchiDog1998/ActionTimelineEx/commit/d423b6eb8fc0e1fdee1f0c5f86a92f93eb670c73))
+* fixed translation. ([33702a5](https://github.com/ArchiDog1998/ActionTimelineEx/commit/33702a56d4519844d7709c463b2e4ad6cfa331d0))
+
 ## [1.2.1](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.2.0...v1.2.1) (2023-07-19)
 
 
