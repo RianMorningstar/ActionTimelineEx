@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.1.0...v1.2.0) (2023-07-19)
+
+
+### Features
+
+* add multi window option. ([e47e09a](https://github.com/ArchiDog1998/ActionTimelineEx/commit/e47e09a4915ae22e299aae66b3c2fbfb419dce3a))
+* Multi Timeline! ([1fdaa80](https://github.com/ArchiDog1998/ActionTimelineEx/commit/1fdaa80706466ab33812082eb2d725c9a1e7e340))
+
+
+### Bug Fixes
+
+* add a button to record. ([46bdef2](https://github.com/ArchiDog1998/ActionTimelineEx/commit/46bdef24a4d3b881a01d580168553fc3cbae2f9a))
+* add rotation offset. ([18fc442](https://github.com/ArchiDog1998/ActionTimelineEx/commit/18fc442f713cba0f98a1d8712ea80b2dff2566d6))
+* fixed ui stuff. ([5a88012](https://github.com/ArchiDog1998/ActionTimelineEx/commit/5a8801246aca058335ee5dea60b807861e3c6a24))
+* new feature for record status target. ([e71ac94](https://github.com/ArchiDog1998/ActionTimelineEx/commit/e71ac94438ef44952662fe76ba69bf734b70aefa))
+
 ## [1.1.0](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.0.0...v1.1.0) (2023-07-18)
 
 
