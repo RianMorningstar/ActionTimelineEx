@@ -306,8 +306,8 @@ namespace ActionTimeline.Windows
 
         private bool DrawGeneralTab(DrawingSettings settings)
         {
-            ImGui.InputText("Name: ", ref settings.Name, 32);
-            var result = Plugin.Settings.TimelineSettings.Any() ? RemoveValue(settings.Name) : false;
+            ImGui.InputText("Name", ref settings.Name, 32);
+            var result = Plugin.Settings.TimelineSettings.Count > 1 ? RemoveValue(settings.Name) : false;
 
             ImGui.Checkbox("Enable", ref settings.Enable);
             ImGui.Checkbox("Is Rotation", ref settings.IsRotation);

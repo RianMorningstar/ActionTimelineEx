@@ -167,7 +167,6 @@ internal static class TimelineWindow
                     drawList.AddLine(new Vector2(start, pos.Y), new Vector2(start, pos.Y + height), lineColor, setting.GridLineWidth);
                 }
 
-                if (setting.IsRotation) time -= setting.TimeOffsetSetting;
                 if (setting.GridShowSecondsText)
                 {
                     drawList.AddText(new Vector2(start + 2, pos.Y), lineColor, $" {time}s");
