@@ -151,7 +151,7 @@ namespace ActionTimeline.Windows
             ImGui.SameLine();
             ImGui.NewLine();
 
-            ImGui.Text("Don't record these status.");
+            ImGui.Text("Don't record these statuses.");
 
             if (ImGui.BeginChild("ExceptStatus", new Vector2(0f, -1f), true))
             {
@@ -307,7 +307,7 @@ namespace ActionTimeline.Windows
         private bool DrawGeneralTab(DrawingSettings settings)
         {
             ImGui.InputText("Name", ref settings.Name, 32);
-            var result = Plugin.Settings.TimelineSettings.Count > 1 ? RemoveValue(settings.Name) : false;
+            var result = Plugin.Settings.TimelineSettings.Count > 1 && RemoveValue(settings.Name);
 
             ImGui.Checkbox("Enable", ref settings.Enable);
             ImGui.Checkbox("Is Rotation", ref settings.IsRotation);
@@ -343,7 +343,7 @@ namespace ActionTimeline.Windows
             {
                 ImGui.Indent();
                 ImGui.DragInt("Off GCD Icon Size", ref settings.OGCDIconSize, 0.2f, 1, 100);
-                ImGui.DragFloat("Iff GCD Vertical Offset", ref settings.OGCDOffset, 0.1f, 0, 1);
+                ImGui.DragFloat("Iff GCD Vertical Offset", ref settings.OGCDOffset, 0.01f, 0, 1);
                 ImGui.Unindent();
             }
 
