@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.0...v1.3.1) (2023-07-22)
+
+
+### Bug Fixes
+
+* clean cast on data. ([1d9a02d](https://github.com/ArchiDog1998/ActionTimelineEx/commit/1d9a02d2037c7b3f11aaf1e1cae9f09b21f25d10))
+* fixed status showing. ([f2fffd4](https://github.com/ArchiDog1998/ActionTimelineEx/commit/f2fffd46e35287884990e9dc2d9b1ed6845bfcbe))
+
 ## [1.3.0](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.2.2...v1.3.0) (2023-07-22)
 
 
