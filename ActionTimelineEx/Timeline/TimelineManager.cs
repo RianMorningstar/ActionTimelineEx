@@ -372,19 +372,8 @@ public class TimelineManager
         }
     }
 
-    private const string WarningOnActorControl = "Something wrong with OnActorControl!";
     private async void OnActorControl(uint entityId, ActorControlCategory type, uint buffID, uint direct, uint actionId, uint sourceId, uint arg4, uint arg5, ulong targetId, byte a10)
     {
-        byte stack = 0;
-        try
-        {
-            stack = Player.Object?.StatusList.FirstOrDefault(s => s.StatusId == buffID && s.SourceId == Player.Object.ObjectId)?.StackCount ?? 0;
-        }
-        catch(Exception ex)
-        {
-            PluginLog.Warning(ex, WarningOnActorControl);
-        }
-
         _onActorControlHook?.Original(entityId, type, buffID, direct, actionId, sourceId, arg4, arg5, targetId, a10);
 
         //#if DEBUG
@@ -405,7 +394,9 @@ public class TimelineManager
                     break;
 
                 case ActorControlCategory.LoseEffect:
-                    var icon = GetStatusIcon((ushort)buffID, false, stack);
+                    var stack = Player.Object?.StatusList.FirstOrDefault(s => s.StatusId == buffID && s.SourceId == Player.Object.ObjectId)?.StackCount ?? 0;
+
+                    var icon = GetStatusIcon((ushort)buffID, false, ++stack);
                     if (icon == 0) break;
                     var now = DateTime.Now;
 
@@ -448,7 +439,7 @@ public class TimelineManager
 
         catch (Exception ex)
         {
-            PluginLog.Warning(ex, WarningOnActorControl);
+            PluginLog.Warning(ex, "Something wrong with OnActorControl!");
         }
     }
 
@@ -462,14 +453,30 @@ public class TimelineManager
 
             var actionId = *(ushort*)ptr;
 
+            string name = string.Empty;
+            ushort icon = 0;
             var action = Svc.Data.GetExcelSheet<Action>()?.GetRow(actionId);
 
-            var icon = actionId == 4 ? (ushort)118 //Mount
-                    : action?.Icon ?? 0;
+            if(action?.Cast100ms > 0)
+            {
+                name = action?.Name ?? string.Empty;
+                icon = actionId == 4 ? (ushort)118 //Mount
+                        : action?.Icon ?? 0;
+            }
+            else
+            {
+                var item = Svc.Data.GetExcelSheet<Item>()?.GetRow(actionId);
+                if (item?.CastTimes > 0)
+                {
+                    name = item?.Name ?? string.Empty;
+                    icon = item?.Icon ?? 0;
+                }
+            }
+
 
             AddItem(new TimelineItem()
             {
-                Name = action?.Name ?? string.Empty,
+                Name = name,
                 Icon = icon,
                 StartTime = DateTime.Now,
                 GCDTime = GCD,

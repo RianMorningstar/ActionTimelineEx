@@ -59,19 +59,21 @@ internal static class TimelineWindow
 
         var now = setting.IsRotation ? (TimelineManager.Instance?.EndTime ?? DateTime.Now - TimeSpan.FromSeconds(setting.TimeOffset)) : DateTime.Now;
 
-        var endTime = now - TimeSpan.FromSeconds(size.X / setting.SizePerSecond - setting.TimeOffset);
+        var endTime = now - TimeSpan.FromSeconds((setting.IsHorizonal ? size.X : size.Y )/ setting.SizePerSecond - setting.TimeOffset);
 
         var last = now;
         var list = TimelineManager.Instance?.GetItems(endTime, out last);
 
-        DrawGrid(pos, size, setting);
+        var timeDirWhole = setting.IsHorizonal ? size.X * Vector2.UnitX : size.Y * Vector2.UnitY;
+        var downDirWhole = setting.IsHorizonal ? size.Y * Vector2.UnitY : size.X * Vector2.UnitX;
+
+        DrawGrid(pos, timeDirWhole, downDirWhole, setting);
 
         if (setting.ShowGCDClipping && list != null) //Clipping
         {
             var gcdClippingColor = ImGui.ColorConvertFloat4ToU32(setting.GCDClippingColor);
             var threshold = TimeSpan.FromSeconds(setting.GCDClippingThreshold);
             var max = TimeSpan.FromSeconds(setting.GCDClippingMaxTime);
-            var sizePerSecond = setting.SizePerSecond;
 
             foreach (var item in list)
             {
@@ -82,9 +84,13 @@ internal static class TimelineWindow
 
                 if (last != DateTime.MinValue && span >= threshold && span < max)
                 {
-                    var drawingLeftTop = pos + new Vector2(size.X - (setting.TimeOffset + (float)(now - last).TotalSeconds) * sizePerSecond, 0);
-                    ImGui.GetWindowDrawList().AddRectFilled( drawingLeftTop,
-                        pos + new Vector2(size.X - (setting.TimeOffset + (float)(now - start).TotalSeconds) * sizePerSecond, size.Y), gcdClippingColor);
+                    var drawingLeftTop = pos + timeDirWhole
+                        - (setting.TimeOffset + (float)(now - last).TotalSeconds) * setting.TimeDirectionPerSecond;
+                    
+
+                    ImGui.GetWindowDrawList().AddRectFilled(drawingLeftTop, drawingLeftTop
+                        + downDirWhole + (float)span.TotalSeconds * setting.TimeDirectionPerSecond 
+                       , gcdClippingColor);
                     ImGui.GetWindowDrawList().AddText(drawingLeftTop, 
                         ImGui.ColorConvertFloat4ToU32(setting.GCDClippingTextColor),
                         $"{(int)span.TotalMilliseconds}ms");
@@ -124,60 +130,62 @@ internal static class TimelineWindow
         {
             uint lineColor = ImGui.ColorConvertFloat4ToU32(setting.GridStartLineColor);
 
-            var x = pos.X + size.X - setting.TimeOffset * setting.SizePerSecond;
+            var pt = pos + timeDirWhole - setting.TimeOffset * setting.TimeDirectionPerSecond;
 
-            ImGui.GetWindowDrawList().AddLine(new Vector2(x, pos.Y), new Vector2(x, pos.Y + size.Y), lineColor, setting.GridStartLineWidth);
+            ImGui.GetWindowDrawList().AddLine(pt, pt + downDirWhole, lineColor, setting.GridStartLineWidth);
         }
 
         if (!setting.Locked) ImGui.Text(setting.Name);
     }
 
-    private static void DrawGrid(Vector2 pos, Vector2 size, DrawingSettings setting)
+    private static void DrawGrid(Vector2 pos, Vector2 timeDirWhole, Vector2 downDirWhole, DrawingSettings setting)
     {
         if (!setting.ShowGrid) return;
 
         ImDrawListPtr drawList = ImGui.GetWindowDrawList();
-        float width = size.X;
-        float height = size.Y;
+        var timeLineLength = timeDirWhole.Length();
+        var downLineLength = downDirWhole.Length();
 
         uint lineColor = ImGui.ColorConvertFloat4ToU32(setting.GridLineColor);
         uint subdivisionLineColor = ImGui.ColorConvertFloat4ToU32(setting.GridSubdivisionLineColor);
 
         if (setting.GridDivideBySeconds)
         {
-            float step = setting.SizePerSecond;
+            var step = setting.SizePerSecond;
+            var startPt = pos + timeDirWhole;
 
-            for (int i = 0; i < width / step; i++)
+            for (int i = 0; i < timeLineLength / step; i++)
             {
-                float x = step * i;
-                var start = pos.X + width - x;
-
                 if (setting.GridSubdivideSeconds && setting.GridSubdivisionCount > 1)
                 {
                     float subStep = step * 1f / setting.GridSubdivisionCount;
                     for (int j = 1; j < setting.GridSubdivisionCount; j++)
                     {
-                        drawList.AddLine(new Vector2(start + subStep * j, pos.Y), new Vector2(start + subStep * j, pos.Y + height), subdivisionLineColor, setting.GridSubdivisionLineWidth);
+                        var pt = startPt + setting.RealDownDirection * subStep * j;
+                        drawList.AddLine(pt, pt + downDirWhole, subdivisionLineColor, setting.GridSubdivisionLineWidth);
                     }
                 }
                 var time = -i + setting.TimeOffset;
 
                 if (time != 0 || setting.IsRotation)
                 {
-                    drawList.AddLine(new Vector2(start, pos.Y), new Vector2(start, pos.Y + height), lineColor, setting.GridLineWidth);
+                    drawList.AddLine(startPt, startPt + downDirWhole, lineColor, setting.GridLineWidth);
                 }
 
                 if (setting.GridShowSecondsText)
                 {
-                    drawList.AddText(new Vector2(start + 2, pos.Y), lineColor, $" {time}s");
+                    drawList.AddText(startPt, lineColor, $" {time}s");
                 }
+
+                startPt -= setting.TimeDirectionPerSecond;
             }
         }
 
         lineColor = ImGui.ColorConvertFloat4ToU32(setting.GridCenterLineColor);
         if (setting.ShowGridCenterLine)
         {
-            drawList.AddLine(new Vector2(pos.X, pos.Y + height / 2f + setting.CenterOffset), new Vector2(pos.X + width, pos.Y + height / 2f + setting.CenterOffset), lineColor, setting.GridCenterLineWidth);
+            var pt = pos + downDirWhole / 2 + setting.RealDownDirection * setting.CenterOffset;
+            drawList.AddLine(pt, pt + timeDirWhole, lineColor, setting.GridCenterLineWidth);
         }
     }
 }

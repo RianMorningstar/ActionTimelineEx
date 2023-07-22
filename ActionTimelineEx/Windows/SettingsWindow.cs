@@ -151,7 +151,7 @@ namespace ActionTimeline.Windows
             ImGui.SameLine();
             ImGui.NewLine();
 
-            ImGui.Text("Don't record these status.");
+            ImGui.Text("Don't record these statuses.");
 
             if (ImGui.BeginChild("ExceptStatus", new Vector2(0f, -1f), true))
             {
@@ -307,10 +307,12 @@ namespace ActionTimeline.Windows
         private bool DrawGeneralTab(DrawingSettings settings)
         {
             ImGui.InputText("Name", ref settings.Name, 32);
-            var result = Plugin.Settings.TimelineSettings.Count > 1 ? RemoveValue(settings.Name) : false;
+            var result = Plugin.Settings.TimelineSettings.Count > 1 && RemoveValue(settings.Name);
 
             ImGui.Checkbox("Enable", ref settings.Enable);
             ImGui.Checkbox("Is Rotation", ref settings.IsRotation);
+            ImGui.Checkbox("Is Horizonal", ref settings.IsHorizonal);
+            ImGui.Checkbox("Is Reverse", ref settings.IsReverse);
 
             ImGui.NewLine();
 
@@ -332,7 +334,7 @@ namespace ActionTimeline.Windows
             return result;
         }
 
-        private void DrawIconsTab(DrawingSettings settings)
+        private static void DrawIconsTab(DrawingSettings settings)
         {
             ImGui.DragInt("Icon Size", ref settings.GCDIconSize);
 
@@ -343,7 +345,7 @@ namespace ActionTimeline.Windows
             {
                 ImGui.Indent();
                 ImGui.DragInt("Off GCD Icon Size", ref settings.OGCDIconSize, 0.2f, 1, 100);
-                ImGui.DragFloat("Iff GCD Vertical Offset", ref settings.OGCDOffset, 0.1f, 0, 1);
+                ImGui.DragFloat("Iff GCD Vertical Offset", ref settings.OGCDOffset, 0.01f, 0, 1);
                 ImGui.Unindent();
             }
 
@@ -368,6 +370,7 @@ namespace ActionTimeline.Windows
                 ImGui.DragFloat("Status Icon Alpha", ref settings.StatusIconAlpha, 0.01f, 0, 1);
                 ImGui.ColorEdit4("Status Gain Color", ref settings.StatusGainColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.ColorEdit4("Status Lose Color", ref settings.StatusLoseColor, ImGuiColorEditFlags.NoInputs);
+                ImGui.DragFloat("Status Offset", ref settings.StatusOffset, 0.01f, 0, 1);
                 ImGui.Unindent();
             }
 
@@ -383,7 +386,7 @@ namespace ActionTimeline.Windows
             }
         }
 
-        private void DrawBarTab(DrawingSettings settings)
+        private static void DrawBarTab(DrawingSettings settings)
         {
             ImGui.ColorEdit4("Bar Background Color", ref settings.BackgroundColor, ImGuiColorEditFlags.NoInputs);
             ImGui.ColorEdit4("GCD Border Color", ref settings.GCDBorderColor, ImGuiColorEditFlags.NoInputs);
@@ -419,7 +422,7 @@ namespace ActionTimeline.Windows
             }
         }
 
-        private void DrawGridTab(DrawingSettings settings)
+        private static void DrawGridTab(DrawingSettings settings)
         {
             ImGui.Checkbox("Enabled", ref settings.ShowGrid);
 
@@ -460,7 +463,7 @@ namespace ActionTimeline.Windows
             ImGui.ColorEdit4("Sub-Division Line Color", ref settings.GridSubdivisionLineColor, ImGuiColorEditFlags.NoInputs);
         }
 
-        private void DrawGCDClippingTab(DrawingSettings settings)
+        private static void DrawGCDClippingTab(DrawingSettings settings)
         {
             ImGui.Checkbox("Enabled", ref settings.ShowGCDClippingSetting);
             DrawHelper.SetTooltip("This only shown when timeline is not rotation.");

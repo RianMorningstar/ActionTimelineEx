@@ -3,6 +3,7 @@ using ActionTimeline.Helpers;
 using ActionTimelineEx.Configurations;
 using ImGuiNET;
 using ImGuiScene;
+using System.Drawing;
 using System.Numerics;
 
 namespace ActionTimelineEx.Timeline;
@@ -19,18 +20,17 @@ public class StatusLineItem : ITimelineItem
 
     public void Draw(DateTime time, Vector2 windowPos, Vector2 windowSize, DrawingSettings setting)
     {
-        var sizePerSecond = setting.SizePerSecond;
-        var rightCenter = windowPos + new Vector2(windowSize.X, windowSize.Y / 2 + setting.CenterOffset);
-        rightCenter -= Vector2.UnitX * setting.TimeOffset * sizePerSecond;
-        DrawItemWithCenter(rightCenter - Vector2.UnitX * (float)(time - StartTime).TotalSeconds * sizePerSecond, 
-            windowPos, setting);
+        var rightCenter = windowPos + (setting.IsHorizonal
+            ? new Vector2(windowSize.X, windowSize.Y / 2 + setting.CenterOffset)
+            : new Vector2(windowSize.X / 2 + setting.CenterOffset, windowSize.Y));
+        rightCenter -= setting.TimeOffset * setting.TimeDirectionPerSecond;
+        DrawItemWithCenter(rightCenter - (float)(time - StartTime).TotalSeconds * setting.TimeDirectionPerSecond, windowPos, setting);
     }
 
     public void DrawItemWithCenter(Vector2 centerPos, Vector2 windowPos, DrawingSettings setting)
     {
         var GcdSize = setting.GCDIconSize;
         var drawList = ImGui.GetWindowDrawList();
-        var xUnitPerSecond = Vector2.UnitX * setting.SizePerSecond;
 
         var statusHeight = setting.StatusLineSize;
         var flag = ImDrawFlags.RoundCornersAll;
@@ -41,15 +41,17 @@ public class StatusLineItem : ITimelineItem
 
         var col = DrawHelper.GetTextureAverageColor(Icon);
 
-        var leftTop = centerPos + new Vector2(0, statusHeight * Stack + GcdSize / 2);
+        var leftTop = centerPos + setting.DownDirection * (statusHeight * (setting.IsReverse ? Stack + 1 : Stack) + GcdSize / 2);
         if(setting.ShowAutoAttack)
         {
             var autoAttackOffset = setting.AutoAttackOffset;
             var autoAttackSize = setting.AutoAttackIconSize;
-            leftTop += Vector2.UnitY *( autoAttackOffset * GcdSize + autoAttackSize);
+            leftTop += setting.DownDirection * (autoAttackOffset * GcdSize + autoAttackSize);
         }
-        var shrink = new Vector2(0, statusHeight * 0.3f);
-        var rightBottom = leftTop + xUnitPerSecond * TimeDuration + Vector2.UnitY * statusHeight - shrink;
+        var statusWidth = setting.IsHorizonal ? statusHeight : statusHeight / TimelineItem.HeightRatio;
+        var shrink = statusWidth * 0.3f * setting.RealDownDirection;
+        var rightBottom = leftTop + setting.TimeDirectionPerSecond * TimeDuration + setting.RealDownDirection * statusWidth - shrink;
+
         drawList.AddRectFilled(leftTop + shrink, rightBottom,col, rounding, flag);
 
         if (rightBottom.X <= windowPos.X) return;

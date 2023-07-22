@@ -9,6 +9,12 @@ public class DrawingSettings
 
     public bool Enable = true;
     public bool IsRotation = false;
+    public bool IsHorizonal = true;
+    public bool IsReverse = false;
+    public Vector2 TimeDirectionPerSecond => TimeDirection * SizePerSecond;
+    public Vector2 TimeDirection => IsHorizonal ? Vector2.UnitX : Vector2.UnitY;
+    public Vector2 DownDirection => IsReverse ? -RealDownDirection : RealDownDirection;
+    public Vector2 RealDownDirection => IsHorizonal ? Vector2.UnitY : Vector2.UnitX;
 
     public bool Locked = false;
     public Vector4 LockedBackgroundColor = new Vector4(0f, 0f, 0f, 0.5f);
@@ -32,6 +38,7 @@ public class DrawingSettings
     public bool ShowStatus = true;
     public int StatusIconSize = 15;
     public float StatusIconAlpha = 0.5f;
+    public float StatusOffset = 0.1f;
     public Vector4 StatusGainColor = ImGuiColors.HealerGreen;
     public Vector4 StatusLoseColor = ImGuiColors.DalamudRed;
 
