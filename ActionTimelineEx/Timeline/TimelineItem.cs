@@ -35,37 +35,37 @@ public class TimelineItem : ITimelineItem
 
     public void Draw(DateTime time, Vector2 windowPos, Vector2 windowSize, TimelineLayer icon, DrawingSettings setting)
     {
-        var sizePerSecond = setting.SizePerSecond;
-        var rightCenter = windowPos + new Vector2(windowSize.X, windowSize.Y/ 2 + setting.CenterOffset);
-        rightCenter -= Vector2.UnitX * setting.TimeOffset * sizePerSecond; 
-        DrawItemWithCenter(rightCenter - Vector2.UnitX * (float)(time - StartTime).TotalSeconds * sizePerSecond, icon, setting);
+        var rightCenter = windowPos + (setting.IsHorizonal
+            ? new Vector2(windowSize.X, windowSize.Y / 2 + setting.CenterOffset)
+            : new Vector2(windowSize.X / 2 + setting.CenterOffset, windowSize.Y));
+        rightCenter -= setting.TimeOffset * setting.TimeDirectionPerSecond; 
+        DrawItemWithCenter(rightCenter - (float)(time - StartTime).TotalSeconds * setting.TimeDirectionPerSecond, icon, setting);
     }
 
     public void DrawItemWithCenter(Vector2 centerPos, TimelineLayer icon, DrawingSettings setting)
     {
         var GcdSize = setting.GCDIconSize;
         var drawList = ImGui.GetWindowDrawList();
-        var xUnitPerSecond = Vector2.UnitX * setting.SizePerSecond;
 
         switch (Type)
         {
             case TimelineItemType.GCD:
-                DrawItemWithCenter(drawList, centerPos, xUnitPerSecond, GcdSize, icon, setting);
+                DrawItemWithCenter(drawList, centerPos, setting.TimeDirectionPerSecond, GcdSize, icon, setting);
                 break;
 
             case TimelineItemType.OGCD when setting.ShowOGCD:
                 var oGcdOffset = setting.OGCDOffset;
                 var oGcdSize = setting.OGCDIconSize;
-                var oGcdCenter = new Vector2(centerPos.X, centerPos.Y - oGcdOffset * GcdSize - oGcdSize / 2);
-                DrawItemWithCenter(drawList, oGcdCenter, xUnitPerSecond, oGcdSize, icon, setting);
+                var oGcdCenter = centerPos - (oGcdOffset * GcdSize + oGcdSize / 2) * setting.DownDirection;
+                DrawItemWithCenter(drawList, oGcdCenter, setting.TimeDirectionPerSecond, oGcdSize, icon, setting);
                 break;
 
             case TimelineItemType.AutoAttack when setting.ShowAutoAttack:
                 var autoAttackOffset = setting.AutoAttackOffset;
                 var autoAttackSize = setting.AutoAttackIconSize;
-                var autoAttackCenter = new Vector2(centerPos.X, centerPos.Y + autoAttackOffset * GcdSize
-                    + (autoAttackSize + GcdSize) / 2);
-                DrawItemWithCenter(drawList, autoAttackCenter, xUnitPerSecond, autoAttackSize, icon, setting);
+                var autoAttackCenter = centerPos + (autoAttackOffset * GcdSize
+                    + (autoAttackSize + GcdSize) / 2) * setting.DownDirection;
+                DrawItemWithCenter(drawList, autoAttackCenter, setting.TimeDirectionPerSecond, autoAttackSize, icon, setting);
                 break;
         }
     }
@@ -83,25 +83,30 @@ public class TimelineItem : ITimelineItem
     }
 
     public const float HeightRatio = 4 / 3f;
-    private void DrawItemWithCenter(ImDrawListPtr drawList, Vector2 centerPos, Vector2 xUnitPerSecond, float iconSize, TimelineLayer icon, DrawingSettings setting)
+    private void DrawItemWithCenter(ImDrawListPtr drawList, Vector2 centerPos, Vector2 unitPerSecond, float iconSize, TimelineLayer icon, DrawingSettings setting)
     {
         switch (icon)
         {
             case TimelineLayer.Icon:
-                drawList.DrawActionIcon(Icon, IsHq, new Vector2(centerPos.X, centerPos.Y - iconSize / 2), iconSize);
+                drawList.DrawActionIcon(Icon, IsHq, centerPos - iconSize / 2 * setting.RealDownDirection, iconSize);
                 return;
 
             case TimelineLayer.Status when setting.ShowStatus:
                 var statusSize = setting.StatusIconSize;
-
-                var center = new Vector2(centerPos.X + iconSize / 2, centerPos.Y - iconSize / 2 - statusSize * HeightRatio);
+                var center = centerPos + setting.TimeDirection * iconSize / 2 - setting.DownDirection 
+                    * (iconSize / 2 + statusSize *(setting.IsHorizonal ? HeightRatio : 1) * (1 + setting.StatusOffset));
                 var gains = GetTextures(StatusGainIcon);
                 var lose = GetTextures(StatusLoseIcon);
                 var color = ImGui.ColorConvertFloat4ToU32(new Vector4(1, 1, 1, setting.StatusIconAlpha));
                 var gainColor = ImGui.ColorConvertFloat4ToU32(setting.StatusGainColor);
                 var loseColor = ImGui.ColorConvertFloat4ToU32(setting.StatusLoseColor);
 
-                center -= Vector2.UnitX * statusSize * (gains.Length + lose.Length) / 2;
+                var statusStep = setting.IsHorizonal ? statusSize : statusSize * HeightRatio;
+                center -= setting.TimeDirection * statusStep * (gains.Length + lose.Length) / 2;
+                if (setting.IsReverse)
+                {
+                    center += setting.DownDirection *(setting.IsHorizonal ? statusSize * HeightRatio : statusSize);
+                }
                 for (int i = 0; i < gains.Length; i++)
                 {
                     drawList.AddImage(gains[i].ImGuiHandle, center,
@@ -109,7 +114,7 @@ public class TimelineItem : ITimelineItem
 
                     drawList.AddText(UiBuilder.IconFont, statusSize / 2f, center, gainColor, FontAwesomeIcon.Plus.ToIconString());
 
-                    center += Vector2.UnitX * statusSize;
+                    center += setting.TimeDirection * statusStep;
                 }
                 for (int i = 0; i < lose.Length; i++)
                 {
@@ -118,35 +123,35 @@ public class TimelineItem : ITimelineItem
 
                     drawList.AddText(UiBuilder.IconFont, statusSize / 2f, center, loseColor, FontAwesomeIcon.Ban.ToIconString());
 
-                    center += Vector2.UnitX * statusSize;
+                    center += setting.TimeDirection * statusStep;
                 }
 
                 return;
 
             case TimelineLayer.General:
                 //Get Info.
-                float highPos = setting.GCDHeightLow;
-                float lowPos = setting.GCDHeightHigh;
+                float highPos = MathF.Min( setting.GCDHeightLow, setting.GCDHeightHigh);
+                float lowPos = MathF.Max(setting.GCDHeightLow, setting.GCDHeightHigh);
                 float rounding = setting.GCDRound;
 
-                var leftTop = new Vector2(centerPos.X, centerPos.Y - iconSize / 2 + highPos * iconSize);
-                var leftBottom = new Vector2(centerPos.X, centerPos.Y - iconSize / 2 + lowPos * iconSize);
+                var leftTop = centerPos + (highPos * iconSize - iconSize / 2) * setting.RealDownDirection;
+                var leftBottom = centerPos  + (lowPos * iconSize- iconSize / 2) * setting.RealDownDirection;
                 var flag = ImDrawFlags.RoundCornersAll;
 
-                var minX = centerPos.X + iconSize / 2;
+                var min = centerPos + iconSize / 2 * setting.TimeDirection;
 
                 //Background
                 var GcdBackColor = ImGui.ColorConvertFloat4ToU32(setting.BackgroundColor);
-                drawList.AddRectFilled(MinX(leftTop, minX), MinX(leftBottom + xUnitPerSecond * MathF.Max(GCDTime, setting.ShowAnimationLock ? CastingTime + AnimationLockTime : CastingTime), minX), GcdBackColor, rounding, flag);
+                drawList.AddRectFilled(MinX(leftTop, min), MinX(leftBottom + unitPerSecond * MathF.Max(GCDTime, setting.ShowAnimationLock ? CastingTime + AnimationLockTime : CastingTime), min), GcdBackColor, rounding, flag);
 
-                var castOffset = xUnitPerSecond * CastingTime;
+                var castOffset = unitPerSecond * CastingTime;
 
                 //AnimationLock
                 if (setting.ShowAnimationLock)
                 {
                     var animationLockColor = ImGui.ColorConvertFloat4ToU32(setting.AnimationLockColor);
-                    drawList.AddRectFilled(MinX(leftTop, minX),
-                        MinX(leftBottom + castOffset + xUnitPerSecond * AnimationLockTime, minX),
+                    drawList.AddRectFilled(MinX(leftTop, min),
+                        MinX(leftBottom + castOffset + unitPerSecond * AnimationLockTime, min),
                         animationLockColor, rounding, flag);
                 }
 
@@ -157,12 +162,12 @@ public class TimelineItem : ITimelineItem
                     TimelineItemState.Casting => ImGui.ColorConvertFloat4ToU32(setting.CastInProgressColor),
                     _ => ImGui.ColorConvertFloat4ToU32(setting.CastFinishedColor)
                 };
-                drawList.AddRectFilled(MinX(leftTop, minX), MinX(leftBottom + castOffset, minX), castColor, rounding, flag);
+                drawList.AddRectFilled(MinX(leftTop, min), MinX(leftBottom + castOffset, min), castColor, rounding, flag);
 
                 //GCD Fore
                 var GcdForeColor = ImGui.ColorConvertFloat4ToU32(setting.GCDBorderColor);
-                drawList.AddRect(MinX(leftTop, minX),
-                     MinX(leftBottom + xUnitPerSecond * GCDTime, minX),
+                drawList.AddRect(MinX(leftTop, min),
+                     MinX(leftBottom + unitPerSecond * GCDTime, min),
                     GcdForeColor, rounding, flag, setting.GCDThickness);
 
                 //Damage
@@ -175,7 +180,7 @@ public class TimelineItem : ITimelineItem
                         DamageType.CriticalDirect => ImGui.ColorConvertFloat4ToU32(setting.CriticalDirectColor),
                         _ => 0u,
                     };
-                    drawList.DrawDamage(new Vector2(centerPos.X, centerPos.Y - iconSize / 2), iconSize, lightCol);
+                    drawList.DrawDamage(centerPos - iconSize / 2 * setting.RealDownDirection, iconSize, lightCol);
                 }
 
                 return;
@@ -183,8 +188,8 @@ public class TimelineItem : ITimelineItem
         //Name
     }
 
-    private Vector2 MinX(Vector2 pos, float minPos)
+    private Vector2 MinX(Vector2 pos, Vector2 minPos)
     {
-        return new Vector2(MathF.Max(pos.X, minPos), pos.Y);
+        return new Vector2(MathF.Max(pos.X, minPos.X), MathF.Max(pos.Y, minPos.Y));
     }
 }

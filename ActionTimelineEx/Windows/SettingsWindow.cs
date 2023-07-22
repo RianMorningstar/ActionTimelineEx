@@ -311,6 +311,8 @@ namespace ActionTimeline.Windows
 
             ImGui.Checkbox("Enable", ref settings.Enable);
             ImGui.Checkbox("Is Rotation", ref settings.IsRotation);
+            ImGui.Checkbox("Is Horizonal", ref settings.IsHorizonal);
+            ImGui.Checkbox("Is Reverse", ref settings.IsReverse);
 
             ImGui.NewLine();
 
@@ -368,6 +370,7 @@ namespace ActionTimeline.Windows
                 ImGui.DragFloat("Status Icon Alpha", ref settings.StatusIconAlpha, 0.01f, 0, 1);
                 ImGui.ColorEdit4("Status Gain Color", ref settings.StatusGainColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.ColorEdit4("Status Lose Color", ref settings.StatusLoseColor, ImGuiColorEditFlags.NoInputs);
+                ImGui.DragFloat("Status Offset", ref settings.StatusOffset, 0.01f, 0, 1);
                 ImGui.Unindent();
             }
 
