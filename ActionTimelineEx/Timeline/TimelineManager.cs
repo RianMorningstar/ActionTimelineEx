@@ -453,8 +453,6 @@ public class TimelineManager
 
             var actionId = *(ushort*)ptr;
 
-            Svc.Chat.Print(actionId.ToString());
-
             var action = Svc.Data.GetExcelSheet<Action>()?.GetRow(actionId);
 
             AddItem(new TimelineItem()
