@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.2.2...v1.3.0) (2023-07-22)
+
+
+### Features
+
+* add a vertical type, add status offset, add reverse option. ([acd0e9f](https://github.com/ArchiDog1998/ActionTimelineEx/commit/acd0e9f0eccd8c0725b59f10d7229db5c5931ad4))
+
+
+### Bug Fixes
+
+* drag speed about offset. ([ba4fe04](https://github.com/ArchiDog1998/ActionTimelineEx/commit/ba4fe04be4696ddd901252a7ecd52f85e630b50b))
+* fixed casting icon. ([efa19b2](https://github.com/ArchiDog1998/ActionTimelineEx/commit/efa19b2a2504d02f5479f7b5ced4b05c7e3c826c))
+
 ## [1.2.2](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.2.1...v1.2.2) (2023-07-19)
 
 
