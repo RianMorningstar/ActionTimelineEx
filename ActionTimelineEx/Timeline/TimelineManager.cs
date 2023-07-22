@@ -453,31 +453,13 @@ public class TimelineManager
 
             var actionId = *(ushort*)ptr;
 
-            string name = string.Empty;
-            ushort icon = 0;
             var action = Svc.Data.GetExcelSheet<Action>()?.GetRow(actionId);
-
-            if(action?.Cast100ms > 0)
-            {
-                name = action?.Name ?? string.Empty;
-                icon = actionId == 4 ? (ushort)118 //Mount
-                        : action?.Icon ?? 0;
-            }
-            else
-            {
-                var item = Svc.Data.GetExcelSheet<Item>()?.GetRow(actionId);
-                if (item?.CastTimes > 0)
-                {
-                    name = item?.Name ?? string.Empty;
-                    icon = item?.Icon ?? 0;
-                }
-            }
-
 
             AddItem(new TimelineItem()
             {
-                Name = name,
-                Icon = icon,
+                Name =  action?.Name ?? string.Empty,
+                Icon =  actionId == 4 ? (ushort)118 //Mount
+                        : action?.Icon ?? 0,
                 StartTime = DateTime.Now,
                 GCDTime = GCD,
                 CastingTime = Player.Object.TotalCastTime - Player.Object.CurrentCastTime,

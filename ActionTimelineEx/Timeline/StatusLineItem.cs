@@ -57,6 +57,7 @@ public class StatusLineItem : ITimelineItem
         if (rightBottom.X <= windowPos.X) return;
 
         leftTop.X = Math.Max(leftTop.X, windowPos.X);
+        leftTop.Y = Math.Max(leftTop.Y, windowPos.Y);
 
         drawList.AddImage(texture.ImGuiHandle, leftTop,
             leftTop + new Vector2(statusHeight / TimelineItem.HeightRatio, statusHeight), Vector2.Zero, Vector2.One);
