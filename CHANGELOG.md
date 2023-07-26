@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.1...v1.3.2) (2023-07-26)
+
+
+### Bug Fixes
+
+* update ECommons. ([20fbc5c](https://github.com/ArchiDog1998/ActionTimelineEx/commit/20fbc5cdb0c587dd236f880bf978295b4e507d6f))
+
 ## [1.3.1](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.0...v1.3.1) (2023-07-22)
 
 
