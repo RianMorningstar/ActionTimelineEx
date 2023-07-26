@@ -248,8 +248,8 @@ public class TimelineManager
             {
                 switch (x.type)
                 {
-                    case (ActionEffectType)14 when recordTarget: // ApplyStatusEffectTarget
-                    case (ActionEffectType)15: // ApplyStatusEffectSource
+                    case ActionEffectType.ApplyStatusEffectTarget when recordTarget:
+                    case ActionEffectType.ApplyStatusEffectSource:
                         var icon = GetStatusIcon(x.value, true);
                         if (icon != 0) statusGain.Add(icon);
                         break;
