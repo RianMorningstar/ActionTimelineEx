@@ -43,8 +43,8 @@ public class DrawingSettings
     public Vector4 StatusLoseColor = ImGuiColors.DalamudRed;
 
     public bool ShowDamageType = true;
-    public Vector4 CriticalColor = ImGuiColors.DalamudOrange;
     public Vector4 DirectColor = ImGuiColors.DalamudYellow;
+    public Vector4 CriticalColor = ImGuiColors.DalamudOrange;
     public Vector4 CriticalDirectColor = ImGuiColors.DPSRed;
 
     public Vector4 BackgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 0.5f);

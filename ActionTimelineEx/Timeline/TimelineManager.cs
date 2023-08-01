@@ -227,15 +227,6 @@ public class TimelineManager
         if (set.Source.ObjectId != Player.Object.ObjectId || !Plugin.Settings.Record) return;
 
         DamageType damage = DamageType.None;
-        if(set.TargetEffects[0][0].type is ActionEffectType.Damage or ActionEffectType.Heal)
-        {
-            var flag = set.TargetEffects[0][0].param0;
-            var hasDirect = (flag & 64) == 64;
-            var hasCritical = (flag & 32) == 32;
-            damage = hasCritical ? (hasDirect ? DamageType.CriticalDirect : DamageType.Critical)
-                : hasDirect ? DamageType.Direct : DamageType.None;
-        }
-
         SortedSet<uint> statusGain = new (), statusLose = new ();
 
         for (int i = 0; i < set.Header.TargetCount; i++)
@@ -243,6 +234,15 @@ public class TimelineManager
             var effect = set.TargetEffects[i];
             var recordTarget = Plugin.Settings.RecordTargetStatus 
                 || effect.TargetID == Player.Object.ObjectId;
+
+            if (effect[0].type is ActionEffectType.Damage or ActionEffectType.Heal)
+            {
+                var flag = effect[0].param0;
+                var hasDirect = (flag & 64) == 64;
+                var hasCritical = (flag & 32) == 32;
+                damage |= hasCritical ? (hasDirect ? DamageType.CriticalDirect : DamageType.Critical)
+                    : hasDirect ? DamageType.Direct : DamageType.None;
+            }
 
             effect.ForEach(x =>
             {
@@ -321,7 +321,10 @@ public class TimelineManager
 
         UpdateEndTime(effectItem.EndTime);
 
-        AddStatusLine(effectItem, set.TargetEffects[0].TargetID);
+        if (set.Header.TargetCount > 0)
+        {
+            AddStatusLine(effectItem, set.TargetEffects[0].TargetID);
+        }
     }
 
     private async void AddStatusLine(TimelineItem? effectItem, ulong targetId)
@@ -385,7 +388,9 @@ public class TimelineManager
 
         try
         {
-            if (entityId != Player.Object?.ObjectId || !Plugin.Settings.Record) return;
+            if (entityId != Player.Object?.ObjectId) return;
+
+            var record = Plugin.Settings.Record && sourceId == Player.Object?.ObjectId;
 
             switch (type)
             {
@@ -393,7 +398,7 @@ public class TimelineManager
                     CancelCasting();
                     break;
 
-                case ActorControlCategory.LoseEffect:
+                case ActorControlCategory.LoseEffect when record:
                     var stack = Player.Object?.StatusList.FirstOrDefault(s => s.StatusId == buffID && s.SourceId == Player.Object.ObjectId)?.StackCount ?? 0;
 
                     var icon = GetStatusIcon((ushort)buffID, false, ++stack);
@@ -422,7 +427,7 @@ public class TimelineManager
                 //    if (icon != 0) _lastItem?.StatusLoseIcon.Add(icon);
                 //    break;
 
-                case ActorControlCategory.GainEffect:
+                case ActorControlCategory.GainEffect when record:
                     icon = GetStatusIcon((ushort)buffID, true);
                     if (icon == 0) break;
                     now = DateTime.Now;

@@ -379,8 +379,8 @@ namespace ActionTimeline.Windows
             if (settings.ShowDamageType)
             {
                 ImGui.Indent();
-                ImGui.ColorEdit4("Critical Color", ref settings.CriticalColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.ColorEdit4("Direct Color", ref settings.DirectColor, ImGuiColorEditFlags.NoInputs);
+                ImGui.ColorEdit4("Critical Color", ref settings.CriticalColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.ColorEdit4("Critical Direct Color", ref settings.CriticalDirectColor, ImGuiColorEditFlags.NoInputs);
                 ImGui.Unindent();
             }
