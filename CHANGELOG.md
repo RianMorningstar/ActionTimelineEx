@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.2...v1.3.3) (2023-08-01)
+
+
+### Bug Fixes
+
+* fixed the direct critical showing. ([9894ea9](https://github.com/ArchiDog1998/ActionTimelineEx/commit/9894ea9e77794c4eb6658d710bee59a287c25ca1))
+
 ## [1.3.2](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.1...v1.3.2) (2023-07-26)
 
 
