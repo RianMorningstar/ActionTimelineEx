@@ -92,9 +92,6 @@ internal static class DrawHelper
             {
                 var tex = Svc.Data.GetIcon(icon, false);
 
-
-                Svc.Data.GetImGuiTexture(tex);
-
                 if(tex == null)
                 {
                     textureColorCache[icon] = uint.MaxValue;
@@ -125,5 +122,12 @@ internal static class DrawHelper
         {
             ImGui.SetTooltip(message);
         }
+    }
+
+    public static bool IsInRect(Vector2 leftTop, Vector2 size)
+    {
+        var pos = ImGui.GetMousePos() - leftTop;
+        if (pos.X < 0 || pos.Y < 0 || pos.X > size.X || pos.Y > size.Y) return false;
+        return true;
     }
 }

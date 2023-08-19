@@ -193,11 +193,13 @@ public class TimelineManager
         _lastItem.CastingTime = MathF.Min(maxTime, _lastItem.CastingTime);
     }
 
-    private uint GetStatusIcon(ushort id, bool isGain, byte stack = byte.MaxValue)
+    private uint GetStatusIcon(ushort id, bool isGain, out string? name, byte stack = byte.MaxValue)
     {
+        name = null;
         if (Plugin.Settings.HideStatusIds.Contains(id)) return 0;
         var status = Svc.Data.GetExcelSheet<Status>()?.GetRow(id);
         if (status == null) return 0;
+        name = status.Name;
 
         ShowedStatusId.Add(id);
         var icon = status.Icon;
@@ -227,7 +229,7 @@ public class TimelineManager
         if (set.Source.ObjectId != Player.Object.ObjectId || !Plugin.Settings.Record) return;
 
         DamageType damage = DamageType.None;
-        SortedSet<uint> statusGain = new (), statusLose = new ();
+        SortedSet<(uint, string?)> statusGain = new (), statusLose = new ();
 
         for (int i = 0; i < set.Header.TargetCount; i++)
         {
@@ -250,14 +252,14 @@ public class TimelineManager
                 {
                     case ActionEffectType.ApplyStatusEffectTarget when recordTarget:
                     case ActionEffectType.ApplyStatusEffectSource:
-                        var icon = GetStatusIcon(x.value, true);
-                        if (icon != 0) statusGain.Add(icon);
+                        var icon = GetStatusIcon(x.value, true, out var name);
+                        if (icon != 0) statusGain.Add((icon, name));
                         break;
 
                     case ActionEffectType.LoseStatusEffectTarget when recordTarget:
                     case ActionEffectType.LoseStatusEffectSource:
-                        icon = GetStatusIcon(x.value, false);
-                        if (icon != 0) statusLose.Add(icon);
+                        icon = GetStatusIcon(x.value, false, out name);
+                        if (icon != 0) statusLose.Add((icon, name));
                         break;
                 }
             });
@@ -338,11 +340,12 @@ public class TimelineManager
         List<StatusLineItem> list = new List<StatusLineItem>(4);
         foreach (var icon in effectItem.StatusGainIcon)
         {
-            if (Plugin.IconStack.TryGetValue(icon, out var stack))
+            if (Plugin.IconStack.TryGetValue(icon.icon, out var stack))
             {
                 var item = new StatusLineItem()
                 {
-                    Icon = icon,
+                    Icon = icon.icon,
+                    Name = icon.name,
                     TimeDuration = 6,
                     Stack = stack,
                     StartTime = effectItem.StartTime,
@@ -401,7 +404,7 @@ public class TimelineManager
                 case ActorControlCategory.LoseEffect when record:
                     var stack = Player.Object?.StatusList.FirstOrDefault(s => s.StatusId == buffID && s.SourceId == Player.Object.ObjectId)?.StackCount ?? 0;
 
-                    var icon = GetStatusIcon((ushort)buffID, false, ++stack);
+                    var icon = GetStatusIcon((ushort)buffID, false, out var name, ++stack);
                     if (icon == 0) break;
                     var now = DateTime.Now;
 
@@ -416,7 +419,7 @@ public class TimelineManager
 
                     if (_lastItem != null && now < _lastTime)
                     {
-                        _lastItem.StatusLoseIcon.Add(icon);
+                        _lastItem.StatusLoseIcon.Add((icon, name));
                     }
                     break;
 
@@ -428,14 +431,14 @@ public class TimelineManager
                 //    break;
 
                 case ActorControlCategory.GainEffect when record:
-                    icon = GetStatusIcon((ushort)buffID, true);
+                    icon = GetStatusIcon((ushort)buffID, true, out name);
                     if (icon == 0) break;
                     now = DateTime.Now;
                     await Task.Delay(10);
 
                     if (_lastItem != null && now < _lastTime + TimeSpan.FromSeconds(0.01))
                     {
-                        _lastItem?.StatusGainIcon.Add(icon);
+                        _lastItem?.StatusGainIcon.Add((icon, name));
                     }
                     break;
 
