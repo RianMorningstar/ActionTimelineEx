@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.3...v1.3.4) (2023-08-19)
+
+
+### Bug Fixes
+
+* add tooltip for every actions and status. ([b698f18](https://github.com/ArchiDog1998/ActionTimelineEx/commit/b698f183f9a97a8a9d5e0197c103d728be026592))
+
 ## [1.3.3](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.2...v1.3.3) (2023-08-01)
 
 
