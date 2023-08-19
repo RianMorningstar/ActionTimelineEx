@@ -1,9 +1,7 @@
-﻿using ActionTimeline;
-using ActionTimeline.Helpers;
+﻿using ActionTimeline.Helpers;
 using ActionTimelineEx.Configurations;
 using ImGuiNET;
 using ImGuiScene;
-using System.Drawing;
 using System.Numerics;
 
 namespace ActionTimelineEx.Timeline;
@@ -11,6 +9,7 @@ namespace ActionTimelineEx.Timeline;
 public class StatusLineItem : ITimelineItem
 {
     public uint Icon { get; set; }
+    public string? Name { get; set; }
     public float TimeDuration { get; set; }
     public DateTime StartTime { get; init; }
 
@@ -53,13 +52,18 @@ public class StatusLineItem : ITimelineItem
         var rightBottom = leftTop + setting.TimeDirectionPerSecond * TimeDuration + setting.RealDownDirection * statusWidth - shrink;
 
         drawList.AddRectFilled(leftTop + shrink, rightBottom,col, rounding, flag);
+        if (!string.IsNullOrEmpty(Name) && DrawHelper.IsInRect(leftTop + shrink, rightBottom - leftTop - shrink)) ImGui.SetTooltip(Name);
+
 
         if (rightBottom.X <= windowPos.X) return;
 
         leftTop.X = Math.Max(leftTop.X, windowPos.X);
         leftTop.Y = Math.Max(leftTop.Y, windowPos.Y);
 
+        var size = new Vector2(statusHeight / TimelineItem.HeightRatio, statusHeight);
         drawList.AddImage(texture.ImGuiHandle, leftTop,
-            leftTop + new Vector2(statusHeight / TimelineItem.HeightRatio, statusHeight), Vector2.Zero, Vector2.One);
+            leftTop + size , Vector2.Zero, Vector2.One);
+        if (!string.IsNullOrEmpty(Name) && DrawHelper.IsInRect(leftTop, size)) ImGui.SetTooltip(Name);
+
     }
 }

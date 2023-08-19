@@ -3,6 +3,8 @@ using ActionTimelineEx.Configurations;
 using Dalamud.Interface;
 using ImGuiNET;
 using ImGuiScene;
+using RotationSolver.Basic.Data;
+using System.Drawing;
 using System.Numerics;
 
 namespace ActionTimelineEx.Timeline;
@@ -30,8 +32,8 @@ public class TimelineItem : ITimelineItem
 
     public DateTime EndTime => StartTime + TimeSpan.FromSeconds(TimeDuration);
 
-    public HashSet<uint> StatusGainIcon { get; } = new(4);
-    public HashSet<uint> StatusLoseIcon { get;  } = new(4);
+    public HashSet<(uint icon, string? name)> StatusGainIcon { get; } = new(4);
+    public HashSet<(uint icon, string? name)> StatusLoseIcon { get;  } = new(4);
 
     public void Draw(DateTime time, Vector2 windowPos, Vector2 windowSize, TimelineLayer icon, DrawingSettings setting)
     {
@@ -70,14 +72,14 @@ public class TimelineItem : ITimelineItem
         }
     }
 
-    private static TextureWrap[] GetTextures(HashSet<uint> iconIds)
+    private static (TextureWrap texture, string? name)[] GetTextures(HashSet<(uint icon, string? name)> iconIds)
     {
-        var result = new List<TextureWrap>(iconIds.Count);
+        var result = new List<(TextureWrap texture, string? name)>(iconIds.Count);
         foreach (var item in iconIds)
         {
-            TextureWrap? texture = DrawHelper.GetTextureFromIconId(item);
+            TextureWrap? texture = DrawHelper.GetTextureFromIconId(item.icon);
             if (texture == null) continue;
-            result.Add(texture);
+            result.Add((texture, item.name));
         }
         return result.ToArray();
     }
@@ -88,7 +90,10 @@ public class TimelineItem : ITimelineItem
         switch (icon)
         {
             case TimelineLayer.Icon:
-                drawList.DrawActionIcon(Icon, IsHq, centerPos - iconSize / 2 * setting.RealDownDirection, iconSize);
+                var pos = centerPos - iconSize / 2 * setting.RealDownDirection;
+                drawList.DrawActionIcon(Icon, IsHq, pos, iconSize);
+                if (!string.IsNullOrEmpty(Name) && DrawHelper.IsInRect(pos, new Vector2( iconSize))) ImGui.SetTooltip(Name);
+
                 return;
 
             case TimelineLayer.Status when setting.ShowStatus:
@@ -109,8 +114,12 @@ public class TimelineItem : ITimelineItem
                 }
                 for (int i = 0; i < gains.Length; i++)
                 {
-                    drawList.AddImage(gains[i].ImGuiHandle, center,
-                        center + new Vector2(statusSize, statusSize * HeightRatio), Vector2.Zero, Vector2.One, color);
+                    var size = new Vector2(statusSize, statusSize * HeightRatio);
+                    drawList.AddImage(gains[i].texture.ImGuiHandle, center,
+                        center + size, Vector2.Zero, Vector2.One, color);
+
+                    var name = gains[i].name;
+                    if (!string.IsNullOrEmpty(name) && DrawHelper.IsInRect(center, size)) ImGui.SetTooltip(name);
 
                     drawList.AddText(UiBuilder.IconFont, statusSize / 2f, center, gainColor, FontAwesomeIcon.Plus.ToIconString());
 
@@ -118,8 +127,12 @@ public class TimelineItem : ITimelineItem
                 }
                 for (int i = 0; i < lose.Length; i++)
                 {
-                    drawList.AddImage(lose[i].ImGuiHandle, center,
-                        center + new Vector2(statusSize, statusSize * HeightRatio), Vector2.Zero, Vector2.One, color);
+                    var size = new Vector2(statusSize, statusSize * HeightRatio);
+                    drawList.AddImage(lose[i].texture.ImGuiHandle, center,
+                        center + size, Vector2.Zero, Vector2.One, color);
+
+                    var name = lose[i].name;
+                    if (!string.IsNullOrEmpty(name) && DrawHelper.IsInRect(center, size)) ImGui.SetTooltip(name);
 
                     drawList.AddText(UiBuilder.IconFont, statusSize / 2f, center, loseColor, FontAwesomeIcon.Ban.ToIconString());
 

@@ -135,7 +135,11 @@ internal static class TimelineWindow
             ImGui.GetWindowDrawList().AddLine(pt, pt + downDirWhole, lineColor, setting.GridStartLineWidth);
         }
 
-        if (!setting.Locked) ImGui.Text(setting.Name);
+        if (!setting.Locked)
+        {
+            ImGui.SetCursorPos(Vector2.Zero);
+            ImGui.Text(setting.Name);
+        }
     }
 
     private static void DrawGrid(Vector2 pos, Vector2 timeDirWhole, Vector2 downDirWhole, DrawingSettings setting)
