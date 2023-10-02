@@ -1,6 +1,7 @@
 ﻿using ActionTimeline.Helpers;
 using ActionTimelineEx.Configurations;
 using Dalamud.Interface;
+using Dalamud.Interface.Internal;
 using ImGuiNET;
 using ImGuiScene;
 using RotationSolver.Basic.Data;
@@ -72,12 +73,12 @@ public class TimelineItem : ITimelineItem
         }
     }
 
-    private static (TextureWrap texture, string? name)[] GetTextures(HashSet<(uint icon, string? name)> iconIds)
+    private static (IDalamudTextureWrap texture, string? name)[] GetTextures(HashSet<(uint icon, string? name)> iconIds)
     {
-        var result = new List<(TextureWrap texture, string? name)>(iconIds.Count);
+        var result = new List<(IDalamudTextureWrap texture, string? name)>(iconIds.Count);
         foreach (var item in iconIds)
         {
-            TextureWrap? texture = DrawHelper.GetTextureFromIconId(item.icon);
+            IDalamudTextureWrap? texture = DrawHelper.GetTextureFromIconId(item.icon);
             if (texture == null) continue;
             result.Add((texture, item.name));
         }

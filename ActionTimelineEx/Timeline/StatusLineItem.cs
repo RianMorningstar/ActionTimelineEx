@@ -1,5 +1,6 @@
 ﻿using ActionTimeline.Helpers;
 using ActionTimelineEx.Configurations;
+using Dalamud.Interface.Internal;
 using ImGuiNET;
 using ImGuiScene;
 using System.Numerics;
@@ -35,7 +36,7 @@ public class StatusLineItem : ITimelineItem
         var flag = ImDrawFlags.RoundCornersAll;
         var rounding = setting.GCDRound;
 
-        TextureWrap? texture = DrawHelper.GetTextureFromIconId(Icon);
+        IDalamudTextureWrap? texture = DrawHelper.GetTextureFromIconId(Icon);
         if (texture == null) return;
 
         var col = DrawHelper.GetTextureAverageColor(Icon);

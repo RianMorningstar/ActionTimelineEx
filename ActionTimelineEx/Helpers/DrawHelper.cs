@@ -1,4 +1,5 @@
-﻿using ECommons.DalamudServices;
+﻿using Dalamud.Interface.Internal;
+using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 using ImGuiScene;
@@ -12,7 +13,7 @@ internal static class DrawHelper
     private static readonly Vector2 _uv1 = new Vector2(96 * 5 / 852f, 0),
     _uv2 = new Vector2((96 * 5 + 144) / 852f, 0.5f);
 
-    private static TextureWrap? _roundTex;
+    private static IDalamudTextureWrap? _roundTex;
     public static void Init()
     {
         var tex = Svc.Data.GetFile<TexFile>("ui/uld/icona_frame_hr1.tex");
@@ -42,7 +43,7 @@ internal static class DrawHelper
 
     public static void DrawActionIcon(this ImDrawListPtr drawList, uint iconId, bool isHq, Vector2 position, float size)
     {
-        TextureWrap? texture = GetTextureFromIconId(iconId, isHq);
+        IDalamudTextureWrap? texture = GetTextureFromIconId(iconId, isHq);
         if (texture == null) return;
 
         var pixPerUnit = size / 82;
@@ -64,7 +65,7 @@ internal static class DrawHelper
         return color;
     }
 
-    public static TextureWrap? GetTextureFromIconId(uint iconId, bool highQuality = false)
+    public static IDalamudTextureWrap? GetTextureFromIconId(uint iconId, bool highQuality = false)
         => ThreadLoadImageHandler.TryGetIconTextureWrap(iconId, highQuality, out var texture) ? texture 
         : ThreadLoadImageHandler.TryGetIconTextureWrap(0, highQuality, out texture) ? texture : null;
 
@@ -90,8 +91,7 @@ internal static class DrawHelper
         {
             while(calculating.TryDequeue(out var icon))
             {
-                var tex = Svc.Data.GetIcon(icon, false);
-
+                var tex = Svc.Data.GetFile<TexFile>($"ui/icon/{icon/1000:D3}000/{icon:D6}.tex");
                 if(tex == null)
                 {
                     textureColorCache[icon] = uint.MaxValue;

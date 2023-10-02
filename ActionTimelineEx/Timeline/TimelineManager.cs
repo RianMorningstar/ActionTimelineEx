@@ -28,7 +28,7 @@ public class TimelineManager
     {
         try
         {
-            SignatureHelper.Initialise(this);
+            Svc.Hook.InitializeFromAttributes(this);
             _onActorControlHook?.Enable();
             _onCastHook?.Enable();
 
@@ -36,7 +36,7 @@ public class TimelineManager
         }
         catch (Exception e)
         {
-            PluginLog.Error("Error initiating hooks: " + e.Message);
+            Svc.Log.Error("Error initiating hooks: " + e.Message);
         }
     }
 
@@ -447,7 +447,7 @@ public class TimelineManager
 
         catch (Exception ex)
         {
-            PluginLog.Warning(ex, "Something wrong with OnActorControl!");
+            Svc.Log.Warning(ex, "Something wrong with OnActorControl!");
         }
     }
 
@@ -477,7 +477,7 @@ public class TimelineManager
         }
         catch(Exception ex)
         {
-            PluginLog.Warning(ex, "Something wrong with OnCast1");
+            Svc.Log.Warning(ex, "Something wrong with OnCast1");
         }
     }
 }
