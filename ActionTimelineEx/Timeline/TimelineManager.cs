@@ -161,7 +161,7 @@ public class TimelineManager
     {
         switch (type)
         {
-            case ActionType.Spell:
+            case ActionType.Action:
                 var action = Svc.Data.GetExcelSheet<Action>()?.GetRow(actionId);
                 if (action == null) break;
 
