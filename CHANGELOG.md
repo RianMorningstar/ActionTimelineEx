@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.5](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.4...v1.3.5) (2023-10-04)
+
+
+### Bug Fixes
+
+* api 9 ([fcb8a35](https://github.com/ArchiDog1998/ActionTimelineEx/commit/fcb8a35266f1783ee3914dafc9ae6a85d53d1258))
+* update submodules. ([6ed31b4](https://github.com/ArchiDog1998/ActionTimelineEx/commit/6ed31b46d8cc8c58e96f2aa1c21822bde18c7254))
+
 ## [1.3.4](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.3...v1.3.4) (2023-08-19)
 
 
