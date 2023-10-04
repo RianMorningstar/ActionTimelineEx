@@ -10,6 +10,7 @@ public class Settings : IPluginConfiguration
     public bool ShowTimelineOnlyInDuty = false;
     public bool ShowTimelineOnlyInCombat = false;
     public bool HideTimelineInCutscene = true;
+    public bool HideTimelineInQuestEvent = true;
     public bool Record = true;
     public bool RecordTargetStatus = true;
     public List<DrawingSettings> TimelineSettings = new();
