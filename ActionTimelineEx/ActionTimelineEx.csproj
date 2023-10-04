@@ -5,7 +5,7 @@
 		<Authors>ArchiTed</Authors>
 		<PlatformTarget>x64</PlatformTarget>
 		<Platforms>AnyCPU</Platforms>
-		<Version>1.3.4</Version>
+		<Version>1.3.5</Version>
 		<Nullable>enable</Nullable>
 		<DalamudLibPath>$(AppData)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -13,7 +13,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DalamudPackager" Version="2.1.11" />
+		<PackageReference Include="DalamudPackager" Version="2.1.12" />
 		<ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
 
 		<Reference Include="Dalamud">

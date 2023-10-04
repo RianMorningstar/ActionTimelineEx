@@ -6,7 +6,7 @@ description: |-
 punchline: Show your actions in real-time.
 repo_url: https://github.com/ArchiDog1998/ActionTimelineEx
 icon_url: https://xivapi.com/i/000000/000073_hr1.png
-dalamud_api_level: 8
+dalamud_api_level: 9
 tags:
   - UI
 category_tags:
