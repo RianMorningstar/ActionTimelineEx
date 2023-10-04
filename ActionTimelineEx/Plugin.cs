@@ -155,6 +155,12 @@ public class Plugin : IDalamudPlugin
             return false;
         }
 
+        if (Settings.HideTimelineInCutscene 
+            && (Svc.Condition[ConditionFlag.WatchingCutscene] || Svc.Condition[ConditionFlag.WatchingCutscene78]))
+        {
+            return false;
+        }
+
         return true;
     }
 

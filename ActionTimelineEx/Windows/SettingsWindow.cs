@@ -120,6 +120,7 @@ namespace ActionTimeline.Windows
             ImGui.Checkbox("Record Data", ref Settings.Record);
             ImGui.Checkbox("Show Only In Duty", ref Settings.ShowTimelineOnlyInDuty);
             ImGui.Checkbox("Show Only In Combat", ref Settings.ShowTimelineOnlyInCombat);
+            ImGui.Checkbox("Hide In Cutscene", ref Settings.HideTimelineInCutscene);
             ImGui.Checkbox("Print Clipping Time On Chat", ref Settings.PrintClipping);
             if (Settings.PrintClipping)
             {
