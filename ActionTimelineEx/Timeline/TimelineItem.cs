@@ -76,11 +76,11 @@ public class TimelineItem : ITimelineItem
     private static (IDalamudTextureWrap texture, string? name)[] GetTextures(HashSet<(uint icon, string? name)> iconIds)
     {
         var result = new List<(IDalamudTextureWrap texture, string? name)>(iconIds.Count);
-        foreach (var item in iconIds)
+        foreach (var (icon, name) in iconIds)
         {
-            IDalamudTextureWrap? texture = DrawHelper.GetTextureFromIconId(item.icon);
+            IDalamudTextureWrap? texture = DrawHelper.GetTextureFromIconId(icon);
             if (texture == null) continue;
-            result.Add((texture, item.name));
+            result.Add((texture, name));
         }
         return result.ToArray();
     }

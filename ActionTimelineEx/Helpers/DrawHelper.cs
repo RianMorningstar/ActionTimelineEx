@@ -65,7 +65,7 @@ internal static class DrawHelper
         return color;
     }
 
-    public static IDalamudTextureWrap? GetTextureFromIconId(uint iconId, bool highQuality = false)
+    public static IDalamudTextureWrap? GetTextureFromIconId(uint iconId, bool highQuality = true)
         => ThreadLoadImageHandler.TryGetIconTextureWrap(iconId, highQuality, out var texture) ? texture 
         : ThreadLoadImageHandler.TryGetIconTextureWrap(0, highQuality, out texture) ? texture : null;
 

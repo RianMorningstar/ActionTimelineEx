@@ -308,7 +308,7 @@ public class TimelineManager
 
         if (effectItem == null) return;
 
-        effectItem.IsHq = set.Header.ActionType == ActionType.Item && set.Header.ActionID > 1000000;
+        effectItem.IsHq = set.Header.ActionType != ActionType.Item || set.Header.ActionID > 1000000;
 
         foreach (var i in statusGain)
         {
