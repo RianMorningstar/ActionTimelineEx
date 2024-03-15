@@ -131,6 +131,7 @@ public class Plugin : IDalamudPlugin
     private void Draw()
     {
         if (Settings == null || !Player.Available) return;
+        if (Svc.GameGui.GameUiHidden) return;
 
         _windowSystem?.Draw();
 
