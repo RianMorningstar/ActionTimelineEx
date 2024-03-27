@@ -13,8 +13,8 @@ public class Settings : IPluginConfiguration
     public bool HideTimelineInQuestEvent = true;
     public bool Record = true;
     public bool RecordTargetStatus = true;
-    public List<DrawingSettings> TimelineSettings = new();
-    public HashSet<ushort> HideStatusIds = new HashSet<ushort>();
+    public List<DrawingSettings> TimelineSettings = [];
+    public HashSet<ushort> HideStatusIds = [];
     public bool PrintClipping = false;
     public int PrintClippingMin = 150;
     public int PrintClippingMax = 2000;

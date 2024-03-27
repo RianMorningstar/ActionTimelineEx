@@ -3,9 +3,6 @@ using ActionTimelineEx.Configurations;
 using Dalamud.Interface;
 using Dalamud.Interface.Internal;
 using ImGuiNET;
-using ImGuiScene;
-using RotationSolver.Basic.Data;
-using System.Drawing;
 using System.Numerics;
 
 namespace ActionTimelineEx.Timeline;
@@ -82,7 +79,7 @@ public class TimelineItem : ITimelineItem
             if (texture == null) continue;
             result.Add((texture, name));
         }
-        return result.ToArray();
+        return [.. result];
     }
 
     public const float HeightRatio = 4 / 3f;
@@ -202,7 +199,7 @@ public class TimelineItem : ITimelineItem
         //Name
     }
 
-    private Vector2 MinX(Vector2 pos, Vector2 minPos)
+    private static Vector2 MinX(Vector2 pos, Vector2 minPos)
     {
         return new Vector2(MathF.Max(pos.X, minPos.X), MathF.Max(pos.Y, minPos.Y));
     }

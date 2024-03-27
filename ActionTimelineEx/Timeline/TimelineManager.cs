@@ -15,7 +15,7 @@ using Status = Lumina.Excel.GeneratedSheets.Status;
 
 namespace ActionTimeline.Timeline;
 
-public class TimelineManager
+public class TimelineManager : IDisposable
 {
     internal const byte GCDCooldownGroup = 58;
 
@@ -78,11 +78,11 @@ public class TimelineManager
     [Signature("40 55 56 48 81 EC ?? ?? ?? ?? 48 8B EA", DetourName = nameof(OnCast))]
     private readonly Hook<OnCastDelegate>? _onCastHook = null;
 
-    public static SortedSet<ushort> ShowedStatusId { get; } = new SortedSet<ushort>();
+    public static SortedSet<ushort> ShowedStatusId { get; } = [];
 
     public DateTime EndTime { get; private set; } = DateTime.Now;
-    private static int kMaxItemCount = 2048;
-    private readonly Queue<TimelineItem> _items = new Queue<TimelineItem>(kMaxItemCount);
+    private static readonly int kMaxItemCount = 2048;
+    private readonly Queue<TimelineItem> _items = new(kMaxItemCount);
     private TimelineItem? _lastItem = null;
 
     private DateTime _lastTime = DateTime.MinValue;
@@ -112,8 +112,8 @@ public class TimelineManager
         return GetItems(_items, time, out lastEndTime);
     }
 
-    private static int kMaxStatusCount = 256;
-    private readonly Queue<StatusLineItem> _statusItems = new Queue<StatusLineItem>(kMaxStatusCount);
+    private static readonly int kMaxStatusCount = 256;
+    private readonly Queue<StatusLineItem> _statusItems = new(kMaxStatusCount);
     private void AddItem(StatusLineItem item)
     {
         if (item == null) return;
@@ -129,7 +129,7 @@ public class TimelineManager
         return GetItems(_statusItems, time, out lastEndTime);
     }
 
-    private List<T> GetItems<T>(IEnumerable<T> items, DateTime time, out DateTime lastEndTime) where T : ITimelineItem 
+    private static List<T> GetItems<T>(IEnumerable<T> items, DateTime time, out DateTime lastEndTime) where T : ITimelineItem 
     {
         var result = new List<T>();
         lastEndTime = DateTime.Now;
@@ -153,7 +153,7 @@ public class TimelineManager
         get
         {
             var cdGrp = ActionManager.Instance()->GetRecastGroupDetail(GCDCooldownGroup - 1);
-            return cdGrp->Total - cdGrp->Elapsed;
+            return cdGrp->Total;
         }
     }
 
@@ -193,7 +193,7 @@ public class TimelineManager
         _lastItem.CastingTime = MathF.Min(maxTime, _lastItem.CastingTime);
     }
 
-    private uint GetStatusIcon(ushort id, bool isGain, out string? name, byte stack = byte.MaxValue)
+    private static uint GetStatusIcon(ushort id, bool isGain, out string? name, byte stack = byte.MaxValue)
     {
         name = null;
         if (Plugin.Settings.HideStatusIds.Contains(id)) return 0;
@@ -229,7 +229,7 @@ public class TimelineManager
         if (set.Source.ObjectId != Player.Object.ObjectId || !Plugin.Settings.Record) return;
 
         DamageType damage = DamageType.None;
-        SortedSet<(uint, string?)> statusGain = new (), statusLose = new ();
+        SortedSet<(uint, string?)> statusGain = [], statusLose = [];
 
         for (int i = 0; i < set.Header.TargetCount; i++)
         {
@@ -335,9 +335,9 @@ public class TimelineManager
 
         await Task.Delay(50);
 
-        if (!effectItem.StatusGainIcon.Any()) return;
+        if (effectItem.StatusGainIcon.Count == 0) return;
 
-        List<StatusLineItem> list = new List<StatusLineItem>(4);
+        List<StatusLineItem> list = new(4);
         foreach (var icon in effectItem.StatusGainIcon)
         {
             if (Plugin.IconStack.TryGetValue(icon.icon, out var stack))

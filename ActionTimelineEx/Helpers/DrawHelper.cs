@@ -2,7 +2,6 @@
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
-using ImGuiScene;
 using Lumina.Data.Files;
 using System.Numerics;
 
@@ -10,8 +9,8 @@ namespace ActionTimeline.Helpers;
 
 internal static class DrawHelper
 {
-    private static readonly Vector2 _uv1 = new Vector2(96 * 5 / 852f, 0),
-    _uv2 = new Vector2((96 * 5 + 144) / 852f, 0.5f);
+    private static readonly Vector2 _uv1 = new (96 * 5 / 852f, 0),
+    _uv2 = new ((96 * 5 + 144) / 852f, 0.5f);
 
     private static IDalamudTextureWrap? _roundTex;
     public static void Init()
@@ -69,8 +68,8 @@ internal static class DrawHelper
         => ThreadLoadImageHandler.TryGetIconTextureWrap(iconId, highQuality, out var texture) ? texture 
         : ThreadLoadImageHandler.TryGetIconTextureWrap(0, highQuality, out texture) ? texture : null;
 
-    private static Dictionary<uint, uint> textureColorCache = new ();
-    private static Queue<uint> calculating = new ();
+    private static readonly Dictionary<uint, uint> textureColorCache = [];
+    private static readonly Queue<uint> calculating = new ();
     public static uint GetTextureAverageColor(uint iconId)
     {
         if (textureColorCache.TryGetValue(iconId, out var color)) return color;
