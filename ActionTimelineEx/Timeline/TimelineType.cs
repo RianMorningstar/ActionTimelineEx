@@ -6,6 +6,7 @@ public enum TimelineItemType : byte
     OGCD,
     AutoAttack,
 }
+
 public enum TimelineItemState : byte
 {
     Casting,
