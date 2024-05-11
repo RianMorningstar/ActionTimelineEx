@@ -12,16 +12,33 @@ using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System.Numerics;
 using XIVConfigUI;
+using XIVConfigUI.SearchableConfigs;
 
 namespace ActionTimeline.Windows;
 
 public class SettingsWindow : ConfigWindow
 {
+    public override IEnumerable<Searchable> Searchables
+    {
+        get
+        {
+            if(ActiveItem is TimelineItem item)
+            {
+                return [..base.Searchables, ..item.Collection];
+            }
+            else
+            {
+                return base.Searchables;
+            }
+        }
+    }
+
     internal class TimelineItem(DrawingSettings setting, System.Action clearItems) : ConfigWindowItem
     {
-
-        private readonly SearchableCollection collection = new(setting);
+        internal readonly SearchableCollection Collection = new(setting);
         private CollapsingHeaderGroup? _extraHeader;
+
+        public override string Name => setting.Name;
 
         public override bool GetIcon(out IDalamudTextureWrap texture)
         {
@@ -38,11 +55,11 @@ public class SettingsWindow : ConfigWindow
 
             _extraHeader ??= new(new()
             {
-                { () =>GroupItem.General.Local(), () => collection.DrawItems((int)GroupItem.General) },
-                { () =>GroupItem.Icons.Local(), () => collection.DrawItems((int)GroupItem.Icons) },
-                { () =>GroupItem.Bar.Local(), () => collection.DrawItems((int)GroupItem.Bar) },
-                { () =>GroupItem.Grid.Local(), () => collection.DrawItems((int)GroupItem.Grid) },
-                { () =>GroupItem.GcdClipping.Local(), () => collection.DrawItems((int)GroupItem.GcdClipping) },
+                { () =>GroupItem.General.Local(), () => Collection.DrawItems((int)GroupItem.General) },
+                { () =>GroupItem.Icons.Local(), () => Collection.DrawItems((int)GroupItem.Icons) },
+                { () =>GroupItem.Bar.Local(), () => Collection.DrawItems((int)GroupItem.Bar) },
+                { () =>GroupItem.Grid.Local(), () => Collection.DrawItems((int)GroupItem.Grid) },
+                { () =>GroupItem.GcdClipping.Local(), () => Collection.DrawItems((int)GroupItem.GcdClipping) },
             });
             _extraHeader?.Draw();
         }
@@ -57,6 +74,9 @@ public class SettingsWindow : ConfigWindow
             bool result = false;
 
             if (isLast) ImGui.PushStyleColor(ImGuiCol.Text, isTime ? ImGuiColors.HealerGreen : ImGuiColors.DPSRed);
+
+            ImGui.Text(UiString.RemoveDesc.Local());
+            ImGui.SameLine();
 
             ImGui.PushFont(UiBuilder.IconFont);
             if (ImGui.Button($"{(isLast ? FontAwesomeIcon.Check : FontAwesomeIcon.Ban).ToIconString()}##Remove{name}"))
@@ -86,12 +106,14 @@ public class SettingsWindow : ConfigWindow
             return result;
         }
     }
-    private float _scale => ImGuiHelpers.GlobalScale;
+    private static float _scale => ImGuiHelpers.GlobalScale;
     public override SearchableCollection Collection { get; } = new(Settings);
     protected override string Kofi => "B0B0IN5DX";
 
     protected override string DiscordServerID => "1228953752585637908";
     protected override string DiscordServerInviteLink => "9D4E8eZW5g";
+
+    protected override string Crowdin => "actiontimelineex";
     private static Settings Settings => Plugin.Settings;
     public SettingsWindow() : base(typeof(SettingsWindow).Assembly.GetName())
     {
@@ -130,12 +152,13 @@ public class SettingsWindow : ConfigWindow
 
     private void DrawSetting()
     {
-        if (ImGui.Button("Add One Timeline"))
+        if (ImGui.Button(UiString.AddOne.Local()))
         {
             Settings.TimelineSettings.Add(new DrawingSettings()
             {
                 Name = (Settings.TimelineSettings.Count + 1).ToString(),
             });
+            ClearItems();
         }
 
         Collection.DrawItems(0);

@@ -20,4 +20,10 @@ internal enum UiString
 
     [Description("Click to remove this timeline.")]
     Remove,
+
+    [Description("Add One Timeline")]
+    AddOne,
+
+    [Description("Remove this Item:")]
+    RemoveDesc,
 }

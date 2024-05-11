@@ -47,6 +47,7 @@ public class DrawingSettings
     [UI("Size per second", (int)GroupItem.General, Description = "This is the width of every second drawn on the window.")]
     public float SizePerSecond { get; set; } = 60;
 
+    [Range(0, 5, ConfigUnitType.Seconds, 0.1f)]
     [UI("Offset Time", (int)GroupItem.General, Description = "If your Is Rotation is on, this means the Offset time of rotation, or this is the advanced time about action using.")]
     public int TimeOffsetSetting { get; set; } = 2;
 

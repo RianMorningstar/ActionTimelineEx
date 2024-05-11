@@ -1,6 +1,7 @@
 ﻿using ActionTimeline.Helpers;
 using ActionTimeline.Timeline;
 using ActionTimeline.Windows;
+using ActionTimelineEx.Configurations;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
@@ -66,10 +67,11 @@ public class Plugin : IDalamudPlugin
     public Plugin(DalamudPluginInterface pluginInterface)
     {
         ECommonsMain.Init(pluginInterface, this);
-        XIVConfigUIMain.Init(pluginInterface, "/atlConfig");
+        XIVConfigUIMain.Init(pluginInterface, "/atlConfig", "Opens the ActionTimeline configuration window.", PluginCommand, typeof(Settings), typeof(DrawingSettings), typeof(GroupItem), typeof(UiString));
 
         Svc.PluginInterface.UiBuilder.Draw += Draw;
         Svc.PluginInterface.UiBuilder.OpenConfigUi += OpenConfigUi;
+        Svc.PluginInterface.UiBuilder.OpenMainUi += OpenConfigUi;
 
         TimelineManager.Initialize();
         DrawHelper.Init();
@@ -99,12 +101,12 @@ public class Plugin : IDalamudPlugin
 
         Svc.PluginInterface.UiBuilder.Draw -= Draw;
         Svc.PluginInterface.UiBuilder.OpenConfigUi -= OpenConfigUi;
+        Svc.PluginInterface.UiBuilder.OpenMainUi -= OpenConfigUi;
         Svc.PluginInterface.UiBuilder.RebuildFonts();
         GC.SuppressFinalize(this);
     }
 
-    [Cmd("/atl", "Opens the ActionTimeline configuration window.")]
-    public static void PluginCommand(string _, string _1)
+    public static void PluginCommand(string _)
     {
         _settingsWindow.Toggle();
     }
