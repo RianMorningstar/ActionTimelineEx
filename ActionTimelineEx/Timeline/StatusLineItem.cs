@@ -2,7 +2,6 @@
 using ActionTimelineEx.Configurations;
 using Dalamud.Interface.Internal;
 using ImGuiNET;
-using ImGuiScene;
 using System.Numerics;
 
 namespace ActionTimelineEx.Timeline;
