@@ -6,7 +6,6 @@ using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using ECommons;
-using ECommons.Commands;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using XIVConfigUI;
