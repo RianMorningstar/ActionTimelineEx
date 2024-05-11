@@ -15,6 +15,7 @@
 	<ItemGroup>
 		<PackageReference Include="DalamudPackager" Version="2.1.12" />
 		<ProjectReference Include="..\ECommons\ECommons\ECommons.csproj" />
+		<ProjectReference Include="..\XIVConfigUI\XIVConfigUI\XIVConfigUI.csproj" />
 
 		<Reference Include="Dalamud">
 			<HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
@@ -44,5 +45,9 @@
 			<HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Localization\" />
 	</ItemGroup>
 </Project>

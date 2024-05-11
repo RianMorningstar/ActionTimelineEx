@@ -8,6 +8,7 @@ using ECommons;
 using ECommons.Commands;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
+using XIVConfigUI;
 
 namespace ActionTimeline;
 
@@ -57,10 +58,6 @@ public class Plugin : IDalamudPlugin
 
         { 12699, 1 }, //SMN 2703.
     };
-    public string Name => "ActionTimelineEx";
-
-    public static string Version { get; private set; } = "";
-
     public static Settings Settings { get; private set; } = null!;
 
     private static WindowSystem _windowSystem = null!;
@@ -69,6 +66,7 @@ public class Plugin : IDalamudPlugin
     public Plugin(DalamudPluginInterface pluginInterface)
     {
         ECommonsMain.Init(pluginInterface, this);
+        XIVConfigUIMain.Init(pluginInterface, "/atlConfig");
 
         Svc.PluginInterface.UiBuilder.Draw += Draw;
         Svc.PluginInterface.UiBuilder.OpenConfigUi += OpenConfigUi;
@@ -90,37 +88,28 @@ public class Plugin : IDalamudPlugin
 
     public void Dispose()
     {
-        Dispose(true);
+        Settings.Save();
+
+        TimelineManager.Instance?.Dispose();
+
+        _windowSystem.RemoveAllWindows();
+
+        XIVConfigUIMain.Dispose();
+        ECommonsMain.Dispose();
+
+        Svc.PluginInterface.UiBuilder.Draw -= Draw;
+        Svc.PluginInterface.UiBuilder.OpenConfigUi -= OpenConfigUi;
+        Svc.PluginInterface.UiBuilder.RebuildFonts();
         GC.SuppressFinalize(this);
     }
 
     [Cmd("/atl", "Opens the ActionTimeline configuration window.")]
-    [SubCmd("lock", "Lock all windows")]
-    [SubCmd("unlock", "Unlock all windows")]
-    private void PluginCommand(string command, string arguments)
+    public static void PluginCommand(string _, string _1)
     {
-        var sub = arguments.Split(' ').FirstOrDefault();
-        if(string.Equals("unlock", sub, StringComparison.OrdinalIgnoreCase))
-        {
-            foreach (var setting in Settings.TimelineSettings)
-            {
-                setting.Locked = false;
-            }
-        }
-        else if (string.Equals("lock", sub, StringComparison.OrdinalIgnoreCase))
-        {
-            foreach (var setting in Settings.TimelineSettings)
-            {
-                setting.Locked = true;
-            }
-        }
-        else
-        {
-            _settingsWindow.IsOpen = !_settingsWindow.IsOpen;
-        }
+        _settingsWindow.Toggle();
     }
 
-    private void CreateWindows()
+    private static void CreateWindows()
     {
         _settingsWindow = new SettingsWindow();
 
@@ -144,7 +133,7 @@ public class Plugin : IDalamudPlugin
         }
     }
 
-    private bool ShowTimeline()
+    private static bool ShowTimeline()
     {
         if (Settings.ShowTimelineOnlyInCombat && !Svc.Condition[ConditionFlag.InCombat])
         {
@@ -176,22 +165,5 @@ public class Plugin : IDalamudPlugin
     public static void OpenConfigUi()
     {
         _settingsWindow.IsOpen = true;
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposing) return;
-
-        Settings.Save();
-
-        TimelineManager.Instance?.Dispose();
-
-        _windowSystem.RemoveAllWindows();
-
-        ECommonsMain.Dispose();
-
-        Svc.PluginInterface.UiBuilder.Draw -= Draw;
-        Svc.PluginInterface.UiBuilder.OpenConfigUi -= OpenConfigUi;
-        Svc.PluginInterface.UiBuilder.RebuildFonts();
     }
 }

@@ -39,24 +39,9 @@ public class TimelineManager : IDisposable
         }
     }
 
-    ~TimelineManager()
-    {
-        Dispose(false);
-    }
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected void Dispose(bool disposing)
-    {
-        if (!disposing)
-        {
-            return;
-        }
-
         _items.Clear();
 
         ActionEffect.ActionEffectEvent -= ActionFromSelf;
@@ -65,8 +50,9 @@ public class TimelineManager : IDisposable
         _onActorControlHook?.Dispose();
 
         _onCastHook?.Disable();
-        _onCastHook?.Dispose();
+        _onCastHook?.Dispose(); GC.SuppressFinalize(this);
     }
+
     #endregion
 
     private delegate void OnActorControlDelegate(uint entityId, ActorControlCategory type, uint buffID, uint direct, uint actionId, uint sourceId, uint arg4, uint arg5, ulong targetId, byte a10);
@@ -179,7 +165,7 @@ public class TimelineManager : IDisposable
                 return item?.CastTimes > 0 ? TimelineItemType.GCD : TimelineItemType.OGCD;
         }
 
-        return TimelineItemType.GCD;
+        return TimelineItemType.OGCD;
     }
 
     private void CancelCasting()
@@ -267,13 +253,13 @@ public class TimelineManager : IDisposable
         var now = DateTime.Now;
         var type = GetActionType(set.Header.ActionID, set.Header.ActionType);
 
-        if (Plugin.Settings.PrintClipping && type == TimelineItemType.GCD)
+        if (Plugin.Settings.SayClipping && type == TimelineItemType.GCD)
         {
             var lastGcd = _items.LastOrDefault(i => i.Type == TimelineItemType.GCD);
             if(lastGcd != null)
             {
                 var time = (int)(now - lastGcd.EndTime).TotalMilliseconds;
-                if(time >= Plugin.Settings.PrintClippingMin &&  time <= Plugin.Settings.PrintClippingMax)
+                if(time >= Plugin.Settings.ClippintTime.X &&  time <= Plugin.Settings.ClippintTime.Y)
                 {
                     Svc.Chat.Print($"Clipping: {time}ms ({lastGcd.Name} - {set.Name})");
                 }

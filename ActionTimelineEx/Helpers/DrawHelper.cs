@@ -115,14 +115,6 @@ internal static class DrawHelper
         });
     }
 
-    public static void SetTooltip(string message)
-    {
-        if (ImGui.IsItemHovered())
-        {
-            ImGui.SetTooltip(message);
-        }
-    }
-
     public static bool IsInRect(Vector2 leftTop, Vector2 size)
     {
         var pos = ImGui.GetMousePos() - leftTop;
