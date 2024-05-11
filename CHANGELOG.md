@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.7](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.6...v1.3.7) (2024-05-11)
+
+
+### Bug Fixes
+
+* repo name. ([7f4476c](https://github.com/ArchiDog1998/ActionTimelineEx/commit/7f4476c9d28c4a32f83c9940729b7dca3537e70c))
+* work flow repo. ([61d6922](https://github.com/ArchiDog1998/ActionTimelineEx/commit/61d6922be1bbb5e4ad25d09dac662913cb9b338b))
+
 ## [1.3.6](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.5...v1.3.6) (2024-03-27)
 
 
