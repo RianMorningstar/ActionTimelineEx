@@ -10,7 +10,6 @@ internal enum UiString
 
     [Description("Don't record these statuses")]
     NotStatues,
-    Help,
 
     [Description("Please wait for a second.")]
     Wait,

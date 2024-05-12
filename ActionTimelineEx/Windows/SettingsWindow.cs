@@ -10,6 +10,7 @@ using ECommons.Commands;
 using ECommons.DalamudServices;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
+using System.ComponentModel;
 using System.Numerics;
 using XIVConfigUI;
 using XIVConfigUI.SearchableConfigs;
@@ -106,6 +107,36 @@ public class SettingsWindow : ConfigWindow
             return result;
         }
     }
+
+    [Description("AddOne")]
+    public class AddOne(System.Action action) : ConfigWindowItem
+    {
+        public override string Description => UiString.AddOne.Local();
+
+        public override bool GetIcon(out IDalamudTextureWrap texture)
+        {
+            return ImageLoader.GetTexture(51, out texture);
+        }
+        public override bool OnClick()
+        {
+            Settings.TimelineSettings.Add(new DrawingSettings()
+            {
+                Name = (Settings.TimelineSettings.Count + 1).ToString(),
+            });
+            action();
+            return true;
+        }
+    }
+
+    [Description("ChangeLog")]
+    public class ChangeLog : ConfigWindowItem
+    {
+        public override bool GetIcon(out IDalamudTextureWrap texture)
+        {
+            return ImageLoader.GetTexture(80, out texture);
+        }
+        public override string Link => $"https://github.com/{XIVConfigUIMain.UserName}/{XIVConfigUIMain.RepoName}/blob/main/CHANGELOG.md";
+    }
     private static float _scale => ImGuiHelpers.GlobalScale;
     public override SearchableCollection Collection { get; } = new(Settings);
     protected override string Kofi => "B0B0IN5DX";
@@ -141,9 +172,7 @@ public class SettingsWindow : ConfigWindow
             { () => UiString.Setting.Local(),DrawSetting},
             { () => UiString.ShowedStatuses.Local(), DrawShowedStatues},
             { () => UiString.NotStatues.Local(), DrawGeneralSetting},
-            { () => UiString.Help.Local(), () => CmdManager.DrawHelp() },
         });
-
 
         base.DrawAbout();
 
@@ -152,21 +181,17 @@ public class SettingsWindow : ConfigWindow
 
     private void DrawSetting()
     {
-        if (ImGui.Button(UiString.AddOne.Local()))
-        {
-            Settings.TimelineSettings.Add(new DrawingSettings()
-            {
-                Name = (Settings.TimelineSettings.Count + 1).ToString(),
-            });
-            ClearItems();
-        }
-
         Collection.DrawItems(0);
     }
 
     protected override ConfigWindowItem[] GetItems()
     {
-        return [..Settings.TimelineSettings.Select(i => new TimelineItem(i, ClearItems))];
+        return 
+        [
+            ..Settings.TimelineSettings.Select(i => new TimelineItem(i, ClearItems)),
+            new AddOne(ClearItems),
+            new ChangeLog(),
+        ];
     }
 
     private void DrawShowedStatues()

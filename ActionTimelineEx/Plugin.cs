@@ -66,7 +66,7 @@ public class Plugin : IDalamudPlugin
     public Plugin(DalamudPluginInterface pluginInterface)
     {
         ECommonsMain.Init(pluginInterface, this);
-        XIVConfigUIMain.Init(pluginInterface, "/atlConfig", "Opens the ActionTimeline configuration window.", PluginCommand, typeof(Settings), typeof(DrawingSettings), typeof(GroupItem), typeof(UiString));
+        XIVConfigUIMain.Init(pluginInterface, "/atl", "Opens the ActionTimeline configuration window.", PluginCommand, typeof(Settings), typeof(DrawingSettings), typeof(GroupItem), typeof(UiString));
 
         Svc.PluginInterface.UiBuilder.Draw += Draw;
         Svc.PluginInterface.UiBuilder.OpenConfigUi += OpenConfigUi;

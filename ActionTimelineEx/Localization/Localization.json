@@ -78,7 +78,6 @@
   "ActionTimelineEx.Configurations.UiString.Setting": "Setting",
   "ActionTimelineEx.Configurations.UiString.ShowedStatuses": "Showed Statuses",
   "ActionTimelineEx.Configurations.UiString.NotStatues": "Don't record these statuses",
-  "ActionTimelineEx.Configurations.UiString.Help": "Help",
   "ActionTimelineEx.Configurations.UiString.Wait": "Please wait for a second.",
   "ActionTimelineEx.Configurations.UiString.Confirm": "Are you sure to remove this timeline?",
   "ActionTimelineEx.Configurations.UiString.Remove": "Click to remove this timeline.",
@@ -100,5 +99,7 @@
   "ActionTimeline.Windows.SettingsWindow+TimelineItem": "ActionTimeline.Windows.SettingsWindow+TimelineItem",
   "ActionTimelineEx.Description": "Configurable timeline display of all the actions you use.",
   "ActionTimelineEx.Configurations.UiString.AddOne": "Add One Timeline",
-  "ActionTimelineEx.Configurations.UiString.RemoveDesc": "Remove this Item:"
+  "ActionTimelineEx.Configurations.UiString.RemoveDesc": "Remove this Item:",
+  "ActionTimeline.Windows.SettingsWindow+AddOne": "AddOne",
+  "ActionTimeline.Windows.SettingsWindow+ChangeLog": "ChangeLog"
 }
