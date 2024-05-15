@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.8](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.7...v1.3.8) (2024-05-12)
+
+
+### Bug Fixes
+
+* change the ui. ([8c61c6b](https://github.com/ArchiDog1998/ActionTimelineEx/commit/8c61c6b8d173d024381b832cb61c4b5374f983b8))
+
 ## [1.3.7](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.6...v1.3.7) (2024-05-11)
 
 
