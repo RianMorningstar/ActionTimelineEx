@@ -32,6 +32,8 @@ public class Settings : IPluginConfiguration
     [UI("Record Target Status")]
     public bool RecordTargetStatus { get; set; } = true;
 
+    [UI("Show the donate link.")]
+    public bool ShowDonate { get; set; } = true;
 
     public List<DrawingSettings> TimelineSettings = [];
     public HashSet<ushort> HideStatusIds { get; set; } = [];

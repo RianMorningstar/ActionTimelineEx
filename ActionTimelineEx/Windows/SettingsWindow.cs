@@ -137,24 +137,22 @@ public class SettingsWindow : ConfigWindow
         }
         public override string Link => $"https://github.com/{XIVConfigUIMain.UserName}/{XIVConfigUIMain.RepoName}/blob/main/CHANGELOG.md";
     }
+
     private static float _scale => ImGuiHelpers.GlobalScale;
     public override SearchableCollection Collection { get; } = new(Settings);
+    protected override bool ShowDonate => Settings.ShowDonate;
     protected override string Kofi => "B0B0IN5DX";
-
-    protected override string DiscordServerID => "1228953752585637908";
-    protected override string DiscordServerInviteLink => "9D4E8eZW5g";
-
     protected override string Crowdin => "actiontimelineex";
     private static Settings Settings => Plugin.Settings;
     public SettingsWindow() : base(typeof(SettingsWindow).Assembly.GetName())
     {
-        Size = new Vector2(300, 490f);
+        Size = new Vector2(740, 490f);
         RespectCloseHotkey = true;
 
         ImGuiHelper.GetFont(FontSize.Third, GameFontFamily.Axis);
-        ImGuiHelper.GetFont(FontSize.Forth, GameFontFamily.Axis);
+        ImGuiHelper.GetFont(FontSize.Fourth, GameFontFamily.Axis);
         ImGuiHelper.GetFont(FontSize.Fifth, GameFontFamily.Axis);
-        ImGuiHelper.GetFont(FontSize.Forth, GameFontFamily.MiedingerMid);
+        ImGuiHelper.GetFont(FontSize.Fourth, GameFontFamily.MiedingerMid);
         ImGuiHelper.GetFont(FontSize.Fifth, GameFontFamily.MiedingerMid);
     }
 

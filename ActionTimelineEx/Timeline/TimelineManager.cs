@@ -39,7 +39,6 @@ public class TimelineManager : IDisposable
         }
     }
 
-
     public void Dispose()
     {
         _items.Clear();
@@ -462,7 +461,7 @@ public class TimelineManager : IDisposable
         }
         catch(Exception ex)
         {
-            Svc.Log.Warning(ex, "Something wrong with OnCast1");
+            Svc.Log.Warning(ex, "Something wrong with OnCast!");
         }
     }
 }
