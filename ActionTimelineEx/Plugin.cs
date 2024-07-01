@@ -63,7 +63,7 @@ public class Plugin : IDalamudPlugin
     private static WindowSystem _windowSystem = null!;
     private static SettingsWindow _settingsWindow = null!;
 
-    public Plugin(DalamudPluginInterface pluginInterface)
+    public Plugin(IDalamudPluginInterface pluginInterface)
     {
         ECommonsMain.Init(pluginInterface, this);
         XIVConfigUIMain.Init(pluginInterface, "/atle", "Opens the ActionTimelineEx configuration window.", PluginCommand, typeof(Settings), typeof(DrawingSettings), typeof(GroupItem), typeof(UiString));
@@ -101,7 +101,6 @@ public class Plugin : IDalamudPlugin
         Svc.PluginInterface.UiBuilder.Draw -= Draw;
         Svc.PluginInterface.UiBuilder.OpenConfigUi -= OpenConfigUi;
         Svc.PluginInterface.UiBuilder.OpenMainUi -= OpenConfigUi;
-        Svc.PluginInterface.UiBuilder.RebuildFonts();
         GC.SuppressFinalize(this);
     }
 

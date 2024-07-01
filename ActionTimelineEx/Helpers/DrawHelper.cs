@@ -1,4 +1,4 @@
-﻿using Dalamud.Interface.Internal;
+﻿using Dalamud.Interface.Textures.TextureWraps;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
@@ -26,7 +26,7 @@ internal static class DrawHelper
             array[i + 3] = imageData[i + 3];
         }
 
-        _roundTex = Svc.PluginInterface.UiBuilder.LoadImageRaw(array, tex!.Header.Width, tex!.Header.Height, 4);
+        _roundTex = Svc.Texture.CreateFromRaw(new Dalamud.Interface.Textures.RawImageSpecification(tex!.Header.Width, tex!.Header.Height, 4), array);
     }
 
     public static void DrawDamage(this ImDrawListPtr drawList, Vector2 position, float size, uint  lightCol)

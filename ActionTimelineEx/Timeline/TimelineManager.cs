@@ -208,9 +208,9 @@ public class TimelineManager : IDisposable
         if (!Player.Available) return;
 
 #if DEBUG
-        //Svc.Chat.Print($"Id: {set.Header.ActionID}; {set.Header.ActionType}; Source: {set.Source.ObjectId}");
+        //Svc.Chat.Print($"Id: {set.Header.ActionID}; {set.Header.ActionType}; Source: {set.Source.EntityId}");
 #endif 
-        if (set.Source.ObjectId != Player.Object.ObjectId || !Plugin.Settings.Record) return;
+        if (set.Source.EntityId != Player.Object.EntityId || !Plugin.Settings.Record) return;
 
         DamageType damage = DamageType.None;
         SortedSet<(uint, string?)> statusGain = [], statusLose = [];
@@ -219,7 +219,7 @@ public class TimelineManager : IDisposable
         {
             var effect = set.TargetEffects[i];
             var recordTarget = Plugin.Settings.RecordTargetStatus 
-                || effect.TargetID == Player.Object.ObjectId;
+                || effect.TargetID == Player.Object.EntityId;
 
             if (effect[0].type is ActionEffectType.Damage or ActionEffectType.Heal)
             {
@@ -339,10 +339,10 @@ public class TimelineManager : IDisposable
             }
         }
 
-        var statusList = Player.Object.StatusList.Where(s => s.SourceId == Player.Object.ObjectId);
-        if (Svc.Objects.SearchById(targetId) is BattleChara b)
+        var statusList = Player.Object.StatusList.Where(s => s.SourceId == Player.Object.EntityId);
+        if (Svc.Objects.SearchById(targetId) is IBattleChara b)
         {
-            statusList = statusList.Union(b.StatusList.Where(s => s.SourceId == Player.Object.ObjectId));
+            statusList = statusList.Union(b.StatusList.Where(s => s.SourceId == Player.Object.EntityId));
         }
 
         await Task.Delay(950);
@@ -375,9 +375,9 @@ public class TimelineManager : IDisposable
 
         try
         {
-            if (entityId != Player.Object?.ObjectId) return;
+            if (entityId != Player.Object?.EntityId) return;
 
-            var record = Plugin.Settings.Record && sourceId == Player.Object?.ObjectId;
+            var record = Plugin.Settings.Record && sourceId == Player.Object?.EntityId;
 
             switch (type)
             {
@@ -386,7 +386,7 @@ public class TimelineManager : IDisposable
                     break;
 
                 case ActorControlCategory.LoseEffect when record:
-                    var stack = Player.Object?.StatusList.FirstOrDefault(s => s.StatusId == buffID && s.SourceId == Player.Object.ObjectId)?.StackCount ?? 0;
+                    var stack = Player.Object?.StatusList.FirstOrDefault(s => s.StatusId == buffID && s.SourceId == Player.Object.EntityId)?.StackCount ?? 0;
 
                     var icon = GetStatusIcon((ushort)buffID, false, out var name, ++stack);
                     if (icon == 0) break;
@@ -441,7 +441,7 @@ public class TimelineManager : IDisposable
 
         try
         {
-            if (sourceId != Player.Object?.ObjectId || !Plugin.Settings.Record) return;
+            if (sourceId != Player.Object?.EntityId || !Plugin.Settings.Record) return;
 
             var actionId = *(ushort*)ptr;
 

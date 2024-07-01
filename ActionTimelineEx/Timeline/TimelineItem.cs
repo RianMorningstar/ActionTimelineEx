@@ -2,6 +2,7 @@
 using ActionTimelineEx.Configurations;
 using Dalamud.Interface;
 using Dalamud.Interface.Internal;
+using Dalamud.Interface.Textures.TextureWraps;
 using ImGuiNET;
 using System.Numerics;
 
