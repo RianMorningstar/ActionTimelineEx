@@ -53,7 +53,6 @@ public class TimelineManager : IDisposable
     }
 
     #endregion
-
     private delegate void OnActorControlDelegate(uint entityId, ActorControlCategory type, uint buffID, uint direct, uint actionId, uint sourceId, uint arg4, uint arg5, ulong targetId, byte a10);
     [Signature("E8 ?? ?? ?? ?? 0F B7 0B 83 E9 64", DetourName = nameof(OnActorControl))]
     private readonly Hook<OnActorControlDelegate>? _onActorControlHook = null;
@@ -437,6 +436,7 @@ public class TimelineManager : IDisposable
 
     private unsafe void OnCast(uint sourceId, IntPtr ptr)
     {
+        Svc.Log.Error("Start cast");
         _onCastHook?.Original(sourceId, ptr);
 
         try
