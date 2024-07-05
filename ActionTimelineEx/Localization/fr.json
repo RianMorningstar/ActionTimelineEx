@@ -92,12 +92,6 @@
   "XIVConfigUI.LocalString.CopyCommand": "Copy \"{0}\"",
   "XIVConfigUI.LocalString.Localization": "Click to open the crowdin for modifying localization!",
   "XIVConfigUI.LocalString.SourceCode": "Click to see the source code!",
-  "XIVConfigUI.Attributes.ConfigUnitType.None": "None",
-  "XIVConfigUI.Attributes.ConfigUnitType.Seconds": "Time Unit, in seconds.",
-  "XIVConfigUI.Attributes.ConfigUnitType.Degree": "Angle Unit, in degrees.",
-  "XIVConfigUI.Attributes.ConfigUnitType.Yalms": "Distance Unit, in yalms.",
-  "XIVConfigUI.Attributes.ConfigUnitType.Percent": "Ratio Unit, as percentage.",
-  "XIVConfigUI.Attributes.ConfigUnitType.Pixels": "Display Unit, in pixels.",
   "XIVConfigUI.LocalString.Remove": "Remove",
   "XIVConfigUI.LocalString.MoveUp": "Move Up",
   "XIVConfigUI.LocalString.MoveDown": "Move Down",
@@ -105,8 +99,9 @@
   "XIVConfigUI.LocalString.FromClipboard": "From Clipboard",
   "XIVConfigUI.LocalString.List": "List",
   "XIVConfigUI.LocalString.Nothing": "No items in Combo",
-  "ActionTimeline.Windows.SettingsWindow+AddOne": "AddOne",
-  "ActionTimeline.Windows.SettingsWindow+ChangeLog": "ChangeLog",
-  "ActionTimelineEx.Punchline": "Show your actions in real-time.",
-  "ActionTimelineEx.Description": "Configurable timeline display of all the actions you use."
+  "XIVConfigUI.Attributes.ConfigUnitType.Seconds": "Time Unit, in seconds.",
+  "XIVConfigUI.Attributes.ConfigUnitType.Degree": "Angle Unit, in degrees.",
+  "XIVConfigUI.Attributes.ConfigUnitType.Yalms": "Distance Unit, in yalms.",
+  "XIVConfigUI.Attributes.ConfigUnitType.Percent": "Ratio Unit, as percentage.",
+  "XIVConfigUI.Attributes.ConfigUnitType.Pixels": "Display Unit, in pixels."
 }
