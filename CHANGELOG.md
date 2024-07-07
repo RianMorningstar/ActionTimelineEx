@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.9](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.8...v1.3.9) (2024-07-07)
+
+
+### Bug Fixes
+
+* add the show donate link option. ([c8f7923](https://github.com/ArchiDog1998/ActionTimelineEx/commit/c8f792391734d5d7c3bee035da77e3de36446955))
+* api 10. ([e858b08](https://github.com/ArchiDog1998/ActionTimelineEx/commit/e858b083e7821e5a2013d07a9222bee09c9cc48a))
+* icon fix. ([1673e43](https://github.com/ArchiDog1998/ActionTimelineEx/commit/1673e437a9045a994d9a00345721ece422e30f6a))
+* sig. ([73795e3](https://github.com/ArchiDog1998/ActionTimelineEx/commit/73795e3b956f54794415f933b9fb06554171261c))
+* some fix, maybe. ([661debc](https://github.com/ArchiDog1998/ActionTimelineEx/commit/661debc8c25b6e2907239f15a9a66ca93d7aa233))
+
 ## [1.3.8](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.7...v1.3.8) (2024-05-12)
 
 
