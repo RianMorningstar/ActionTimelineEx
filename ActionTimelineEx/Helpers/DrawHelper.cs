@@ -1,9 +1,11 @@
-﻿using Dalamud.Interface.Textures.TextureWraps;
+﻿using Dalamud.Interface.Textures;
+using Dalamud.Interface.Textures.TextureWraps;
 using ECommons.DalamudServices;
 using ECommons.ImGuiMethods;
 using ImGuiNET;
 using Lumina.Data.Files;
 using System.Numerics;
+using XIVConfigUI;
 
 namespace ActionTimeline.Helpers;
 
@@ -49,8 +51,7 @@ internal static class DrawHelper
 
         drawList.AddImage(texture.ImGuiHandle, position, position + new Vector2(size));
 
-        //Cover.
-        if (ThreadLoadImageHandler.TryGetTextureWrap("ui/uld/icona_frame_hr1.tex", out var frameText))
+        if (ImageLoader.GetTexture("ui/uld/icona_frame_hr1.tex", out var frameText))
         {
             var coverPos = position - new Vector2(pixPerUnit * 3, pixPerUnit * 4);
             drawList.AddImage(frameText.ImGuiHandle, coverPos, coverPos + new Vector2(pixPerUnit * 88, pixPerUnit * 96),
@@ -65,8 +66,8 @@ internal static class DrawHelper
     }
 
     public static IDalamudTextureWrap? GetTextureFromIconId(uint iconId, bool highQuality = true)
-        => ThreadLoadImageHandler.TryGetIconTextureWrap(iconId, highQuality, out var texture) ? texture 
-        : ThreadLoadImageHandler.TryGetIconTextureWrap(0, highQuality, out texture) ? texture : null;
+        => ImageLoader.GetTexture(new GameIconLookup( iconId, false, highQuality), out var texture) ? texture 
+        : ImageLoader.GetTexture(new GameIconLookup(0, false, highQuality), out texture) ? texture : null;
 
     private static readonly Dictionary<uint, uint> textureColorCache = [];
     private static readonly Queue<uint> calculating = new ();

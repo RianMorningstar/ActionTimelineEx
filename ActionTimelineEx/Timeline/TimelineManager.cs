@@ -436,7 +436,6 @@ public class TimelineManager : IDisposable
 
     private unsafe void OnCast(uint sourceId, IntPtr ptr)
     {
-        Svc.Log.Error("Start cast");
         _onCastHook?.Original(sourceId, ptr);
 
         try
