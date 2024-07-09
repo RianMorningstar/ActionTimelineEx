@@ -28,7 +28,7 @@ internal static class DrawHelper
             array[i + 3] = imageData[i + 3];
         }
 
-        _roundTex = Svc.Texture.CreateFromRaw(new Dalamud.Interface.Textures.RawImageSpecification(tex!.Header.Width, tex!.Header.Height, 4), array);
+        _roundTex = Svc.Texture.CreateFromRaw(RawImageSpecification.Rgba32(tex!.Header.Width, tex!.Header.Height), array);
     }
 
     public static void DrawDamage(this ImDrawListPtr drawList, Vector2 position, float size, uint  lightCol)
