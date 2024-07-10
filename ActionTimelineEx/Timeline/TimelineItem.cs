@@ -4,6 +4,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Textures.TextureWraps;
 using ImGuiNET;
 using System.Numerics;
+using XIVConfigUI;
 
 namespace ActionTimelineEx.Timeline;
 
@@ -191,7 +192,7 @@ public class TimelineItem : ITimelineItem
                         DamageType.CriticalDirect => ImGui.ColorConvertFloat4ToU32(setting.CriticalDirectColor),
                         _ => 0u,
                     };
-                    drawList.DrawDamage(centerPos - iconSize / 2 * setting.RealDownDirection, iconSize, lightCol);
+                    drawList.DrawSlotHighlight(centerPos - iconSize / 2 * setting.RealDownDirection, iconSize, lightCol);
                 }
 
                 return;

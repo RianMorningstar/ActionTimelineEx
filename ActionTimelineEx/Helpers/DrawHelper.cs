@@ -1,7 +1,6 @@
 ﻿using Dalamud.Interface.Textures;
 using Dalamud.Interface.Textures.TextureWraps;
 using ECommons.DalamudServices;
-using ECommons.ImGuiMethods;
 using ImGuiNET;
 using Lumina.Data.Files;
 using System.Numerics;
@@ -11,37 +10,6 @@ namespace ActionTimeline.Helpers;
 
 internal static class DrawHelper
 {
-    private static readonly Vector2 _uv1 = new (96 * 5 / 852f, 0),
-    _uv2 = new ((96 * 5 + 144) / 852f, 0.5f);
-
-    private static IDalamudTextureWrap? _roundTex;
-    public static void Init()
-    {
-        var tex = Svc.Data.GetFile<TexFile>("ui/uld/icona_frame_hr1.tex");
-        if (tex == null) return;
-        byte[] imageData = tex.ImageData;
-        byte[] array = new byte[imageData.Length];
-
-        for (int i = 0; i < imageData.Length; i += 4)
-        {
-            array[i] = array[i + 1] = array[i + 2] = byte.MaxValue;
-            array[i + 3] = imageData[i + 3];
-        }
-
-        _roundTex = Svc.Texture.CreateFromRaw(RawImageSpecification.Rgba32(tex!.Header.Width, tex!.Header.Height), array);
-    }
-
-    public static void DrawDamage(this ImDrawListPtr drawList, Vector2 position, float size, uint  lightCol)
-    {
-        if(_roundTex == null) return;
-
-        var pixPerUnit = size / 82;
-
-        var outPos = position - new Vector2(pixPerUnit * 31, pixPerUnit * 31);
-        drawList.AddImage(_roundTex.ImGuiHandle, outPos, outPos + new Vector2(pixPerUnit * 144, pixPerUnit * 154),
-        _uv1, _uv2, lightCol);
-    }
-
     public static void DrawActionIcon(this ImDrawListPtr drawList, uint iconId, bool isHq, Vector2 position, float size)
     {
         IDalamudTextureWrap? texture = GetTextureFromIconId(iconId, isHq);

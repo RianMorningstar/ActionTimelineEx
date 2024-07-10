@@ -73,7 +73,6 @@ public class Plugin : IDalamudPlugin
         Svc.PluginInterface.UiBuilder.OpenMainUi += OpenConfigUi;
 
         TimelineManager.Initialize();
-        DrawHelper.Init();
 
         try
         {
