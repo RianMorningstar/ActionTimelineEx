@@ -1,6 +1,7 @@
 ﻿using ActionTimeline.Helpers;
 using ActionTimeline.Timeline;
 using ActionTimelineEx.Configurations;
+using ActionTimelineEx.Windows;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.GameFonts;
@@ -107,36 +108,6 @@ public class SettingsWindow : ConfigWindow
         }
     }
 
-    [Description("AddOne")]
-    public class AddOne(System.Action action) : ConfigWindowItem
-    {
-        public override string Description => UiString.AddOne.Local();
-
-        public override bool GetIcon(out IDalamudTextureWrap texture)
-        {
-            return ImageLoader.GetTexture(51, out texture);
-        }
-        public override bool OnClick()
-        {
-            Settings.TimelineSettings.Add(new DrawingSettings()
-            {
-                Name = (Settings.TimelineSettings.Count + 1).ToString(),
-            });
-            action();
-            return true;
-        }
-    }
-
-    [Description("ChangeLog")]
-    public class ChangeLog : ConfigWindowItem
-    {
-        public override bool GetIcon(out IDalamudTextureWrap texture)
-        {
-            return ImageLoader.GetTexture(80, out texture);
-        }
-        public override string Link => $"https://github.com/{XIVConfigUIMain.UserName}/{XIVConfigUIMain.RepoName}/blob/main/CHANGELOG.md";
-    }
-
     private static float _scale => ImGuiHelpers.GlobalScale;
     public override SearchableCollection Collection { get; } = new(Settings);
     protected override bool ShowDonate => Settings.ShowDonate;
@@ -173,6 +144,15 @@ public class SettingsWindow : ConfigWindow
 
         base.DrawAbout();
 
+        if (ImGui.Button(UiString.AddOne.Local()))
+        {
+            Settings.TimelineSettings.Add(new DrawingSettings()
+            {
+                Name = (Settings.TimelineSettings.Count + 1).ToString(),
+            });
+            ClearItems();
+        }
+
         _aboutHeaders.Draw();
     }
 
@@ -186,8 +166,7 @@ public class SettingsWindow : ConfigWindow
         return 
         [
             ..Settings.TimelineSettings.Select(i => new TimelineItem(i, ClearItems)),
-            new AddOne(ClearItems),
-            new ChangeLog(),
+            new ChangeLogItem(),
         ];
     }
 

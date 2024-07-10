@@ -150,7 +150,7 @@ public class TimelineItem : ITimelineItem
                 var leftBottom = centerPos  + (lowPos * iconSize - iconSize / 2) * setting.RealDownDirection;
                 var flag = ImDrawFlags.RoundCornersAll;
 
-                var min = centerPos + iconSize / 2 * setting.TimeDirection;
+                var min = centerPos - iconSize / 2 * setting.RealDownDirection + iconSize / 2 * setting.TimeDirection;
 
                 //Background
                 var GcdBackColor = ImGui.ColorConvertFloat4ToU32(setting.BackgroundColor);
