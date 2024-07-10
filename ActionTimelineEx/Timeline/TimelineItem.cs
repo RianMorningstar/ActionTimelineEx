@@ -142,12 +142,12 @@ public class TimelineItem : ITimelineItem
 
             case TimelineLayer.General:
                 //Get Info.
-                float highPos = MathF.Min( setting.GCDHeight.X, setting.GCDHeight.Y);
+                float highPos = MathF.Min(setting.GCDHeight.X, setting.GCDHeight.Y);
                 float lowPos = MathF.Max(setting.GCDHeight.X, setting.GCDHeight.Y);
                 float rounding = setting.GCDRound;
 
                 var leftTop = centerPos + (highPos * iconSize - iconSize / 2) * setting.RealDownDirection;
-                var leftBottom = centerPos  + (lowPos * iconSize- iconSize / 2) * setting.RealDownDirection;
+                var leftBottom = centerPos  + (lowPos * iconSize - iconSize / 2) * setting.RealDownDirection;
                 var flag = ImDrawFlags.RoundCornersAll;
 
                 var min = centerPos + iconSize / 2 * setting.TimeDirection;

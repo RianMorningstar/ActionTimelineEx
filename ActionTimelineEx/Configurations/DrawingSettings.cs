@@ -52,7 +52,7 @@ public class DrawingSettings
     public int TimeOffsetSetting { get; set; } = 2;
 
 
-    [Range(-500, 500, ConfigUnitType.Pixels, 0.3f)]
+    [Range(-500, 500, ConfigUnitType.Pixels, 0.2f)]
     [UI("Center Offset", (int)GroupItem.General)]
     public float CenterOffset { get; set; } = 0;
 
@@ -66,7 +66,7 @@ public class DrawingSettings
     [UI("Show Off GCD", (int)GroupItem.Icons)]
     public bool ShowOGCD { get; set; } = true;
 
-    [Range(1, 100, ConfigUnitType.Pixels)]
+    [Range(1, 100, ConfigUnitType.Pixels, 0.2f)]
     [UI("Off GCD Icon Size", (int)GroupItem.Icons, Parent = nameof(ShowOGCD))]
     public int OGCDIconSize { get; set; } = 30;
 
