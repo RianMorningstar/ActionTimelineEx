@@ -105,7 +105,5 @@
   "XIVConfigUI.Attributes.ConfigUnitType.Percent": "Ratio Unit, as percentage.",
   "XIVConfigUI.Attributes.ConfigUnitType.Pixels": "Display Unit, in pixels.",
   "ActionTimelineEx.Punchline": "Show your actions in real-time.",
-  "ActionTimeline.Windows.SettingsWindow+AddOne": "AddOne",
-  "ActionTimeline.Windows.SettingsWindow+ChangeLog": "ChangeLog",
   "ActionTimelineEx.Description": "Configurable timeline display of all the actions you use."
 }
