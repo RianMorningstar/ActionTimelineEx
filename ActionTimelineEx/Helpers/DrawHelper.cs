@@ -1,5 +1,4 @@
-﻿using ActionTimelineEx.Configurations;
-using Dalamud.Interface.Textures;
+﻿using Dalamud.Interface.Textures;
 using Dalamud.Interface.Textures.TextureWraps;
 using ECommons.DalamudServices;
 using ImGuiNET;

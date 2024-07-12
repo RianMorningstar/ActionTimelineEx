@@ -128,5 +128,6 @@
   "ActionTimelineEx.Configurations.ActionSettingName.Type": "Type",
   "ActionTimelineEx.Configurations.ActionSettingName.Id": "Id",
   "ActionTimelineEx.Configurations.ActionSettingDescription": "Maim (GCD)",
-  "ActionTimelineEx.Configurations.UiString.RotationReset": "Reset Count"
+  "ActionTimelineEx.Configurations.UiString.RotationReset": "Reset Count",
+  "ActionTimeline.SettingsName.ShowWrongClick": "Show the wrong clicking"
 }

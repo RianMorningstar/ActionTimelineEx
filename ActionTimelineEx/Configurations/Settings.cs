@@ -3,7 +3,6 @@ using Dalamud.Configuration;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
-using Newtonsoft.Json;
 using System.Numerics;
 using XIVConfigUI.Attributes;
 
@@ -52,31 +51,6 @@ public class Settings : IPluginConfiguration
     [UI("Draw Rotation", 1)]
     public bool DrawRotation { get; set; } = false;
 
-    [JsonIgnore]
-    [TimelineChoices]
-    [UI("Rotation Choice", Parent = nameof(DrawRotation))]
-    public string RotationChoice 
-    {
-        get => EditSetting?.Choice ?? "Default";
-        set
-        {
-            if (EditSetting == null) return;
-            EditSetting.Choice = value;
-        }
-    }
-
-    [JsonIgnore]
-    [UI("Rotation Name", Parent = nameof(DrawRotation))]
-    public string RotationName 
-    {
-        get => EditSetting?.RotationSetting.Name ?? "Default";
-        set
-        {
-            if (EditSetting == null) return;
-            EditSetting.RotationSetting.Name = value;
-        }
-    }
-
     [UI("Locked", Parent = nameof(DrawRotation))]
     public bool RotationLocked { get; set; } = false;
 
@@ -103,6 +77,31 @@ public class Settings : IPluginConfiguration
 
     [UI("Show the wrong clicking", Parent = nameof(DrawRotation))]
     public bool ShowWrongClick { get; set; } = true;
+
+    [JsonIgnore]
+    [TimelineChoices]
+    [UI("Rotation Choice", 2)]
+    public string RotationChoice
+    {
+        get => EditSetting?.Choice ?? "Default";
+        set
+        {
+            if (EditSetting == null) return;
+            EditSetting.Choice = value;
+        }
+    }
+
+    [JsonIgnore]
+    [UI("Rotation Name", 2)]
+    public string RotationName
+    {
+        get => EditSetting?.RotationSetting.Name ?? "Default";
+        set
+        {
+            if (EditSetting == null) return;
+            EditSetting.RotationSetting.Name = value;
+        }
+    }
 
     [JsonProperty]
     private Dictionary<uint, Dictionary<Job, RotationsSetting>> _rotationHelpers = [];

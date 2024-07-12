@@ -4,10 +4,12 @@ using ActionTimelineEx.Helpers;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Textures.TextureWraps;
 using Dalamud.Interface.Utility.Raii;
+using Dalamud.Interface.Windowing;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Numerics;
 using XIVConfigUI;
@@ -40,7 +42,7 @@ internal class RotationHelperItem() : ConfigWindowItem
         _group ??= new CollapsingHeaderGroup(new()
         {
             { () => UiString.RotationSetting.Local(), () =>  DrawSetting(window) },
-            { () => UiString.Rotation.Local(), () => ConditionDrawer.Draw(setting.RotationSetting.Actions) },
+            { () => UiString.Rotation.Local(), () => DrawRotation(window, setting.RotationSetting)},
         });
 
         _group.Draw();
@@ -49,11 +51,42 @@ internal class RotationHelperItem() : ConfigWindowItem
 
     private static void DrawSetting(ConfigWindow window)
     {
+        window.Collection.DrawItems(1);
+    }
+
+    private static void DrawRotation(ConfigWindow window, RotationSetting setting)
+    {
         if (ImGui.Button(UiString.RotationReset.Local()))
         {
             RotationHelper.Clear();
         }
-        window.Collection.DrawItems(1);
+
+        ImGui.SameLine();
+
+        if (ImGui.Button(LocalString.CopyToClipboard.Local()))
+        {
+            var str = JsonHelper.SerializeObject(setting.Actions);
+            ImGui.SetClipboardText(str);
+        }
+
+        ImGui.SameLine();
+
+        if (ImGui.Button(LocalString.FromClipboard.Local()))
+        {
+            var str = ImGui.GetClipboardText();
+
+            try
+            {
+                setting.Actions = JsonHelper.DeserializeObject<List<ActionSetting>>(str)!;
+            }
+            catch (Exception ex)
+            {
+                Svc.Log.Warning(ex, "Failed to load the timeline.");
+            }
+        }
+
+        window.Collection.DrawItems(2);
+        ConditionDrawer.Draw(setting.Actions);
     }
 
     private static void DrawTerritoryHeader()

@@ -13,9 +13,9 @@ namespace ActionTimelineEx.Helpers;
 internal static class RotationHelper
 {
     private static DrawingHighlightHotbar? _highLight;
-    public static ActionSetting? ActiveActon => Actions.FirstOrDefault();
+    public static ActionSetting? ActiveAction => Actions.FirstOrDefault();
 
-    public static  IEnumerable< ActionSetting> Actions => RotationSetting.Actions.Skip((int)Count);
+    public static  IEnumerable<ActionSetting> Actions => RotationSetting.Actions.Skip((int)Count);
 
     public static RotationSetting RotationSetting => Plugin.Settings.GetSetting(Svc.ClientState.TerritoryType).RotationSetting;
 
@@ -35,11 +35,13 @@ internal static class RotationHelper
 
     private static void UpdateHighlight()
     {
+        if (!Plugin.Settings.DrawRotation) return;
+
         if (_highLight == null) return;
         _highLight.Color = Plugin.Settings.RotationHighlightColor;
         _highLight.HotbarIDs.Clear();
 
-        var action = ActiveActon;
+        var action = ActiveAction;
         if (action == null) return;
 
         HotbarID? hotbar = null;
@@ -111,7 +113,7 @@ internal static class RotationHelper
         if (set.Source.EntityId != Player.Object.EntityId || !Plugin.Settings.DrawRotation) return;
         if (set.Action == null) return;
 
-        var action = ActiveActon;
+        var action = ActiveAction;
         if (action == null) return;
 
         var succeed = set.Action.RowId == action.ActionId;

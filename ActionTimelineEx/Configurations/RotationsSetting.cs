@@ -3,6 +3,7 @@
 public class RotationsSetting
 {
     public string Choice { get; set; } = "Default";
+
     public List<RotationSetting> RotationSettings { get; set; } = [];
 
     [JsonIgnore]
