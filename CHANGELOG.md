@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.2...v1.4.3) (2024-07-12)
+
+
+### Bug Fixes
+
+* add record feature for the rotation helper. ([1b32d56](https://github.com/ArchiDog1998/ActionTimelineEx/commit/1b32d56b83ec59b67ba8ace70a50cebde04a79d0))
+
 ## [1.4.2](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.1...v1.4.2) (2024-07-12)
 
 
