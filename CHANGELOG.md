@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.0...v1.4.1) (2024-07-12)
+
+
+### Bug Fixes
+
+* add reset fix. ([1c44a17](https://github.com/ArchiDog1998/ActionTimelineEx/commit/1c44a17146f9a0e84f643d2f394da027280ff487))
+* better ui, and add copy paste features. ([656d20c](https://github.com/ArchiDog1998/ActionTimelineEx/commit/656d20c8e1f24e7f1ee9848917b2c40aee64e9a6))
+
 ## [1.4.0](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.11...v1.4.0) (2024-07-12)
 
 
