@@ -17,7 +17,7 @@
   "XIVConfigUI.LocalString.Remove": "Remove",
   "XIVConfigUI.LocalString.MoveUp": "Move Up",
   "XIVConfigUI.LocalString.MoveDown": "Move Down",
-  "ActionTimelineEx.Configurations.ActionSettingDescription": "Sentinel (Ability)",
+  "ActionTimelineEx.Configurations.ActionSettingDescription": "Fell Cleave (GCD)",
   "ActionTimelineEx.Configurations.ActionSettingName.Id": "Id",
   "ActionTimelineEx.Configurations.ActionSettingType.Action": "Action",
   "ActionTimelineEx.Configurations.ActionSettingType.Item": "Item",
@@ -127,5 +127,7 @@
   "XIVConfigUI.Attributes.ConfigUnitType.Degree": "Angle Unit, in degrees.",
   "XIVConfigUI.Attributes.ConfigUnitType.Yalms": "Distance Unit, in yalms.",
   "XIVConfigUI.Attributes.ConfigUnitType.Percent": "Ratio Unit, as percentage.",
-  "XIVConfigUI.Attributes.ConfigUnitType.Pixels": "Display Unit, in pixels."
+  "XIVConfigUI.Attributes.ConfigUnitType.Pixels": "Display Unit, in pixels.",
+  "ActionTimelineEx.Configurations.SettingsName.RecordRotation": "Record Rotation",
+  "ActionTimelineEx.Description": "Configurable timeline display of all the actions you use."
 }
