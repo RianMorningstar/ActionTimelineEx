@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.11...v1.4.0) (2024-07-12)
+
+
+### Features
+
+* add better rotatoin helper. ([fded3cd](https://github.com/ArchiDog1998/ActionTimelineEx/commit/fded3cd527d64dc05c21511d0ab4002b02c5efca))
+* add rotation helper feature. ([187c65d](https://github.com/ArchiDog1998/ActionTimelineEx/commit/187c65d76ddb0bc19bd8e45a34780f662cc48586))
+
 ## [1.3.11](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.10...v1.3.11) (2024-07-10)
 
 
