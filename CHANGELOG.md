@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.11](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.10...v1.3.11) (2024-07-10)
+
+
+### Bug Fixes
+
+* check on highlight. ([a46ea6b](https://github.com/ArchiDog1998/ActionTimelineEx/commit/a46ea6b7535283dabdc91fc54dcc003e54b90d11))
+* speed of some config. ([1a5c572](https://github.com/ArchiDog1998/ActionTimelineEx/commit/1a5c5728ca5c10f13ab5cbf6f8de045613b96076))
+* ui fixes. ([820c8c3](https://github.com/ArchiDog1998/ActionTimelineEx/commit/820c8c34972b962c5a353860fcb3520264d065bd))
+
 ## [1.3.10](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.3.9...v1.3.10) (2024-07-09)
 
 
