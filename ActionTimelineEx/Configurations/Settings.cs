@@ -109,9 +109,12 @@ public class Settings : IPluginConfiguration
     [JsonIgnore]
     internal RotationsSetting? EditSetting { get; set; } = null;
 
+    private static readonly RotationsSetting EmptyHolder = new ();
     public RotationsSetting GetSetting(uint territoryId)
     {
         if (!_rotationHelpers.TryGetValue(territoryId, out var dict)) _rotationHelpers[territoryId] = dict = [];
+
+        if(!Player.Available) return EmptyHolder;
 
         var job = Player.Job;
         if (!dict.TryGetValue(job, out var result)) dict[job] = result = new();

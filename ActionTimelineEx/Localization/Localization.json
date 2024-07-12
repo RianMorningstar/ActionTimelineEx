@@ -1,5 +1,5 @@
 {
-  "ActionTimelineEx.DescriptionAboutCommand": "Opens the ActionTimelineEx configuration window.",
+  "ActionTimelineEx.DescriptionAboutCommand": "Opens the ActionTimelineEx configuration window.\n `/atle reset` to reset the rotation helper count.",
   "ActionTimeline.SettingsName.Record": "Record Data",
   "ActionTimeline.SettingsName.ShowTimelineOnlyInDuty": "Show Only In Duty",
   "ActionTimeline.SettingsName.ShowTimelineOnlyInCombat": "Show Only In Combat",

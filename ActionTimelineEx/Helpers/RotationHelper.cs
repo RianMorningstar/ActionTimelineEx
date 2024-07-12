@@ -93,13 +93,12 @@ internal static class RotationHelper
 
     private static void ClientState_TerritoryChanged(ushort obj)
     {
-        Clear();
-
         var territory = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(obj);
         if (IsTerritoryTypeValid(territory))
         {
             RotationHelperItem._territoryId = obj;
         }
+        Clear();
     }
 
     private static void DutyState_DutyWiped(object? sender, ushort e)
