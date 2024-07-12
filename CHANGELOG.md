@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.1...v1.4.2) (2024-07-12)
+
+
+### Bug Fixes
+
+* key item fix and remove item fix. ([a4cf0fc](https://github.com/ArchiDog1998/ActionTimelineEx/commit/a4cf0fc1376724e783252c9806cf119c0e50ae8a))
+
 ## [1.4.1](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.0...v1.4.1) (2024-07-12)
 
 
