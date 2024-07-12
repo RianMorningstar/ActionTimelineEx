@@ -1,5 +1,4 @@
-﻿using ActionTimeline;
-using ActionTimelineEx.Configurations;
+﻿using ActionTimelineEx.Configurations;
 using ActionTimelineEx.Windows;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;

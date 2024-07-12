@@ -1,4 +1,4 @@
-﻿namespace RotationSolver.Basic.Data;
+﻿namespace ActionTimelineEx.Timeline;
 
 /// <summary>
 /// The action Category.

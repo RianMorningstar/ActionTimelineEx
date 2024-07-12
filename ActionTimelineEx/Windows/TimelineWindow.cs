@@ -1,11 +1,10 @@
-﻿using ActionTimeline.Timeline;
-using ActionTimelineEx.Configurations;
+﻿using ActionTimelineEx.Configurations;
 using ActionTimelineEx.Timeline;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
 using System.Numerics;
 
-namespace ActionTimeline.Windows;
+namespace ActionTimelineEx.Windows;
 
 internal static class TimelineWindow
 {
@@ -56,9 +55,9 @@ internal static class TimelineWindow
         var pos = ImGui.GetWindowPos();
         var size = ImGui.GetWindowSize();
 
-        var now = setting.IsRotation ? (TimelineManager.Instance?.EndTime ?? DateTime.Now - TimeSpan.FromSeconds(setting.TimeOffset)) : DateTime.Now;
+        var now = setting.IsRotation ? TimelineManager.Instance?.EndTime ?? DateTime.Now - TimeSpan.FromSeconds(setting.TimeOffset) : DateTime.Now;
 
-        var endTime = now - TimeSpan.FromSeconds((setting.IsHorizonal ? size.X : size.Y )/ setting.SizePerSecond - setting.TimeOffset);
+        var endTime = now - TimeSpan.FromSeconds((setting.IsHorizonal ? size.X : size.Y) / setting.SizePerSecond - setting.TimeOffset);
 
         var last = now;
         var list = TimelineManager.Instance?.GetItems(endTime, out last);
@@ -85,12 +84,12 @@ internal static class TimelineWindow
                 {
                     var drawingLeftTop = pos + timeDirWhole
                         - (setting.TimeOffset + (float)(now - last).TotalSeconds) * setting.TimeDirectionPerSecond;
-                    
+
 
                     ImGui.GetWindowDrawList().AddRectFilled(drawingLeftTop, drawingLeftTop
-                        + downDirWhole + (float)span.TotalSeconds * setting.TimeDirectionPerSecond 
+                        + downDirWhole + (float)span.TotalSeconds * setting.TimeDirectionPerSecond
                        , gcdClippingColor);
-                    ImGui.GetWindowDrawList().AddText(drawingLeftTop, 
+                    ImGui.GetWindowDrawList().AddText(drawingLeftTop,
                         ImGui.ColorConvertFloat4ToU32(setting.GCDClippingTextColor),
                         $"{(int)span.TotalMilliseconds}ms");
                 }

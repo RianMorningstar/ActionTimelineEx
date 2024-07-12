@@ -1,6 +1,4 @@
-﻿using ActionTimeline;
-using ActionTimeline.Windows;
-using ActionTimelineEx.Helpers;
+﻿using ActionTimelineEx.Helpers;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
 using System.Numerics;

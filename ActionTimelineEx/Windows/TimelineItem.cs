@@ -1,5 +1,4 @@
-﻿using ActionTimeline;
-using ActionTimelineEx.Configurations;
+﻿using ActionTimelineEx.Configurations;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Textures.TextureWraps;
@@ -43,8 +42,13 @@ internal class TimelineItem(DrawingSettings setting, Action clearItems) : Config
     private DateTime _lastTime = DateTime.MinValue;
     private bool RemoveValue(string name)
     {
-        bool isLast = name == _undoName && DateTime.Now - _lastTime < TimeSpan.FromSeconds(2);
-        bool isTime = DateTime.Now - _lastTime > TimeSpan.FromSeconds(0.5);
+        bool isLast = false, isTime = false;
+
+        if (_lastTime != DateTime.MinValue)
+        {
+            isLast = name == _undoName && DateTime.Now - _lastTime < TimeSpan.FromSeconds(2);
+            isTime = DateTime.Now - _lastTime > TimeSpan.FromSeconds(0.5);
+        }
 
         bool result = false;
 

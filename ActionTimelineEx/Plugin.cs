@@ -1,7 +1,6 @@
-﻿using ActionTimeline.Timeline;
-using ActionTimeline.Windows;
-using ActionTimelineEx.Configurations;
+﻿using ActionTimelineEx.Configurations;
 using ActionTimelineEx.Helpers;
+using ActionTimelineEx.Timeline;
 using ActionTimelineEx.Windows;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Interface.Windowing;
@@ -12,7 +11,7 @@ using ECommons.GameHelpers;
 using XIVConfigUI;
 using XIVDrawer;
 
-namespace ActionTimeline;
+namespace ActionTimelineEx;
 
 public class Plugin : IDalamudPlugin
 {
@@ -156,16 +155,16 @@ public class Plugin : IDalamudPlugin
             return false;
         }
 
-        if (Settings.HideTimelineInCutscene 
-            && (Svc.Condition[ConditionFlag.WatchingCutscene] 
+        if (Settings.HideTimelineInCutscene
+            && (Svc.Condition[ConditionFlag.WatchingCutscene]
             || Svc.Condition[ConditionFlag.WatchingCutscene78]
             || Svc.Condition[ConditionFlag.OccupiedInCutSceneEvent]))
         {
             return false;
         }
 
-        if (Settings.HideTimelineInQuestEvent 
-            && (Svc.Condition[ConditionFlag.OccupiedInQuestEvent]))
+        if (Settings.HideTimelineInQuestEvent
+            && Svc.Condition[ConditionFlag.OccupiedInQuestEvent])
         {
             return false;
         }

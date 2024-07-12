@@ -1,4 +1,4 @@
-﻿using ActionTimelineEx.Timeline;
+﻿using ActionTimelineEx;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Hooking;
 using Dalamud.Utility.Signatures;
@@ -8,11 +8,10 @@ using ECommons.Hooks;
 using ECommons.Hooks.ActionEffectTypes;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Lumina.Excel.GeneratedSheets;
-using RotationSolver.Basic.Data;
 using Action = Lumina.Excel.GeneratedSheets.Action;
 using Status = Lumina.Excel.GeneratedSheets.Status;
 
-namespace ActionTimeline.Timeline;
+namespace ActionTimelineEx.Timeline;
 
 public class TimelineManager : IDisposable
 {
@@ -57,7 +56,7 @@ public class TimelineManager : IDisposable
     [Signature("E8 ?? ?? ?? ?? 0F B7 0B 83 E9 64", DetourName = nameof(OnActorControl))]
     private readonly Hook<OnActorControlDelegate>? _onActorControlHook = null;
 
-    private delegate void OnCastDelegate(uint sourceId, IntPtr sourceCharacter);
+    private delegate void OnCastDelegate(uint sourceId, nint sourceCharacter);
     [Signature("40 56 41 56 48 81 EC ?? ?? ?? ?? 48 8B F2", DetourName = nameof(OnCast))]
     private readonly Hook<OnCastDelegate>? _onCastHook = null;
 
@@ -87,7 +86,7 @@ public class TimelineManager : IDisposable
 
     private void UpdateEndTime(DateTime endTime)
     {
-        if(endTime > EndTime) EndTime = endTime;
+        if (endTime > EndTime) EndTime = endTime;
     }
 
     public List<TimelineItem> GetItems(DateTime time, out DateTime lastEndTime)
@@ -112,7 +111,7 @@ public class TimelineManager : IDisposable
         return GetItems(_statusItems, time, out lastEndTime);
     }
 
-    private static List<T> GetItems<T>(IEnumerable<T> items, DateTime time, out DateTime lastEndTime) where T : ITimelineItem 
+    private static List<T> GetItems<T>(IEnumerable<T> items, DateTime time, out DateTime lastEndTime) where T : ITimelineItem
     {
         var result = new List<T>();
         lastEndTime = DateTime.Now;
@@ -123,7 +122,7 @@ public class TimelineManager : IDisposable
             {
                 result.Add(item);
             }
-            else if(item is TimelineItem tItem && tItem.Type == TimelineItemType.GCD)
+            else if (item is TimelineItem tItem && tItem.Type == TimelineItemType.GCD)
             {
                 lastEndTime = item.EndTime;
             }
@@ -162,6 +161,7 @@ public class TimelineManager : IDisposable
                 var item = Svc.Data.GetExcelSheet<Item>()?.GetRow(actionId);
                 return item?.CastTimes > 0 ? TimelineItemType.GCD : TimelineItemType.OGCD;
 
+            case ActionType.KeyItem:
             case ActionType.Mount:
                 return TimelineItemType.GCD;
         }
@@ -196,7 +196,7 @@ public class TimelineManager : IDisposable
         }
         else
         {
-            if(stack == byte.MaxValue)
+            if (stack == byte.MaxValue)
             {
                 stack = Player.Object.StatusList.FirstOrDefault(s => s.StatusId == id)?.StackCount ?? 0;
                 stack++;
@@ -220,7 +220,7 @@ public class TimelineManager : IDisposable
         for (int i = 0; i < set.Header.TargetCount; i++)
         {
             var effect = set.TargetEffects[i];
-            var recordTarget = Plugin.Settings.RecordTargetStatus 
+            var recordTarget = Plugin.Settings.RecordTargetStatus
                 || effect.TargetID == Player.Object.EntityId;
 
             if (effect[0].type is ActionEffectType.Damage or ActionEffectType.Heal)
@@ -228,7 +228,7 @@ public class TimelineManager : IDisposable
                 var flag = effect[0].param0;
                 var hasDirect = (flag & 64) == 64;
                 var hasCritical = (flag & 32) == 32;
-                damage |= hasCritical ? (hasDirect ? DamageType.CriticalDirect : DamageType.Critical)
+                damage |= hasCritical ? hasDirect ? DamageType.CriticalDirect : DamageType.Critical
                     : hasDirect ? DamageType.Direct : DamageType.None;
             }
 
@@ -257,10 +257,10 @@ public class TimelineManager : IDisposable
         if (Plugin.Settings.SayClipping && type == TimelineItemType.GCD)
         {
             var lastGcd = _items.LastOrDefault(i => i.Type == TimelineItemType.GCD);
-            if(lastGcd != null)
+            if (lastGcd != null)
             {
                 var time = (int)(now - lastGcd.EndTime).TotalMilliseconds;
-                if(time >= Plugin.Settings.ClippintTime.X &&  time <= Plugin.Settings.ClippintTime.Y)
+                if (time >= Plugin.Settings.ClippintTime.X && time <= Plugin.Settings.ClippintTime.Y)
                 {
                     Svc.Chat.Print($"Clipping: {time}ms ({lastGcd.Name} - {set.Name})");
                 }
@@ -437,7 +437,7 @@ public class TimelineManager : IDisposable
         }
     }
 
-    private unsafe void OnCast(uint sourceId, IntPtr ptr)
+    private unsafe void OnCast(uint sourceId, nint ptr)
     {
         _onCastHook?.Original(sourceId, ptr);
 
@@ -451,8 +451,8 @@ public class TimelineManager : IDisposable
 
             AddItem(new TimelineItem()
             {
-                Name =  action?.Name ?? string.Empty,
-                Icon =  actionId == 4 ? (ushort)118 //Mount
+                Name = action?.Name ?? string.Empty,
+                Icon = actionId == 4 ? (ushort)118 //Mount
                         : action?.Icon ?? 0,
                 StartTime = DateTime.Now,
                 GCDTime = GCD,
@@ -461,7 +461,7 @@ public class TimelineManager : IDisposable
                 State = TimelineItemState.Casting,
             });
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Svc.Log.Warning(ex, "Something wrong with OnCast!");
         }

@@ -1,5 +1,4 @@
-﻿using ActionTimeline;
-using ActionTimelineEx.Configurations;
+﻿using ActionTimelineEx.Configurations;
 using ActionTimelineEx.Helpers;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Textures.TextureWraps;

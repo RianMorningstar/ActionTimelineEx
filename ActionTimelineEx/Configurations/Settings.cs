@@ -1,18 +1,17 @@
-﻿using ActionTimelineEx.Configurations;
-using Dalamud.Configuration;
+﻿using Dalamud.Configuration;
 using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using System.Numerics;
 using XIVConfigUI.Attributes;
 
-namespace ActionTimeline;
+namespace ActionTimelineEx.Configurations;
 
 internal class TimelineChoicesAttribute : ChoicesAttribute
 {
     protected override Pair[] GetChoices()
     {
-        return [..Plugin.Settings.EditSetting?.RotationSettings.Select(i => i.Name)];
+        return [.. Plugin.Settings.EditSetting?.RotationSettings.Select(i => i.Name)];
     }
 }
 
@@ -109,12 +108,12 @@ public class Settings : IPluginConfiguration
     [JsonIgnore]
     internal RotationsSetting? EditSetting { get; set; } = null;
 
-    private static readonly RotationsSetting EmptyHolder = new ();
+    private static readonly RotationsSetting EmptyHolder = new();
     public RotationsSetting GetSetting(uint territoryId)
     {
         if (!_rotationHelpers.TryGetValue(territoryId, out var dict)) _rotationHelpers[territoryId] = dict = [];
 
-        if(!Player.Available) return EmptyHolder;
+        if (!Player.Available) return EmptyHolder;
 
         var job = Player.Job;
         if (!dict.TryGetValue(job, out var result)) dict[job] = result = new();

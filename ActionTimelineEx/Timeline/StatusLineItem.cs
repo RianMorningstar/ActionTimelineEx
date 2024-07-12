@@ -1,5 +1,5 @@
-﻿using ActionTimeline.Helpers;
-using ActionTimelineEx.Configurations;
+﻿using ActionTimelineEx.Configurations;
+using ActionTimelineEx.Helpers;
 using Dalamud.Interface.Textures.TextureWraps;
 using ImGuiNET;
 using System.Numerics;

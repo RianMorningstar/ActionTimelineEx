@@ -1,7 +1,7 @@
-﻿using ActionTimeline.Helpers;
-using ActionTimeline.Timeline;
+﻿using ActionTimelineEx;
 using ActionTimelineEx.Configurations;
-using ActionTimelineEx.Windows;
+using ActionTimelineEx.Helpers;
+using ActionTimelineEx.Timeline;
 using Dalamud.Interface;
 using Dalamud.Interface.GameFonts;
 using Dalamud.Interface.Utility;
@@ -12,7 +12,7 @@ using System.Numerics;
 using XIVConfigUI;
 using XIVConfigUI.SearchableConfigs;
 
-namespace ActionTimeline.Windows;
+namespace ActionTimelineEx.Windows;
 
 public class SettingsWindow : ConfigWindow
 {
@@ -22,7 +22,7 @@ public class SettingsWindow : ConfigWindow
         {
             if (ActiveItem is TimelineItem item)
             {
-                return [..base.Searchables, ..item.Collection];
+                return [.. base.Searchables, .. item.Collection];
             }
             else
             {
@@ -86,7 +86,7 @@ public class SettingsWindow : ConfigWindow
 
     protected override ConfigWindowItem[] GetItems()
     {
-        return 
+        return
         [
             new RotationHelperItem(),
             ..Settings.TimelineSettings.Select(i => new TimelineItem(i, ClearItems)),

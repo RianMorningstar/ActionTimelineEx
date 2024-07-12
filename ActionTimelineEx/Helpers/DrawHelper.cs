@@ -6,7 +6,7 @@ using Lumina.Data.Files;
 using System.Numerics;
 using XIVConfigUI;
 
-namespace ActionTimeline.Helpers;
+namespace ActionTimelineEx.Helpers;
 
 internal static class DrawHelper
 {
@@ -28,11 +28,11 @@ internal static class DrawHelper
     }
 
     public static IDalamudTextureWrap? GetTextureFromIconId(uint iconId, bool highQuality = true)
-        => ImageLoader.GetTexture(new GameIconLookup( iconId, false, highQuality), out var texture) ? texture 
+        => ImageLoader.GetTexture(new GameIconLookup(iconId, false, highQuality), out var texture) ? texture
         : ImageLoader.GetTexture(new GameIconLookup(0, false, highQuality), out texture) ? texture : null;
 
     private static readonly Dictionary<uint, uint> textureColorCache = [];
-    private static readonly Queue<uint> calculating = new ();
+    private static readonly Queue<uint> calculating = new();
     public static uint GetTextureAverageColor(uint iconId)
     {
         if (textureColorCache.TryGetValue(iconId, out var color)) return color;
@@ -51,10 +51,10 @@ internal static class DrawHelper
 
         Task.Run(() =>
         {
-            while(calculating.TryDequeue(out var icon))
+            while (calculating.TryDequeue(out var icon))
             {
-                var tex = Svc.Data.GetFile<TexFile>($"ui/icon/{icon/1000:D3}000/{icon:D6}.tex");
-                if(tex == null)
+                var tex = Svc.Data.GetFile<TexFile>($"ui/icon/{icon / 1000:D3}000/{icon:D6}.tex");
+                if (tex == null)
                 {
                     textureColorCache[icon] = uint.MaxValue;
                     continue;
