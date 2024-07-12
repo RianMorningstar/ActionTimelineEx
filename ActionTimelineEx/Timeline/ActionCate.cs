@@ -82,7 +82,6 @@ public enum ActionCate : uint
     /// </summary>
     LimitBreak15 = 15,
 
-
     /// <summary>
     /// Artillery
     /// </summary>

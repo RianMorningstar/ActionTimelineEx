@@ -1,4 +1,5 @@
 ﻿using ActionTimelineEx.Configurations;
+using ActionTimelineEx.Timeline;
 using ActionTimelineEx.Windows;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
@@ -109,12 +110,26 @@ internal static class RotationHelper
     {
         if (!Player.Available) return;
         if (set.Source.EntityId != Player.Object.EntityId || !Plugin.Settings.DrawRotation) return;
-        if (set.Action == null) return;
+        if ((ActionCate)(set.Action?.ActionCategory.Value?.RowId ?? 0) is ActionCate.AutoAttack) return; //Auto Attack.
+
+        if (Plugin.Settings.RecordRotation)
+        {
+            RecordRotation(set);
+            return;
+        }
 
         var action = ActiveAction;
         if (action == null) return;
 
-        var succeed = set.Action.RowId == action.ActionId;
+        bool succeed = set.Header.ActionID == action.ActionId;
+        switch (set.Header.ActionType)
+        {
+            case FFXIVClientStructs.FFXIV.Client.Game.ActionType.Action when action.Type != ActionSettingType.Action:
+            case FFXIVClientStructs.FFXIV.Client.Game.ActionType.Item when action.Type != ActionSettingType.Item:
+                succeed = false;
+                break;
+
+        }
         if (succeed)
         {
             SuccessCount++;
@@ -125,6 +140,32 @@ internal static class RotationHelper
         }
         Count++;
     }
+
+    private static void RecordRotation(in ActionEffectSet set)
+    {
+        ActionSettingType? type = null;
+
+        switch (set.Header.ActionType)
+        {
+            case FFXIVClientStructs.FFXIV.Client.Game.ActionType.Action:
+                type = ActionSettingType.Action;
+                break;
+
+            case FFXIVClientStructs.FFXIV.Client.Game.ActionType.Item:
+                type = ActionSettingType.Item;
+                break;
+        }
+
+        if (type != null)
+        {
+            RotationSetting.Actions.Add(new ActionSetting()
+            {
+                ActionId = set.Header.ActionID,
+                Type = type.Value,
+            });
+        }
+    }
+
 
     public static void Clear()
     {

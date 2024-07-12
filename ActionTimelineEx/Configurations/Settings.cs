@@ -102,6 +102,10 @@ public class Settings : IPluginConfiguration
         }
     }
 
+    [JsonIgnore]
+    [UI("Record Rotation", 2)]
+    public bool RecordRotation { get; set; } = false;
+
     [JsonProperty]
     private Dictionary<uint, Dictionary<Job, RotationsSetting>> _rotationHelpers = [];
 

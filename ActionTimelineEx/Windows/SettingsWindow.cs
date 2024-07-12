@@ -51,6 +51,7 @@ public class SettingsWindow : ConfigWindow
 
     public override void OnClose()
     {
+        Settings.RecordRotation = false;
         Settings.Save();
         base.OnClose();
     }
