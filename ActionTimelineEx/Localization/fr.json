@@ -105,5 +105,12 @@
   "XIVConfigUI.Attributes.ConfigUnitType.Percent": "Ratio Unit, as percentage.",
   "XIVConfigUI.Attributes.ConfigUnitType.Pixels": "Display Unit, in pixels.",
   "ActionTimelineEx.Punchline": "Show your actions in real-time.",
-  "ActionTimelineEx.Description": "Configurable timeline display of all the actions you use."
+  "ActionTimelineEx.Description": "Configurable timeline display of all the actions you use.",
+  "ActionTimelineEx.Windows.ChangeLogItem": "ChangeLog",
+  "ActionTimeline.SettingsName.DrawRotation": "Draw Rotation",
+  "ActionTimeline.SettingsName.RotationChoice": "Rotation Choice",
+  "ActionTimeline.SettingsName.RotationName": "Rotation Name",
+  "ActionTimeline.SettingsName.RotationCount": "Rotation Count",
+  "ActionTimeline.SettingsName.RotationHighlightColor": "Rotation Highlight Color",
+  "ActionTimeline.SettingsName.Position": "Rotation Position"
 }
