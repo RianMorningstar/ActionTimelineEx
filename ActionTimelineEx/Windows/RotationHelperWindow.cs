@@ -46,7 +46,7 @@ internal static class RotationHelperWindow
         var spacing = Plugin.Settings.IconSpacing;
         var drawList = ImGui.GetWindowDrawList();
 
-        var pos = ImGui.GetWindowPos() + new Vector2(0, ImGui.GetWindowSize().Y / 2 - gcdHeight / 2);
+        var pos = ImGui.GetWindowPos() + new Vector2(gcdHeight * 0.2f, ImGui.GetWindowSize().Y / 2 - gcdHeight / 2);
         var maxX = pos.X + ImGui.GetWindowSize().X;
 
         bool isFirst = true;

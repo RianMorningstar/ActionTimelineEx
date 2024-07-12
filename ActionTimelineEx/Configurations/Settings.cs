@@ -101,6 +101,9 @@ public class Settings : IPluginConfiguration
     [UI("Icon Spacing", Parent = nameof(DrawRotation))]
     public int IconSpacing { get; set; } = 5;
 
+    [UI("Show the wrong clicking", Parent = nameof(DrawRotation))]
+    public bool ShowWrongClick { get; set; } = true;
+
     [JsonProperty]
     private Dictionary<uint, Dictionary<Job, RotationsSetting>> _rotationHelpers = [];
 

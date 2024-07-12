@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ActionTimelineEx.Configurations;
+﻿namespace ActionTimelineEx.Configurations;
 
 public class RotationsSetting
 {

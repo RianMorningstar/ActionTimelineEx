@@ -112,5 +112,21 @@
   "ActionTimeline.SettingsName.RotationName": "Rotation Name",
   "ActionTimeline.SettingsName.RotationCount": "Rotation Count",
   "ActionTimeline.SettingsName.RotationHighlightColor": "Rotation Highlight Color",
-  "ActionTimeline.SettingsName.Position": "Rotation Position"
+  "ActionTimeline.SettingsName.Position": "Rotation Position",
+  "ActionTimeline.SettingsName.RotationLocked": "Locked",
+  "ActionTimeline.SettingsName.RotationLockedBackgroundColor": "Locked Background Color",
+  "ActionTimeline.SettingsName.RotationUnlockedBackgroundColor": "Unlocked Background Color",
+  "ActionTimeline.SettingsName.GCDIconSize": "GCD Icon Size",
+  "ActionTimeline.SettingsName.OGCDIconSize": "Off GCD Icon Size",
+  "ActionTimeline.SettingsName.IconSpacing": "Icon Spacing",
+  "ActionTimelineEx.Configurations.UiString.RotationSetting": "Rotation Setting",
+  "ActionTimelineEx.Configurations.UiString.Rotation": "Rotation",
+  "ActionTimelineEx.Windows.RotationHelperItem": "Rotation Helper",
+  "ActionTimelineEx.Configurations.ActionSetting": "ActionSetting",
+  "ActionTimelineEx.Configurations.ActionSettingType.Action": "Action",
+  "ActionTimelineEx.Configurations.ActionSettingType.Item": "Item",
+  "ActionTimelineEx.Configurations.ActionSettingName.Type": "Type",
+  "ActionTimelineEx.Configurations.ActionSettingName.Id": "Id",
+  "ActionTimelineEx.Configurations.ActionSettingDescription": "Maim (GCD)",
+  "ActionTimelineEx.Configurations.UiString.RotationReset": "Reset Count"
 }

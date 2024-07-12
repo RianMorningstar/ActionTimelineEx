@@ -76,7 +76,6 @@ public class Plugin : IDalamudPlugin
         Svc.PluginInterface.UiBuilder.OpenMainUi += OpenConfigUi;
 
         TimelineManager.Initialize();
-        RotationHelper.Init();
 
         try
         {
@@ -87,6 +86,7 @@ public class Plugin : IDalamudPlugin
             Settings = new Settings();
         }
 
+        RotationHelper.Init();
         CreateWindows();
     }
 

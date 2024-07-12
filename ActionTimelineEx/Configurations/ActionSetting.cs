@@ -1,11 +1,7 @@
 ﻿using ActionTimeline.Helpers;
-using Dalamud.Plugin.Services;
 using ECommons.DalamudServices;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using ImGuiNET;
-using System.Drawing;
 using System.Numerics;
-using System.Xml.Linq;
 using XIVConfigUI.Attributes;
 
 namespace ActionTimelineEx.Configurations;
@@ -26,6 +22,12 @@ internal class ActionSettingAttribute() : ListUIAttribute(0)
 
         //TODO: Change the acion ID...
     }
+
+    public override string GetDescription(object obj)
+    {
+        if (obj is not ActionSetting setting) return base.GetDescription(obj);
+        return setting.DisplayName;
+    }
 }
 
 public enum ActionSettingType : byte
@@ -40,12 +42,10 @@ public class ActionSetting
     internal uint IconId { get; private set; } = 0;
     internal bool IsGCD { get; private set; } = false;
 
-    [UI("Name")]
     internal string DisplayName { get; private set; } = "";
 
     private uint _actionId;
 
-    [UI("Id")]
     public uint ActionId 
     {
         get => _actionId;
@@ -57,7 +57,8 @@ public class ActionSetting
             Update();
         }
     }
-
+    [JsonIgnore, UI("Id")]
+    public int Id { get => (int)ActionId; set => ActionId = (uint) value; }
     private ActionSettingType _type;
 
     [UI("Type")]
@@ -104,7 +105,7 @@ public class ActionSetting
 
             IsGCD = action.CooldownGroup == 58 || action.AdditionalCooldownGroup == 58;
 
-            IconId = action.Icon;
+            IconId = GetActionIcon(action);
             DisplayName = $"{action.Name} ({(IsGCD ? "GCD" : "Ability")})";
         }
 
@@ -120,5 +121,16 @@ public class ActionSetting
     {
         drawList.DrawActionIcon(IconId, Type is ActionSettingType.Item, point, size);
         if (!string.IsNullOrEmpty(DisplayName) && DrawHelper.IsInRect(point, new Vector2(size))) ImGui.SetTooltip(DisplayName);
+    }
+
+    private static uint GetActionIcon(Lumina.Excel.GeneratedSheets.Action action)
+    {
+        var isGAction = action.ActionCategory.Row is 10 or 11;
+        if (!isGAction) return action.Icon;
+
+        var gAct = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.GeneralAction>()?.FirstOrDefault(g => g.Action.Row == action.RowId);
+
+        if (gAct == null) return action.Icon;
+        return (uint)gAct.Icon;
     }
 }

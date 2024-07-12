@@ -5,6 +5,7 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Textures.TextureWraps;
 using Dalamud.Interface.Utility.Raii;
 using ECommons.DalamudServices;
+using ECommons.GameHelpers;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System.ComponentModel;
@@ -38,12 +39,21 @@ internal class RotationHelperItem() : ConfigWindowItem
 
         _group ??= new CollapsingHeaderGroup(new()
         {
-            { () => UiString.RotationSetting.Local(), () => window.Collection.DrawItems(1) },
+            { () => UiString.RotationSetting.Local(), () =>  DrawSetting(window) },
             { () => UiString.Rotation.Local(), () => ConditionDrawer.Draw(setting.RotationSetting.Actions) },
         });
 
         _group.Draw();
         base.Draw(window);
+    }
+
+    private static void DrawSetting(ConfigWindow window)
+    {
+        if (ImGui.Button(UiString.RotationReset.Local()))
+        {
+            RotationHelper.Clear();
+        }
+        window.Collection.DrawItems(1);
     }
 
     private static void DrawTerritoryHeader()
@@ -56,14 +66,28 @@ internal class RotationHelperItem() : ConfigWindowItem
         var name = GetName(rightTerritory);
 
         var imFont = DrawingExtensions.GetFont(21);
-        float width = 0;
+        float width = 0, height = 0;
         using (var font = ImRaii.PushFont(imFont))
         {
             width = ImGui.CalcTextSize(name).X + (ImGui.GetStyle().ItemSpacing.X * 2);
+            height = ImGui.CalcTextSize(name).Y + (ImGui.GetStyle().ItemSpacing.Y * 2);
+        }
+
+        var HasJob = ImageLoader.GetTexture(62100 + Player.Object.ClassJob.Id, out var jobTexture);
+
+        if (HasJob)
+        {
+            width += height + ImGui.GetStyle().ItemSpacing.X;
         }
 
         ImGuiHelper.DrawItemMiddle(() =>
         {
+            if (HasJob)
+            {
+                ImGui.Image(jobTexture.ImGuiHandle, Vector2.One * height);
+                ImGui.SameLine();
+            }
+
             var territories = _territories ?? [];
             var index = Array.IndexOf(territories, rightTerritory);
             if (ImGuiHelper.SelectableCombo("##Choice the specific dungeon", [.. territories.Select(GetName)], ref index, imFont, ImGuiColors.DalamudYellow))
@@ -77,7 +101,7 @@ internal class RotationHelperItem() : ConfigWindowItem
         static string GetName(TerritoryType? territory)
         {
             var str = territory?.ContentFinderCondition?.Value?.Name?.RawString;
-            if (string.IsNullOrEmpty(str)) str = territory?.Name?.RawString;
+            if (string.IsNullOrEmpty(str)) str = territory?.PlaceName?.Value?.Name?.RawString;
             if (string.IsNullOrEmpty(str)) return "Unnamed Territory";
             return str;
         }
