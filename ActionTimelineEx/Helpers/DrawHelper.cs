@@ -1,4 +1,5 @@
-﻿using Dalamud.Interface.Textures;
+﻿using ActionTimelineEx.Configurations;
+using Dalamud.Interface.Textures;
 using Dalamud.Interface.Textures.TextureWraps;
 using ECommons.DalamudServices;
 using ImGuiNET;
@@ -25,12 +26,6 @@ internal static class DrawHelper
             drawList.AddImage(frameText.ImGuiHandle, coverPos, coverPos + new Vector2(pixPerUnit * 88, pixPerUnit * 96),
                 new Vector2(4f / frameText.Width, 0f / frameText.Height), new Vector2(92f / frameText.Width, 96f / frameText.Height));
         }
-    }
-
-    public static Vector4 ChangeAlpha(this Vector4 color, float alpha)
-    {
-        color.Z = alpha;
-        return color;
     }
 
     public static IDalamudTextureWrap? GetTextureFromIconId(uint iconId, bool highQuality = true)

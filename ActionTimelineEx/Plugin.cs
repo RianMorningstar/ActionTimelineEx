@@ -1,7 +1,8 @@
-﻿using ActionTimeline.Helpers;
-using ActionTimeline.Timeline;
+﻿using ActionTimeline.Timeline;
 using ActionTimeline.Windows;
 using ActionTimelineEx.Configurations;
+using ActionTimelineEx.Helpers;
+using ActionTimelineEx.Windows;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
@@ -9,6 +10,7 @@ using ECommons;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using XIVConfigUI;
+using XIVDrawer;
 
 namespace ActionTimeline;
 
@@ -67,12 +69,14 @@ public class Plugin : IDalamudPlugin
     {
         ECommonsMain.Init(pluginInterface, this);
         XIVConfigUIMain.Init(pluginInterface, "/atle", "Opens the ActionTimelineEx configuration window.", PluginCommand, typeof(Settings), typeof(DrawingSettings), typeof(GroupItem), typeof(UiString));
+        XIVDrawerMain.Init(pluginInterface, "ActionTimelineExOverlay");
 
         Svc.PluginInterface.UiBuilder.Draw += Draw;
         Svc.PluginInterface.UiBuilder.OpenConfigUi += OpenConfigUi;
         Svc.PluginInterface.UiBuilder.OpenMainUi += OpenConfigUi;
 
         TimelineManager.Initialize();
+        RotationHelper.Init();
 
         try
         {
@@ -91,10 +95,12 @@ public class Plugin : IDalamudPlugin
         Settings.Save();
 
         TimelineManager.Instance?.Dispose();
+        RotationHelper.Dispose();
 
         _windowSystem.RemoveAllWindows();
 
         XIVConfigUIMain.Dispose();
+        XIVDrawerMain.Dispose();
         ECommonsMain.Dispose();
 
         Svc.PluginInterface.UiBuilder.Draw -= Draw;
@@ -130,6 +136,7 @@ public class Plugin : IDalamudPlugin
         {
             TimelineWindow.Draw(setting, index++);
         }
+        RotationHelperWindow.Draw();
     }
 
     private static bool ShowTimeline()

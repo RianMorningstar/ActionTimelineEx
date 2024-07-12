@@ -161,6 +161,9 @@ public class TimelineManager : IDisposable
             case ActionType.Item:
                 var item = Svc.Data.GetExcelSheet<Item>()?.GetRow(actionId);
                 return item?.CastTimes > 0 ? TimelineItemType.GCD : TimelineItemType.OGCD;
+
+            case ActionType.Mount:
+                return TimelineItemType.GCD;
         }
 
         return TimelineItemType.OGCD;
@@ -268,7 +271,7 @@ public class TimelineManager : IDisposable
             && _lastItem.State == TimelineItemState.Casting) // Finish the casting.
         {
             _lastItem.AnimationLockTime = set.Header.AnimationLockTime;
-            _lastItem.Name = set.Name;
+            _lastItem.Name = $"{set.Name} ({set.Header.ActionID})";
             _lastItem.Icon = set.IconId;
             _lastItem.Damage = damage;
             _lastItem.State = TimelineItemState.Finished;
@@ -281,7 +284,7 @@ public class TimelineManager : IDisposable
                 AnimationLockTime = type == TimelineItemType.AutoAttack ? 0 : set.Header.AnimationLockTime,
                 GCDTime = type == TimelineItemType.GCD ? GCD : 0,
                 Type = type,
-                Name = set.Name,
+                Name = $"{set.Name} ({set.Header.ActionID})",
                 Icon = set.IconId,
                 Damage = damage,
                 State = TimelineItemState.Finished,

@@ -25,4 +25,10 @@ internal enum UiString
 
     [Description("Remove this Item:")]
     RemoveDesc,
+
+    [Description("Rotation Setting")]
+    RotationSetting,
+
+    [Description("Rotation")]
+    Rotation,
 }

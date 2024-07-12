@@ -9,7 +9,7 @@ namespace ActionTimeline.Windows;
 
 internal static class TimelineWindow
 {
-    private const ImGuiWindowFlags _baseFlags = ImGuiWindowFlags.NoScrollbar
+    internal const ImGuiWindowFlags _baseFlags = ImGuiWindowFlags.NoScrollbar
                                         | ImGuiWindowFlags.NoCollapse
                                         | ImGuiWindowFlags.NoTitleBar
                                         | ImGuiWindowFlags.NoNav
@@ -41,7 +41,6 @@ internal static class TimelineWindow
         }
 
         ImGui.PopStyleVar(2);
-
         ImGui.PopStyleColor();
     }
 

@@ -91,7 +91,7 @@ public class TimelineItem : ITimelineItem
             case TimelineLayer.Icon:
                 var pos = centerPos - iconSize / 2 * setting.RealDownDirection;
                 drawList.DrawActionIcon(Icon, IsHq, pos, iconSize);
-                if (!string.IsNullOrEmpty(Name) && DrawHelper.IsInRect(pos, new Vector2( iconSize))) ImGui.SetTooltip(Name);
+                if (!string.IsNullOrEmpty(Name) && DrawHelper.IsInRect(pos, new Vector2(iconSize))) ImGui.SetTooltip(Name);
 
                 return;
 
