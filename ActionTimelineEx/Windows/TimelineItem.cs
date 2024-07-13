@@ -38,9 +38,9 @@ internal class TimelineItem(DrawingSettings setting, Action clearItems) : Config
         _extraHeader?.Draw();
     }
 
-    private string _undoName = string.Empty;
-    private DateTime _lastTime = DateTime.MinValue;
-    private bool RemoveValue(string name)
+    private static string _undoName = string.Empty;
+    private static DateTime _lastTime = DateTime.MinValue;
+    internal static bool RemoveValue(string name)
     {
         bool isLast = false, isTime = false;
 

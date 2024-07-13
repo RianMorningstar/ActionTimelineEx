@@ -47,6 +47,13 @@ internal class RotationHelperItem() : ConfigWindowItem
 
         ImGui.SameLine();
 
+        if (TimelineItem.RemoveValue(setting.RotationSetting.Name))
+        {
+            setting.RotationSettings.Remove(setting.RotationSetting);
+        }
+
+        ImGui.SameLine();
+
         window.Collection.DrawItems(3);
 
         _group ??= new CollapsingHeaderGroup(new()
