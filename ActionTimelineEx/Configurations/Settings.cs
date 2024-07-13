@@ -79,7 +79,7 @@ public class Settings : IPluginConfiguration
 
     [JsonIgnore]
     [TimelineChoices]
-    [UI("Rotation Choice", 2)]
+    [UI("Rotation Choice", Parent = nameof(DrawRotation))]
     public string RotationChoice
     {
         get => EditSetting?.Choice ?? "Default";
@@ -87,18 +87,6 @@ public class Settings : IPluginConfiguration
         {
             if (EditSetting == null) return;
             EditSetting.Choice = value;
-        }
-    }
-
-    [JsonIgnore]
-    [UI("Rotation Name", 2)]
-    public string RotationName
-    {
-        get => EditSetting?.RotationSetting.Name ?? "Default";
-        set
-        {
-            if (EditSetting == null) return;
-            EditSetting.RotationSetting.Name = value;
         }
     }
 

@@ -132,5 +132,11 @@
   "ActionTimelineEx.Description": "Configurable timeline display of all the actions you use.",
   "ActionTimelineEx.Configurations.UiString.AddOneRotation": "Add One Rotation",
   "XIVConfigUI.LocalString.Add": "Add",
-  "ActionTimelineEx.Configurations.ActionSettingName.IsLast": "Is the Last Ability during GCD"
+  "ActionTimelineEx.Configurations.ActionSettingName.IsLast": "Is the Last Ability during GCD",
+  "ActionTimelineEx.Configurations.RotationSettingName.Name": "Rotation Name",
+  "ActionTimelineEx.Configurations.RotationSettingName.Actions": "Actions",
+  "ActionTimelineEx.Configurations.RotationSettingName.IgnoreActions": "Ignore Actions",
+  "ActionTimelineEx.Configurations.ActionBaseName.Id": "Id",
+  "ActionTimelineEx.Configurations.ActionBaseName.Type": "Type",
+  "ActionTimelineEx.Configurations.ActionBase": "ActionBase"
 }

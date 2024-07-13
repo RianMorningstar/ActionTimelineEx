@@ -44,7 +44,7 @@ internal static class RotationHelper
         var action = ActiveAction;
         if (action == null) return;
 
-        HotbarID? hotbar = null;
+        HotbarID? hotBar = null;
 
         switch (action.Type)
         {
@@ -55,21 +55,21 @@ internal static class RotationHelper
                     var gAct = Svc.Data.GetExcelSheet<GeneralAction>()?.FirstOrDefault(g => g.Action.Row == action.ActionId);
                     if (gAct != null)
                     {
-                        hotbar = new HotbarID(FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureHotbarModule.HotbarSlotType.GeneralAction, gAct.RowId);
+                        hotBar = new HotbarID(FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureHotbarModule.HotbarSlotType.GeneralAction, gAct.RowId);
                         break;
                     }
                 }
 
-                hotbar = new HotbarID(FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureHotbarModule.HotbarSlotType.Action, action.ActionId);
+                hotBar = new HotbarID(FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureHotbarModule.HotbarSlotType.Action, action.ActionId);
                 break;
 
             case ActionSettingType.Item:
-                hotbar = new HotbarID(FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureHotbarModule.HotbarSlotType.Item, action.ActionId);
+                hotBar = new HotbarID(FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureHotbarModule.HotbarSlotType.Item, action.ActionId);
                 break;
         }
 
-        if (hotbar == null) return;
-        _highLight.HotbarIDs.Add(hotbar.Value);
+        if (hotBar == null) return;
+        _highLight.HotbarIDs.Add(hotBar.Value);
     }
 
     public static void Init()
@@ -112,25 +112,25 @@ internal static class RotationHelper
         if (set.Source.EntityId != Player.Object.EntityId || !Plugin.Settings.DrawRotation) return;
         if ((ActionCate)(set.Action?.ActionCategory.Value?.RowId ?? 0) is ActionCate.AutoAttack) return; //Auto Attack.
 
+        var actionSettingType = (ActionSettingType)(byte)set.Header.ActionType;
+        if (!Enum.IsDefined(typeof(ActionSettingType), actionSettingType)) return;
+        var actionId = set.Header.ActionID;
+
         if (Plugin.Settings.RecordRotation)
         {
-            RecordRotation(set);
+            RecordRotation(actionId, actionSettingType);
             return;
         }
 
         var action = ActiveAction;
         if (action == null) return;
 
-        bool succeed = set.Header.ActionID == action.ActionId;
-        switch (set.Header.ActionType)
+        foreach (var act in RotationSetting.IgnoreActions)
         {
-            case FFXIVClientStructs.FFXIV.Client.Game.ActionType.Action when action.Type != ActionSettingType.Action:
-            case FFXIVClientStructs.FFXIV.Client.Game.ActionType.Item when action.Type != ActionSettingType.Item:
-                succeed = false;
-                break;
-
+            if (act.IsMatched(actionId, actionSettingType)) return;
         }
-        if (succeed)
+
+        if (action.IsMatched(actionId, actionSettingType))
         {
             SuccessCount++;
         }
@@ -141,29 +141,13 @@ internal static class RotationHelper
         Count++;
     }
 
-    private static void RecordRotation(in ActionEffectSet set)
+    private static void RecordRotation(uint actionId, ActionSettingType type)
     {
-        ActionSettingType? type = null;
-
-        switch (set.Header.ActionType)
+        RotationSetting.Actions.Add(new ActionSetting()
         {
-            case FFXIVClientStructs.FFXIV.Client.Game.ActionType.Action:
-                type = ActionSettingType.Action;
-                break;
-
-            case FFXIVClientStructs.FFXIV.Client.Game.ActionType.Item:
-                type = ActionSettingType.Item;
-                break;
-        }
-
-        if (type != null)
-        {
-            RotationSetting.Actions.Add(new ActionSetting()
-            {
-                ActionId = set.Header.ActionID,
-                Type = type.Value,
-            });
-        }
+            ActionId = actionId,
+            Type = type,
+        });
     }
 
 

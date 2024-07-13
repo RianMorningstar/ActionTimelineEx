@@ -91,7 +91,10 @@ internal class RotationHelperItem() : ConfigWindowItem
 
 
         window.Collection.DrawItems(2);
-        ConditionDrawer.Draw(setting.RotationSetting.Actions);
+
+        ImGui.Separator();
+
+        ConditionDrawer.Draw(setting.RotationSetting);
     }
 
     private static void DrawTerritoryHeader()

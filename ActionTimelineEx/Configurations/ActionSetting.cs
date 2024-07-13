@@ -20,7 +20,7 @@ internal class ActionSettingAttribute() : ListUIAttribute(0)
         base.OnClick(obj);
         if (obj is not ActionSetting setting) return;
 
-        //TODO: Change the acion ID...
+        //TODO: Change the action ID...
     }
 
     public override string GetDescription(object obj)
@@ -49,7 +49,7 @@ public class ActionSetting
 
     private uint _actionId;
 
-    public uint ActionId 
+    public uint ActionId
     {
         get => _actionId;
         set
@@ -60,8 +60,9 @@ public class ActionSetting
             Update();
         }
     }
+
     [JsonIgnore, UI("Id")]
-    public int Id { get => (int)ActionId; set => ActionId = (uint) value; }
+    public int Id { get => (int)ActionId; set => ActionId = (uint)value; }
     private ActionSettingType _type;
 
     [UI("Type")]
@@ -76,7 +77,6 @@ public class ActionSetting
             Update();
         }
     }
-
     internal bool Is0GCD => !IsGCD;
 
     [JsonProperty]
@@ -84,12 +84,11 @@ public class ActionSetting
 
     [JsonIgnore]
     [UI("Is the Last Ability during GCD", Parent = nameof(Is0GCD))]
-    public bool IsLast 
+    public bool IsLast
     {
         get => _isLast && Is0GCD;
         set => _isLast = value;
     }
-
     private void Update()
     {
         ClearData();
@@ -133,12 +132,6 @@ public class ActionSetting
         }
     }
 
-    public void Draw(ImDrawListPtr drawList, Vector2 point, float size)
-    {
-        drawList.DrawActionIcon(IconId, Type is ActionSettingType.Item, point, size);
-        if (!string.IsNullOrEmpty(DisplayName) && DrawHelper.IsInRect(point, new Vector2(size))) ImGui.SetTooltip(DisplayName);
-    }
-
     private static uint GetActionIcon(Lumina.Excel.GeneratedSheets.Action action)
     {
         var isGAction = action.ActionCategory.Row is 10 or 11;
@@ -148,5 +141,16 @@ public class ActionSetting
 
         if (gAct == null) return action.Icon;
         return (uint)gAct.Icon;
+    }
+
+    public void Draw(ImDrawListPtr drawList, Vector2 point, float size)
+    {
+        drawList.DrawActionIcon(IconId, Type is ActionSettingType.Item, point, size);
+        if (!string.IsNullOrEmpty(DisplayName) && DrawHelper.IsInRect(point, new Vector2(size))) ImGui.SetTooltip(DisplayName);
+    }
+
+    public bool IsMatched(uint id, ActionSettingType type)
+    {
+        return id == ActionId && type == Type;
     }
 }
