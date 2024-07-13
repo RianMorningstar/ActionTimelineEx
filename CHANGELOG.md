@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.4](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.3...v1.4.4) (2024-07-13)
+
+
+### Bug Fixes
+
+* add 0gcd last option. ([4bcbbe7](https://github.com/ArchiDog1998/ActionTimelineEx/commit/4bcbbe7b73e404d5ca81b325c97eff437b16131d))
+* add Ignore Actions for Rotation Helper. ([e9ba8e1](https://github.com/ArchiDog1998/ActionTimelineEx/commit/e9ba8e16e9acc10d76a22e1f580983e033fb48f1))
+* add vertical draw option. ([7543600](https://github.com/ArchiDog1998/ActionTimelineEx/commit/7543600d058fca84824692c3ce934016b0b7b1a0))
+
 ## [1.4.3](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.2...v1.4.3) (2024-07-12)
 
 
