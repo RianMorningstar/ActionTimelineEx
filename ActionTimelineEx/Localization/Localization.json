@@ -138,5 +138,6 @@
   "ActionTimelineEx.Configurations.RotationSettingName.IgnoreActions": "Ignore Actions",
   "ActionTimelineEx.Configurations.ActionBaseName.Id": "Id",
   "ActionTimelineEx.Configurations.ActionBaseName.Type": "Type",
-  "ActionTimelineEx.Configurations.ActionBase": "ActionBase"
+  "ActionTimelineEx.Configurations.ActionBase": "ActionBase",
+  "ActionTimelineEx.Configurations.SettingsName.VerticalDraw": "Draw the rotation Vertically"
 }

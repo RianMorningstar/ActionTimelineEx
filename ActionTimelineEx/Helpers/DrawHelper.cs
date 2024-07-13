@@ -10,7 +10,7 @@ namespace ActionTimelineEx.Helpers;
 
 internal static class DrawHelper
 {
-    public static void DrawActionIcon(this ImDrawListPtr drawList, uint iconId, bool isHq, Vector2 position, float size)
+    public static void DrawActionIcon(this ImDrawListPtr drawList, uint iconId, bool isHq, Vector2 position, float size, bool isLast = false)
     {
         IDalamudTextureWrap? texture = GetTextureFromIconId(iconId, isHq);
         if (texture == null) return;
@@ -22,8 +22,16 @@ internal static class DrawHelper
         if (ImageLoader.GetTexture("ui/uld/icona_frame_hr1.tex", out var frameText))
         {
             var coverPos = position - new Vector2(pixPerUnit * 3, pixPerUnit * 4);
+
+            var start = new Vector2(4f / frameText.Width, 0f / frameText.Height);
+
+            if (isLast)
+            {
+                start += new Vector2(96f / frameText.Width * 2, 96f / frameText.Height * 0);
+            }
+
             drawList.AddImage(frameText.ImGuiHandle, coverPos, coverPos + new Vector2(pixPerUnit * 88, pixPerUnit * 96),
-                new Vector2(4f / frameText.Width, 0f / frameText.Height), new Vector2(92f / frameText.Width, 96f / frameText.Height));
+               start, start + new Vector2(88f / frameText.Width, 94f / frameText.Height));
         }
     }
 

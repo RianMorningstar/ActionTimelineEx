@@ -44,22 +44,33 @@ internal static class RotationHelperWindow
         var spacing = Plugin.Settings.IconSpacing;
         var drawList = ImGui.GetWindowDrawList();
 
-        var pos = ImGui.GetWindowPos() + new Vector2(gcdHeight * 0.2f, ImGui.GetWindowSize().Y / 2 - gcdHeight / 2);
-        var maxX = pos.X + ImGui.GetWindowSize().X;
+        var pos = ImGui.GetWindowPos() + new Vector2(gcdHeight * 0.2f,
+            Plugin.Settings.VerticalDraw ? gcdHeight * 0.2f : ImGui.GetWindowSize().Y / 2 - gcdHeight / 2);
+        var maxX = ImGui.GetWindowPos().X + ImGui.GetWindowSize().X;
+        var maxY = ImGui.GetWindowPos().Y + ImGui.GetWindowSize().Y;
+        var minPosX = pos.X;
 
         bool isFirst = true;
         foreach (var item in RotationHelper.Actions)
         {
             var size = item.IsGCD ? gcdHeight : ogcdHeight;
+
+            if (item.IsGCD && Plugin.Settings.VerticalDraw && !isFirst)
+            {
+                pos.X = minPosX;
+                pos.Y += gcdHeight + spacing;
+            }
+
             item.Draw(drawList, pos, size);
             if (isFirst)
             {
                 drawList.DrawSlotHighlight(pos, size, ImGui.ColorConvertFloat4ToU32(Plugin.Settings.RotationHighlightColor));
                 isFirst = false;
             }
+
             pos += new Vector2(size + spacing, 0);
 
-            if (pos.X >= maxX) break;
+            if (pos.X >= maxX || pos.Y >= maxY) break;
         }
     }
 }

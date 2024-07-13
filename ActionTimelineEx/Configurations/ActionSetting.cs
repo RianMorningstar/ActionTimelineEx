@@ -145,7 +145,7 @@ public class ActionSetting
 
     public void Draw(ImDrawListPtr drawList, Vector2 point, float size)
     {
-        drawList.DrawActionIcon(IconId, Type is ActionSettingType.Item, point, size);
+        drawList.DrawActionIcon(IconId, Type is ActionSettingType.Item, point, size, IsLast);
         if (!string.IsNullOrEmpty(DisplayName) && DrawHelper.IsInRect(point, new Vector2(size))) ImGui.SetTooltip(DisplayName);
     }
 

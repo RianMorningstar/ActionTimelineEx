@@ -77,6 +77,9 @@ public class Settings : IPluginConfiguration
     [UI("Show the wrong clicking", Parent = nameof(DrawRotation))]
     public bool ShowWrongClick { get; set; } = true;
 
+    [UI("Draw the rotation Vertically", Parent = nameof(DrawRotation))]
+    public bool VerticalDraw { get; set; } = false;
+
     [JsonIgnore]
     [TimelineChoices]
     [UI("Rotation Choice", Parent = nameof(DrawRotation))]
