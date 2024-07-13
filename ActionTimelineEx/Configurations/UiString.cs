@@ -34,4 +34,7 @@ internal enum UiString
 
     [Description("Reset Count")]
     RotationReset,
+
+    [Description("Add One Rotation")]
+    AddOneRotation,
 }

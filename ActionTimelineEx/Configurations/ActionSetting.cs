@@ -30,10 +30,13 @@ internal class ActionSettingAttribute() : ListUIAttribute(0)
     }
 }
 
+/// <summary>
+/// From https://github.com/aers/FFXIVClientStructs/blob/main/FFXIVClientStructs/FFXIV/Client/Game/ActionManager.cs#L373-L395
+/// </summary>
 public enum ActionSettingType : byte
 {
-    Action,
-    Item,
+    Action = 0x01, // Spell, Weaponskill, Ability. Confusing name, I know.
+    Item = 0x02,
 }
 
 [ActionSetting]
@@ -72,6 +75,19 @@ public class ActionSetting
 
             Update();
         }
+    }
+
+    internal bool Is0GCD => !IsGCD;
+
+    [JsonProperty]
+    private bool _isLast = false;
+
+    [JsonIgnore]
+    [UI("Is the Last Ability during GCD", Parent = nameof(Is0GCD))]
+    public bool IsLast 
+    {
+        get => _isLast && Is0GCD;
+        set => _isLast = value;
     }
 
     private void Update()

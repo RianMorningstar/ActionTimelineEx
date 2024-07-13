@@ -41,7 +41,7 @@ internal class RotationHelperItem() : ConfigWindowItem
         _group ??= new CollapsingHeaderGroup(new()
         {
             { () => UiString.RotationSetting.Local(), () =>  DrawSetting(window) },
-            { () => UiString.Rotation.Local(), () => DrawRotation(window, setting.RotationSetting)},
+            { () => UiString.Rotation.Local(), () => DrawRotation(window, setting)},
         });
 
         _group.Draw();
@@ -53,7 +53,7 @@ internal class RotationHelperItem() : ConfigWindowItem
         window.Collection.DrawItems(1);
     }
 
-    private static void DrawRotation(ConfigWindow window, RotationSetting setting)
+    private static void DrawRotation(ConfigWindow window, RotationsSetting setting)
     {
         if (ImGui.Button(UiString.RotationReset.Local()))
         {
@@ -62,9 +62,14 @@ internal class RotationHelperItem() : ConfigWindowItem
 
         ImGui.SameLine();
 
+        if (ImGui.Button(UiString.AddOneRotation.Local()))
+        {
+            setting.RotationSettings.Add(new());
+        }
+
         if (ImGui.Button(LocalString.CopyToClipboard.Local()))
         {
-            var str = JsonHelper.SerializeObject(setting.Actions);
+            var str = JsonHelper.SerializeObject(setting.RotationSetting.Actions);
             ImGui.SetClipboardText(str);
         }
 
@@ -76,7 +81,7 @@ internal class RotationHelperItem() : ConfigWindowItem
 
             try
             {
-                setting.Actions = JsonHelper.DeserializeObject<List<ActionSetting>>(str)!;
+                setting.RotationSetting.Actions = JsonHelper.DeserializeObject<List<ActionSetting>>(str)!;
             }
             catch (Exception ex)
             {
@@ -84,8 +89,9 @@ internal class RotationHelperItem() : ConfigWindowItem
             }
         }
 
+
         window.Collection.DrawItems(2);
-        ConditionDrawer.Draw(setting.Actions);
+        ConditionDrawer.Draw(setting.RotationSetting.Actions);
     }
 
     private static void DrawTerritoryHeader()
