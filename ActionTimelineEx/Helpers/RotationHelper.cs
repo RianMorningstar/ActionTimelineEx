@@ -1,6 +1,5 @@
 ﻿using ActionTimelineEx.Configurations;
 using ActionTimelineEx.Timeline;
-using ActionTimelineEx.Windows;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ECommons.Hooks;
@@ -17,7 +16,7 @@ internal static class RotationHelper
 
     public static  IEnumerable<ActionSetting> Actions => RotationSetting.Actions.Skip((int)Count);
 
-    public static RotationSetting RotationSetting => Plugin.Settings.GetSetting(Svc.ClientState.TerritoryType).RotationSetting;
+    public static RotationSetting RotationSetting => Plugin.Settings.RotationHelper.RotationSetting;
 
     private static uint _count;
     public static uint Count 
@@ -93,11 +92,6 @@ internal static class RotationHelper
 
     private static void ClientState_TerritoryChanged(ushort obj)
     {
-        var territory = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(obj);
-        if (IsTerritoryTypeValid(territory))
-        {
-            RotationHelperItem._territoryId = obj;
-        }
         Clear();
     }
 
@@ -109,7 +103,7 @@ internal static class RotationHelper
     private static void ActionFromSelf(ActionEffectSet set)
     {
         if (!Player.Available) return;
-        if (set.Source.EntityId != Player.Object.EntityId || !Plugin.Settings.DrawRotation) return;
+        if (set.Source.EntityId != Player.Object.EntityId) return;
         if ((ActionCate)(set.Action?.ActionCategory.Value?.RowId ?? 0) is ActionCate.AutoAttack) return; //Auto Attack.
 
         var actionSettingType = (ActionSettingType)(byte)set.Header.ActionType;
@@ -121,6 +115,8 @@ internal static class RotationHelper
             RecordRotation(actionId, actionSettingType);
             return;
         }
+
+        if (!Plugin.Settings.DrawRotation) return;
 
         var action = ActiveAction;
         if (action == null) return;
@@ -154,15 +150,5 @@ internal static class RotationHelper
     public static void Clear()
     {
         Count = 0;
-    }
-
-    public static bool IsTerritoryTypeValid(TerritoryType? territory)
-    {
-        if (territory == null) return false;
-        if (territory.BattalionMode == 0) return false;
-        if (territory.IsPvpZone) return false;
-        if (territory.PlaceName.Row == 0) return false;
-
-        return true;
     }
 }

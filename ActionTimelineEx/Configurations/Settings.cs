@@ -11,7 +11,7 @@ internal class TimelineChoicesAttribute : ChoicesAttribute
 {
     protected override Pair[] GetChoices()
     {
-        return [.. Plugin.Settings.EditSetting?.RotationSettings.Select(i => i.Name)];
+        return [.. Plugin.Settings.RotationHelper?.RotationSettings.Select(i => i.Name)];
     }
 }
 
@@ -82,39 +82,35 @@ public class Settings : IPluginConfiguration
 
     [JsonIgnore]
     [TimelineChoices]
-    [UI("Rotation Choice", Parent = nameof(DrawRotation))]
-    public string RotationChoice
+    [UI("Rotation Choice", 3)]
+    public int RotationChoice
     {
-        get => EditSetting?.Choice ?? "Default";
-        set
-        {
-            if (EditSetting == null) return;
-            EditSetting.Choice = value;
-        }
+        get => RotationHelper.ChoiceIndex;
+        set => RotationHelper.ChoiceIndex = value;
     }
 
     [JsonIgnore]
     [UI("Record Rotation", 2)]
     public bool RecordRotation { get; set; } = false;
 
-    [JsonProperty]
-    private Dictionary<uint, Dictionary<Job, RotationsSetting>> _rotationHelpers = [];
+    [JsonProperty()]
+    private Dictionary<Job, RotationsSetting> _rotationHelpers = [];
 
     [JsonIgnore]
-    internal RotationsSetting? EditSetting { get; set; } = null;
+    internal RotationsSetting RotationHelper
+    {
+        get
+        {
+            if (!Player.Available) return EmptyHolder;
+
+            var job = Player.Job;
+            if (!_rotationHelpers.TryGetValue(job, out var result)) _rotationHelpers[job] = result = new();
+
+            return result;
+        }
+    }
 
     private static readonly RotationsSetting EmptyHolder = new();
-    public RotationsSetting GetSetting(uint territoryId)
-    {
-        if (!_rotationHelpers.TryGetValue(territoryId, out var dict)) _rotationHelpers[territoryId] = dict = [];
-
-        if (!Player.Available) return EmptyHolder;
-
-        var job = Player.Job;
-        if (!dict.TryGetValue(job, out var result)) dict[job] = result = new();
-
-        return result;
-    }
 
     public int Version { get; set; } = 6;
 

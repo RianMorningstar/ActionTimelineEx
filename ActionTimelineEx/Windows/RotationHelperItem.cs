@@ -1,30 +1,21 @@
 ﻿using ActionTimelineEx.Configurations;
 using ActionTimelineEx.Helpers;
-using Dalamud.Interface.Colors;
 using Dalamud.Interface.Textures.TextureWraps;
-using Dalamud.Interface.Utility.Raii;
-using Dalamud.Interface.Windowing;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Numerics;
 using XIVConfigUI;
 using XIVConfigUI.ConditionConfigs;
-using XIVDrawer;
 
 namespace ActionTimelineEx.Windows;
 
 [Description("Rotation Helper")]
 internal class RotationHelperItem() : ConfigWindowItem
 {
-    internal static uint _territoryId { get; set; } = 0;
-
     private static CollapsingHeaderGroup? _group;
-
-    private static TerritoryType[]? _territories;
 
     public override bool GetIcon(out IDalamudTextureWrap texture)
     {
@@ -33,10 +24,30 @@ internal class RotationHelperItem() : ConfigWindowItem
 
     public override void Draw(ConfigWindow window)
     {
-        var setting = Plugin.Settings.GetSetting(_territoryId);
-        Plugin.Settings.EditSetting = setting;
+        if (!Player.Available) return;
 
-        DrawTerritoryHeader();
+        var setting = Plugin.Settings.RotationHelper;
+
+        if (ImageLoader.GetTexture(62100 + Player.Object.ClassJob.Id, out var jobTexture))
+        {
+            ImGuiHelper.DrawItemMiddle(() =>
+            {
+                ImGui.Image(jobTexture.ImGuiHandle, Vector2.One * 50);
+
+            }, ImGui.GetWindowWidth(), 50);
+        }
+
+        if (ImGui.Button(UiString.AddOneRotation.Local()))
+        {
+            setting.RotationSettings.Add(new()
+            {
+                Name = setting.RotationSettings.Count.ToString(),
+            });
+        }
+
+        ImGui.SameLine();
+
+        window.Collection.DrawItems(3);
 
         _group ??= new CollapsingHeaderGroup(new()
         {
@@ -61,11 +72,6 @@ internal class RotationHelperItem() : ConfigWindowItem
         }
 
         ImGui.SameLine();
-
-        if (ImGui.Button(UiString.AddOneRotation.Local()))
-        {
-            setting.RotationSettings.Add(new());
-        }
 
         if (ImGui.Button(LocalString.CopyToClipboard.Local()))
         {
@@ -95,72 +101,5 @@ internal class RotationHelperItem() : ConfigWindowItem
         ImGui.Separator();
 
         ConditionDrawer.Draw(setting.RotationSetting);
-    }
-
-    private static void DrawTerritoryHeader()
-    {
-        _territories ??= Svc.Data.GetExcelSheet<TerritoryType>()?
-            .Where(RotationHelper.IsTerritoryTypeValid)
-            .Reverse().ToArray();
-
-        var rightTerritory = Svc.Data.GetExcelSheet<TerritoryType>()?.GetRow(_territoryId);
-        var name = GetName(rightTerritory);
-
-        var imFont = DrawingExtensions.GetFont(21);
-        float width = 0, height = 0;
-        using (var font = ImRaii.PushFont(imFont))
-        {
-            width = ImGui.CalcTextSize(name).X + (ImGui.GetStyle().ItemSpacing.X * 2);
-            height = ImGui.CalcTextSize(name).Y + (ImGui.GetStyle().ItemSpacing.Y * 2);
-        }
-
-        var HasJob = ImageLoader.GetTexture(62100 + Player.Object.ClassJob.Id, out var jobTexture);
-
-        if (HasJob)
-        {
-            width += height + ImGui.GetStyle().ItemSpacing.X;
-        }
-
-        ImGuiHelper.DrawItemMiddle(() =>
-        {
-            if (HasJob)
-            {
-                ImGui.Image(jobTexture.ImGuiHandle, Vector2.One * height);
-                ImGui.SameLine();
-            }
-
-            var territories = _territories ?? [];
-            var index = Array.IndexOf(territories, rightTerritory);
-            if (ImGuiHelper.SelectableCombo("##Choice the specific dungeon", [.. territories.Select(GetName)], ref index, imFont, ImGuiColors.DalamudYellow))
-            {
-                _territoryId = territories[index]?.RowId ?? 0;
-            }
-        }, ImGui.GetWindowWidth(), width);
-
-        DrawContentFinder(rightTerritory?.ContentFinderCondition?.Value);
-
-        static string GetName(TerritoryType? territory)
-        {
-            var str = territory?.ContentFinderCondition?.Value?.Name?.RawString;
-            if (string.IsNullOrEmpty(str)) str = territory?.PlaceName?.Value?.Name?.RawString;
-            if (string.IsNullOrEmpty(str)) return "Unnamed Territory";
-            return str;
-        }
-    }
-
-    private static void DrawContentFinder(ContentFinderCondition? content)
-    {
-        var badge = content?.Image;
-        if (badge != null && badge.Value != 0
-            && ImageLoader.GetTexture(badge.Value, out var badgeTexture))
-        {
-            var wholeWidth = ImGui.GetWindowWidth();
-            var size = new Vector2(badgeTexture.Width, badgeTexture.Height) * MathF.Min(1, MathF.Min(480, wholeWidth) / badgeTexture.Width);
-
-            ImGuiHelper.DrawItemMiddle(() =>
-            {
-                ImGui.Image(badgeTexture.ImGuiHandle, size);
-            }, wholeWidth, size.X);
-        }
     }
 }

@@ -2,7 +2,7 @@
 
 public class RotationsSetting
 {
-    public string Choice { get; set; } = "Default";
+    public int ChoiceIndex { get; set; } = 0;
 
     public List<RotationSetting> RotationSettings { get; set; } = [];
 
@@ -11,18 +11,15 @@ public class RotationsSetting
     {
         get
         {
-            var result = RotationSettings.FirstOrDefault(r => r.Name == Choice);
-            if (result != null) return result;
-
-            result = RotationSettings.FirstOrDefault();
-            if (result == null)
+            if (RotationSettings.Count == 0)
             {
-                result = new();
-                RotationSettings.Add(result);
+                RotationSettings.Add(new());
+                return RotationSettings[0];
             }
-
-            Choice = result.Name;
-            return result;
+            else
+            {
+                return RotationSettings[ChoiceIndex % RotationSettings.Count];
+            }
         }
     }
 }
