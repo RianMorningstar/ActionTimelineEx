@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.5](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.4...v1.4.5) (2024-07-13)
+
+
+### Bug Fixes
+
+* remove territory choice feature. ([7cb7e6c](https://github.com/ArchiDog1998/ActionTimelineEx/commit/7cb7e6c33bdc49ea55129d41edf1cf4ea7e23dd8))
+
 ## [1.4.4](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.3...v1.4.4) (2024-07-13)
 
 
