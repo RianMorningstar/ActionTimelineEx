@@ -1,6 +1,7 @@
 ﻿using ActionTimelineEx.Configurations;
 using ActionTimelineEx.Timeline;
 using Dalamud.Interface.Utility;
+using Dalamud.Interface.Utility.Raii;
 using ImGuiNET;
 using System.Numerics;
 
@@ -25,22 +26,28 @@ internal static class TimelineWindow
         }
 
         Vector4 bgColor = setting.Locked ? setting.LockedBackgroundColor : setting.UnlockedBackgroundColor;
-        ImGui.PushStyleColor(ImGuiCol.WindowBg, bgColor);
+        using var bgColorPush = ImRaii.PushColor(ImGuiCol.WindowBg, bgColor);
 
         ImGui.SetNextWindowSize(new Vector2(560, 100) * ImGuiHelpers.GlobalScale, ImGuiCond.FirstUseEver);
         ImGui.SetNextWindowPos(new Vector2(200, 200) * ImGuiHelpers.GlobalScale, ImGuiCond.FirstUseEver);
 
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
-
         if (ImGui.Begin($"Timeline: {index}", flag))
         {
-            DrawContent(setting);
-            ImGui.End();
+            var padding = ImGui.GetStyle().WindowPadding;
+            var border = ImGui.GetStyle().WindowBorderSize;
+            ImGui.GetStyle().WindowPadding = default;
+            ImGui.GetStyle().WindowBorderSize = 0;
+            try
+            {
+                DrawContent(setting);
+            }
+            finally
+            {
+                ImGui.End();
+                ImGui.GetStyle().WindowPadding = padding;
+                ImGui.GetStyle().WindowBorderSize = border;
+            }
         }
-
-        ImGui.PopStyleVar(2);
-        ImGui.PopStyleColor();
     }
 
     private static void DrawContent(DrawingSettings setting)

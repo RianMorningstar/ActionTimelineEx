@@ -1,5 +1,4 @@
-﻿using ActionTimelineEx;
-using ActionTimelineEx.Configurations;
+﻿using ActionTimelineEx.Configurations;
 using ActionTimelineEx.Helpers;
 using ActionTimelineEx.Timeline;
 using Dalamud.Interface;

@@ -49,10 +49,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Localization\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Using Include="Newtonsoft.Json" />
 	</ItemGroup>
 </Project>

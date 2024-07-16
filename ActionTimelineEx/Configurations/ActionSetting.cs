@@ -109,7 +109,7 @@ public class ActionSetting
             var item = Svc.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Item>()?.GetRow(ActionId);
             if (item == null) return;
 
-            IconId = item.Icon;
+            IconId = ActionId == 0 ? 0u : item.Icon;
             DisplayName = item.Name;
         }
 
@@ -120,7 +120,7 @@ public class ActionSetting
 
             IsGCD = action.CooldownGroup == 58 || action.AdditionalCooldownGroup == 58;
 
-            IconId = GetActionIcon(action);
+            IconId = ActionId == 0 ? 0u : GetActionIcon(action);
             DisplayName = $"{action.Name} ({(IsGCD ? "GCD" : "Ability")})";
         }
 

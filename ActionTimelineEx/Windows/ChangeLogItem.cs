@@ -2,13 +2,8 @@
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Utility;
 using ImGuiNET;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using XIVConfigUI;
 
 namespace ActionTimelineEx.Windows;
