@@ -14,7 +14,7 @@ internal static class RotationHelper
     private static DrawingHighlightHotbar? _highLight;
     public static ActionSetting? ActiveAction => Actions.FirstOrDefault();
 
-    public static  IEnumerable<ActionSetting> Actions => RotationSetting.Actions.Skip((int)Count);
+    public static IEnumerable<ActionSetting> Actions => RotationSetting.Actions.Skip((int)Count);
 
     public static RotationSetting RotationSetting => Plugin.Settings.RotationHelper.RotationSetting;
 

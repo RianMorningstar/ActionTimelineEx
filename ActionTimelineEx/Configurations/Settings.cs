@@ -80,6 +80,9 @@ public class Settings : IPluginConfiguration
     [UI("Draw the rotation Vertically", Parent = nameof(DrawRotation))]
     public bool VerticalDraw { get; set; } = false;
 
+    [UI("Reverse Draw", Parent = nameof(VerticalDraw))]
+    public bool Reverse { get; set; } = false;
+
     [JsonIgnore]
     [TimelineChoices]
     [UI("Rotation Choice", 3)]

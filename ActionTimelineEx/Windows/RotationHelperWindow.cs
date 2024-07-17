@@ -53,9 +53,14 @@ internal static class RotationHelperWindow
         var drawList = ImGui.GetWindowDrawList();
 
         var pos = ImGui.GetWindowPos() + new Vector2(gcdHeight * 0.2f,
-            Plugin.Settings.VerticalDraw ? gcdHeight * 0.2f : ImGui.GetWindowSize().Y / 2 - gcdHeight / 2);
+            Plugin.Settings.VerticalDraw 
+            ? (Plugin.Settings.Reverse
+                ? ImGui.GetWindowSize().Y - gcdHeight * 1.4f
+                : gcdHeight * 0.2f)
+            : ImGui.GetWindowSize().Y / 2 - gcdHeight / 2);
         var maxX = ImGui.GetWindowPos().X + ImGui.GetWindowSize().X;
-        var maxY = ImGui.GetWindowPos().Y + ImGui.GetWindowSize().Y;
+        var minY = ImGui.GetWindowPos().Y;
+        var maxY = minY + ImGui.GetWindowSize().Y;
         var minPosX = pos.X;
 
         bool isFirst = true;
@@ -66,7 +71,15 @@ internal static class RotationHelperWindow
             if (item.IsGCD && Plugin.Settings.VerticalDraw && !isFirst)
             {
                 pos.X = minPosX;
-                pos.Y += gcdHeight + spacing;
+
+                if (Plugin.Settings.Reverse)
+                {
+                    pos.Y -= gcdHeight + spacing;
+                }
+                else
+                {
+                    pos.Y += gcdHeight + spacing;
+                }
             }
 
             item.Draw(drawList, pos, size);
@@ -78,7 +91,7 @@ internal static class RotationHelperWindow
 
             pos += new Vector2(size + spacing, 0);
 
-            if (pos.X >= maxX || pos.Y >= maxY) break;
+            if (pos.X >= maxX || pos.Y >= maxY || pos.Y <= minY) break;
         }
     }
 }

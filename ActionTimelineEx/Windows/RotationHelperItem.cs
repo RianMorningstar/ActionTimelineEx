@@ -59,7 +59,7 @@ internal class RotationHelperItem() : ConfigWindowItem
         _group ??= new CollapsingHeaderGroup(new()
         {
             { () => UiString.RotationSetting.Local(), () =>  DrawSetting(window) },
-            { () => UiString.Rotation.Local(), () => DrawRotation(window, setting)},
+            { () => UiString.Rotation.Local(), () => DrawRotation(window)},
         });
 
         _group.Draw();
@@ -71,8 +71,10 @@ internal class RotationHelperItem() : ConfigWindowItem
         window.Collection.DrawItems(1);
     }
 
-    private static void DrawRotation(ConfigWindow window, RotationsSetting setting)
+    private static void DrawRotation(ConfigWindow window)
     {
+        var setting = Plugin.Settings.RotationHelper;
+
         if (ImGui.Button(UiString.RotationReset.Local()))
         {
             RotationHelper.Clear();
