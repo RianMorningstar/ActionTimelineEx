@@ -134,5 +134,5 @@
   "ActionTimelineEx.Configurations.ActionSettingType.Action": "Action",
   "ActionTimelineEx.Configurations.ActionSettingType.Item": "Item",
   "ActionTimelineEx.Configurations.ActionSettingName.IsLast": "Is the Last Ability during GCD",
-  "ActionTimelineEx.Configurations.ActionSettingDescription": "Circle of Scorn (Ability)"
+  "ActionTimelineEx.Configurations.ActionSettingDescription": "Heavy Swing (GCD)"
 }
