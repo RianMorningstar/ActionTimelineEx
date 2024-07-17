@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.6](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.5...v1.4.6) (2024-07-16)
+
+
+### Bug Fixes
+
+* add remove one rotation feature! omg. ([ac4fd47](https://github.com/ArchiDog1998/ActionTimelineEx/commit/ac4fd47e49bb71885aa0e1e5997567ba0b6c5a9a))
+* some ui fix. ([5e7c3b2](https://github.com/ArchiDog1998/ActionTimelineEx/commit/5e7c3b20f2ba70e2d5031bb37647162b1ccb2b23))
+
 ## [1.4.5](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.4...v1.4.5) (2024-07-13)
 
 
