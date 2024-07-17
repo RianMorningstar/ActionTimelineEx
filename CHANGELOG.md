@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.7](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.6...v1.4.7) (2024-07-17)
+
+
+### Bug Fixes
+
+* add reverse drawing. ([15e7015](https://github.com/ArchiDog1998/ActionTimelineEx/commit/15e7015a763e191a4d8557f9570db233206182c9))
+
 ## [1.4.6](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.5...v1.4.6) (2024-07-16)
 
 
