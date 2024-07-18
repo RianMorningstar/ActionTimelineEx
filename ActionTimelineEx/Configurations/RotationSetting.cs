@@ -31,7 +31,7 @@ public class RotationSetting
         if (result != null) return result;
 
         if (index >= GCDs.Count) return null;
-        return GCDs[index];
+        return GCDs[Math.Max(0, index)];
     }
 
     public void Draw()
