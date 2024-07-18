@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.8](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.7...v1.4.8) (2024-07-18)
+
+
+### Bug Fixes
+
+* changed the way of showing rotations. ([291f428](https://github.com/ArchiDog1998/ActionTimelineEx/commit/291f428bf36f0e1205a988794072082d283958a9))
+* changed the way to saving the rotations. ([e0c52dc](https://github.com/ArchiDog1998/ActionTimelineEx/commit/e0c52dc3b34f11288126b59906f7fa6d30f9f74e))
+* more ignores. ([9fc95e6](https://github.com/ArchiDog1998/ActionTimelineEx/commit/9fc95e6964482c81ae9f4c2a11a6f2cbc86c6ca5))
+
 ## [1.4.7](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.6...v1.4.7) (2024-07-17)
 
 
