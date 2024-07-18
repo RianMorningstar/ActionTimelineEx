@@ -8,9 +8,16 @@ using XIVConfigUI;
 
 namespace ActionTimelineEx.Helpers;
 
+internal enum IconType : byte
+{
+    Normal,
+    Blacked,
+    Highlight,
+}
+
 internal static class DrawHelper
 {
-    public static void DrawActionIcon(this ImDrawListPtr drawList, uint iconId, bool isHq, Vector2 position, float size, bool isLast = false)
+    public static void DrawActionIcon(this ImDrawListPtr drawList, uint iconId, bool isHq, Vector2 position, float size, IconType type = IconType.Normal)
     {
         IDalamudTextureWrap? texture = GetTextureFromIconId(iconId, isHq);
         if (texture == null) return;
@@ -25,9 +32,15 @@ internal static class DrawHelper
 
             var start = new Vector2(4f / frameText.Width, 0f / frameText.Height);
 
-            if (isLast)
+            switch (type)
             {
-                start += new Vector2(96f / frameText.Width * 2, 96f / frameText.Height * 0);
+                case IconType.Highlight:
+                    start += new Vector2(96f / frameText.Width * 2, 96f / frameText.Height * 0);
+                    break;
+
+                case IconType.Blacked:
+                    start += new Vector2(96f / frameText.Width * 1, 96f / frameText.Height * 0);
+                    break;
             }
 
             drawList.AddImage(frameText.ImGuiHandle, coverPos, coverPos + new Vector2(pixPerUnit * 88, pixPerUnit * 96),

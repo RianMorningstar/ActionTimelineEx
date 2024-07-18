@@ -1,4 +1,5 @@
 ﻿using ActionTimelineEx.Configurations;
+using ActionTimelineEx.Configurations.Actions;
 using ActionTimelineEx.Helpers;
 using Dalamud.Interface.Textures.TextureWraps;
 using ECommons.DalamudServices;
@@ -84,7 +85,7 @@ internal class RotationHelperItem() : ConfigWindowItem
 
         if (ImGui.Button(LocalString.CopyToClipboard.Local()))
         {
-            var str = JsonHelper.SerializeObject(setting.RotationSetting.Actions);
+            var str = JsonHelper.SerializeObject(setting.RotationSetting.GCDs);
             ImGui.SetClipboardText(str);
         }
 
@@ -96,7 +97,7 @@ internal class RotationHelperItem() : ConfigWindowItem
 
             try
             {
-                setting.RotationSetting.Actions = JsonHelper.DeserializeObject<List<ActionSetting>>(str)!;
+                setting.RotationSetting.GCDs = JsonHelper.DeserializeObject<List<GCDAction>>(str)!;
             }
             catch (Exception ex)
             {

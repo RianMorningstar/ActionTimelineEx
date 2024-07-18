@@ -1,4 +1,5 @@
 ﻿using ActionTimelineEx.Configurations;
+using ActionTimelineEx.Configurations.Actions;
 using ActionTimelineEx.Timeline;
 using ECommons.DalamudServices;
 using ECommons.GameHelpers;
@@ -12,14 +13,14 @@ namespace ActionTimelineEx.Helpers;
 internal static class RotationHelper
 {
     private static DrawingHighlightHotbar? _highLight;
-    public static ActionSetting? ActiveAction => Actions.FirstOrDefault();
-
-    public static IEnumerable<ActionSetting> Actions => RotationSetting.Actions.Skip((int)Count);
+    public static ActionSetting? ActiveAction => RotationSetting.GetNextAction(Index, SubIndex);
 
     public static RotationSetting RotationSetting => Plugin.Settings.RotationHelper.RotationSetting;
 
-    private static uint _count;
-    public static uint Count 
+    internal static readonly List<ActionSetting> SuccessActions = [];
+
+    private static int _count;
+    public static int Index 
     {
         get => _count;
         private set
@@ -30,7 +31,19 @@ internal static class RotationHelper
             UpdateHighlight();
         }
     }
-    public static uint SuccessCount { get; private set; } = 0;
+
+    private static byte _subCount;
+    public static byte SubIndex
+    {
+        get => _subCount;
+        private set
+        {
+            if (_subCount == value) return;
+            _subCount = value;
+
+            UpdateHighlight();
+        }
+    }
 
     private static void UpdateHighlight()
     {
@@ -112,43 +125,74 @@ internal static class RotationHelper
 
         if (Plugin.Settings.RecordRotation)
         {
-            RecordRotation(actionId, actionSettingType);
+            RecordRotation(set);
             return;
         }
 
         if (!Plugin.Settings.DrawRotation) return;
-
-        var action = ActiveAction;
-        if (action == null) return;
 
         foreach (var act in RotationSetting.IgnoreActions)
         {
             if (act.IsMatched(actionId, actionSettingType)) return;
         }
 
-        if (action.IsMatched(actionId, actionSettingType))
+        ActionSetting? nextAction;
+        if (IsGcd(set))
         {
-            SuccessCount++;
+            nextAction = SubIndex == 0 ? RotationSetting.GetNextAction(Index, 0)
+                : RotationSetting.GetNextAction(Index + 1, 0);
+        }
+        else
+        {
+            nextAction = RotationSetting.GetNextAction(Index, SubIndex);
+        }
+
+        if (nextAction == null) return;
+
+        if (nextAction.IsMatched(actionId, actionSettingType))
+        {
+            SuccessActions.Add(nextAction);
         }
         else if(Plugin.Settings.ShowWrongClick)
         {
-            Svc.Chat.PrintError($"Clicked the wrong action {set.Name}! You should Click {action.DisplayName}!");
+            Svc.Chat.PrintError($"Clicked the wrong action {set.Name}! You should Click {nextAction.DisplayName}!");
         }
-        Count++;
+        Index++;
     }
 
-    private static void RecordRotation(uint actionId, ActionSettingType type)
+    private static void RecordRotation(in ActionEffectSet set)
     {
-        RotationSetting.Actions.Add(new ActionSetting()
+        if (IsGcd(set))
         {
-            ActionId = actionId,
-            Type = type,
-        });
+            RotationSetting.GCDs.Add(new GCDAction()
+            {
+                ActionId = set.Header.ActionID,
+            });
+        }
+        else
+        {
+            var gcd = RotationSetting.GCDs.LastOrDefault();
+            if (gcd == null)
+            {
+                RotationSetting.GCDs.Add(gcd = new GCDAction());
+            }
+
+            gcd.oGCDs.Add(new oGCDAction()
+            {
+                ActionId = set.Header.ActionID,
+                ActionType = (ActionSettingType)(byte)set.Header.ActionType,
+            });
+        }
     }
 
+    private static bool IsGcd(in ActionEffectSet set)
+    {
+        return set.Action?.IsGcd() ?? false;
+    }
 
     public static void Clear()
     {
-        Count = 0;
+        Index = 0;
+        SuccessActions.Clear();
     }
 }

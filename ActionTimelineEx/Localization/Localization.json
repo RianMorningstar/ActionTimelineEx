@@ -134,5 +134,6 @@
   "ActionTimelineEx.Configurations.ActionSettingType.Action": "Action",
   "ActionTimelineEx.Configurations.ActionSettingType.Item": "Item",
   "ActionTimelineEx.Configurations.ActionSettingName.IsLast": "Is the Last Ability during GCD",
-  "ActionTimelineEx.Configurations.ActionSettingDescription": "Heavy Swing (GCD)"
+  "ActionTimelineEx.Configurations.ActionSettingDescription": "Heavy Swing (GCD)",
+  "ActionTimelineEx.Configurations.SettingsName.Reverse": "Reverse Draw"
 }
