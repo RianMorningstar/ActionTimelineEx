@@ -25,10 +25,19 @@ internal class ActionSettingAttribute() : ListUIAttribute(0)
         base.OnClick(obj);
         if (obj is not ActionSetting setting) return;
 
+        ImGui.OpenPopup(setting.GetHashCode().ToString());
+    }
+
+    public override void OnTick(object obj)
+    {
+        base.OnTick(obj);
+
+        if (obj is not ActionSetting setting) return;
+
         switch (setting.Type)
         {
             case ActionSettingType.Action:
-                ActionSelectorPopup(setting, setting.GetHashCode().ToString());
+                ActionSelectorPopup(setting, setting.GetHashCode().ToString(), setting is GCDAction);
                 break;
 
             case ActionSettingType.Item:
@@ -56,6 +65,7 @@ internal class ActionSettingAttribute() : ListUIAttribute(0)
 
         var actions = Svc.Data.GetExcelSheet<Item>()?.Where(i =>
         {
+            if(i.ItemSearchCategory.Row != 43) return false;
             unsafe
             {
                 if (InventoryManager.Instance()->GetInventoryItemCount(i.RowId, true) > 0) return true;
@@ -94,12 +104,13 @@ internal class ActionSettingAttribute() : ListUIAttribute(0)
             }
         }
     }
-    private static void ActionSelectorPopup(ActionSetting setting, string popUpId)
+    private static void ActionSelectorPopup(ActionSetting setting, string popUpId, bool isGcd)
     {
         using var popUp = ImRaii.Popup(popUpId);
         if (!popUp.Success) return;
 
-        var actions = Svc.Data.GetExcelSheet<Action>()?.Where(ActionHelper.IsInJob);
+        var actions = Svc.Data.GetExcelSheet<Action>()?.Where(a => a.IsInJob() && !a.IsPvP && a.IsGcd() == isGcd);
+
         if (actions == null || !actions.Any()) return;
 
         _group.ClearCollapsingHeader();
@@ -137,6 +148,8 @@ internal class ActionSettingAttribute() : ListUIAttribute(0)
                 }
             });
         }
+
+        _group.Draw();
     }
 }
 

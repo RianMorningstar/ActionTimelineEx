@@ -26,7 +26,7 @@ public class GCDAction : ActionSetting
         int index = 0;
         foreach (var oGcd in oGCDs)
         {
-            oGcd.DrawIcon(drawList, point, ogcd, index < RotationHelper.SubIndex, activeAction);
+            oGcd.DrawIcon(drawList, point, ogcd, pass && index < RotationHelper.oGcdUsedCount, activeAction);
             if (!oGcd.IsEmpty) index++;
 
             point += new Vector2(ogcd + spacing, 0);

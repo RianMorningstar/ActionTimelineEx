@@ -13,33 +13,33 @@ namespace ActionTimelineEx.Helpers;
 internal static class RotationHelper
 {
     private static DrawingHighlightHotbar? _highLight;
-    public static ActionSetting? ActiveAction => RotationSetting.GetNextAction(Index, SubIndex);
+    public static ActionSetting? ActiveAction => RotationSetting.GetNextAction(GcdUsedCount, oGcdUsedCount);
 
     public static RotationSetting RotationSetting => Plugin.Settings.RotationHelper.RotationSetting;
 
     internal static readonly List<ActionSetting> SuccessActions = [];
 
-    private static int _count;
-    public static int Index 
+    private static int _index;
+    public static int GcdUsedCount 
     {
-        get => _count;
+        get => _index;
         private set
         {
-            if (_count == value) return;
-            _count = value;
+            if (_index == value) return;
+            _index = value;
 
             UpdateHighlight();
         }
     }
 
-    private static byte _subCount;
-    public static byte SubIndex
+    private static byte _subIndex = 0;
+    public static byte oGcdUsedCount
     {
-        get => _subCount;
+        get => _subIndex;
         private set
         {
-            if (_subCount == value) return;
-            _subCount = value;
+            if (_subIndex == value) return;
+            _subIndex = value;
 
             UpdateHighlight();
         }
@@ -136,15 +136,16 @@ internal static class RotationHelper
         ActionSetting? nextAction;
         if (IsGcd(set))
         {
-            nextAction = SubIndex == 0 ? RotationSetting.GetNextAction(Index, 0)
-                : RotationSetting.GetNextAction(Index + 1, 0);
-            SubIndex = 0;
-            Index++;
+            nextAction = oGcdUsedCount == 0 ? RotationSetting.GetNextAction(GcdUsedCount, 0)
+                : RotationSetting.GetNextAction(GcdUsedCount + 1, 0);
+
+            oGcdUsedCount = 0;
+            GcdUsedCount++;
         }
         else
         {
-            nextAction = RotationSetting.GetNextAction(Index, SubIndex);
-            SubIndex++;
+            nextAction = RotationSetting.GetNextAction(GcdUsedCount, oGcdUsedCount);
+            oGcdUsedCount++;
         }
 
         if (nextAction == null) return;
@@ -220,8 +221,8 @@ internal static class RotationHelper
 
     public static void Clear()
     {
-        Index = 0;
-        SubIndex = 0;
+        GcdUsedCount = 0;
+        oGcdUsedCount = 0;
         SuccessActions.Clear();
     }
 }

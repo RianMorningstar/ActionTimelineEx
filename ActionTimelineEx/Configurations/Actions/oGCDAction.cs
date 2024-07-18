@@ -9,8 +9,7 @@ public class oGCDAction : ActionSetting
     private ActionSettingType _type = ActionSettingType.Action;
 
     [UI("Type")]
-
-    internal ActionSettingType ActionType
+    public ActionSettingType ActionType
     {
         get => _type;
         set

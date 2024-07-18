@@ -104,11 +104,6 @@ public abstract class ActionSetting
 
     public void DrawIcon(ImDrawListPtr drawList, Vector2 point, float size, bool passed, ActionSetting? activeAction)
     {
-        IconType iconType = passed ? IconType.Blacked
-            : Highlight ? IconType.Highlight : IconType.Normal;
-        drawList.DrawActionIcon(IconId, Type is ActionSettingType.Item, point, size, iconType);
-        if (!string.IsNullOrEmpty(DisplayName) && DrawHelper.IsInRect(point, new Vector2(size)))
-            ImGui.SetTooltip(DisplayName);
         if (passed)
         {
             if (!RotationHelper.SuccessActions.Contains(this))
@@ -116,12 +111,16 @@ public abstract class ActionSetting
                 ImGuiHelper.DrawSlotHighlight(drawList, point, size, ImGui.ColorConvertFloat4ToU32(Plugin.Settings.RotationFailedColor));
             }
         }
-        else
+
+        IconType iconType = passed ? IconType.Blacked
+            : Highlight ? IconType.Highlight : IconType.Normal;
+        drawList.DrawActionIcon(IconId, Type is ActionSettingType.Item, point, size, iconType);
+        if (!string.IsNullOrEmpty(DisplayName) && DrawHelper.IsInRect(point, new Vector2(size)))
+            ImGui.SetTooltip(DisplayName);
+
+        if (!passed && activeAction == this)
         {
-            if (activeAction == this)
-            {
-                ImGuiHelper.DrawSlotHighlight(drawList, point, size, ImGui.ColorConvertFloat4ToU32(Plugin.Settings.RotationHighlightColor));
-            }
+            ImGuiHelper.DrawSlotHighlight(drawList, point, size, ImGui.ColorConvertFloat4ToU32(Plugin.Settings.RotationHighlightColor));
         }
     }
 }

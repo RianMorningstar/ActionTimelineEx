@@ -3,7 +3,6 @@ using ActionTimelineEx.Helpers;
 using ImGuiNET;
 using System.Numerics;
 using XIVConfigUI.Attributes;
-using static FFXIVClientStructs.FFXIV.Client.UI.AddonAOZNotebook;
 
 namespace ActionTimelineEx.Configurations;
 public class RotationSetting
@@ -19,14 +18,20 @@ public class RotationSetting
 
     public ActionSetting? GetNextAction(int index, byte subIndex)
     {
+        var thisIndex = index - 1;
+        if (thisIndex >= GCDs.Count) return null;
+
+        var thisGcd = GCDs[Math.Max(0, thisIndex)];
+
+        if (thisGcd == null) return null;
+        if (index == 0) return thisGcd;
+
+        var result = thisGcd.oGCDs.Where(i => !i.IsEmpty).Skip(subIndex).FirstOrDefault();
+
+        if (result != null) return result;
+
         if (index >= GCDs.Count) return null;
-
-        var gcd = GCDs[index];
-        if (gcd == null) return null;
-
-        if (subIndex == 0) return gcd;
-
-        return gcd.oGCDs.Where(i => !i.IsEmpty).Skip(subIndex - 1).FirstOrDefault();
+        return GCDs[index];
     }
 
     public void Draw()
@@ -50,7 +55,7 @@ public class RotationSetting
 
         for (var i = 0; i < GCDs.Count; i++)
         {
-            if (i < RotationHelper.Index - 1) continue;
+            if (i < RotationHelper.GcdUsedCount - 1) continue;
 
             var item = GCDs[i];
 
@@ -68,7 +73,7 @@ public class RotationSetting
                 }
             }
 
-            var width = item.Draw(drawList, pos, i < RotationHelper.Index, nextAction);
+            var width = item.Draw(drawList, pos, i < RotationHelper.GcdUsedCount, nextAction);
 
             pos += new Vector2(width + spacing, 0);
 

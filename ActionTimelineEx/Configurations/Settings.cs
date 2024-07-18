@@ -63,7 +63,7 @@ public class Settings : IPluginConfiguration
     public Vector4 RotationUnlockedBackgroundColor { get; set; } = new(0f, 0f, 0f, 0.75f);
 
     [UI("Rotation Highlight Color", Parent = nameof(DrawRotation))]
-    public Vector4 RotationHighlightColor { get; set; } = new Vector4(0.8f, 0.9f, 1, 1);
+    public Vector4 RotationHighlightColor { get; set; } = new Vector4(1f, 1f, 0.8f, 1);
 
     [UI("Rotation Failed Color", Parent = nameof(DrawRotation))]
     public Vector4 RotationFailedColor { get; set; } = new Vector4(0.8f, 0.5f, 0.5f, 1);
