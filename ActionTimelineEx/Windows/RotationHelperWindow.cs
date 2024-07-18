@@ -1,9 +1,9 @@
 ﻿using ActionTimelineEx.Helpers;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
+using ECommons.GameHelpers;
 using ImGuiNET;
 using System.Numerics;
-using XIVConfigUI;
 
 namespace ActionTimelineEx.Windows;
 internal static class RotationHelperWindow
@@ -12,6 +12,12 @@ internal static class RotationHelperWindow
     {
         var setting = Plugin.Settings;
         if (!setting.DrawRotation) return;
+
+        unsafe
+        {
+            if (setting.OnlyShowRotationWhenWeaponOn
+                && !Player.BattleChara->IsWeaponDrawn) return;
+        }
 
         var flag = TimelineWindow._baseFlags;
         if (setting.RotationLocked)

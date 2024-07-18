@@ -131,20 +131,20 @@ internal static class RotationHelper
 
         if (!Plugin.Settings.DrawRotation) return;
 
-        foreach (var act in RotationSetting.IgnoreActions)
-        {
-            if (act.IsMatched(actionId, actionSettingType)) return;
-        }
+        if (IsIgnored(set)) return;
 
         ActionSetting? nextAction;
         if (IsGcd(set))
         {
             nextAction = SubIndex == 0 ? RotationSetting.GetNextAction(Index, 0)
                 : RotationSetting.GetNextAction(Index + 1, 0);
+            SubIndex = 0;
+            Index++;
         }
         else
         {
             nextAction = RotationSetting.GetNextAction(Index, SubIndex);
+            SubIndex++;
         }
 
         if (nextAction == null) return;
@@ -157,7 +157,35 @@ internal static class RotationHelper
         {
             Svc.Chat.PrintError($"Clicked the wrong action {set.Name}! You should Click {nextAction.DisplayName}!");
         }
-        Index++;
+    }
+
+    private static bool IsIgnored(in ActionEffectSet set)
+    {
+        if (Plugin.Settings.IgnoreItems && set.Action == null) return true;
+
+        if (set.Action != null)
+        {
+            var type = set.Action.GetActionType();
+
+            switch (type)
+            {
+                case ActionType.SystemAction when Plugin.Settings.IgnoreSystemActions:
+                case ActionType.RoleAction when Plugin.Settings.IgnoreRoleActions:
+                case ActionType.LimitBreak when Plugin.Settings.IgnoreLimitBreaks:
+                case ActionType.DutyAction when Plugin.Settings.IgnoreDutyActions:
+                    return true;
+            }
+        }
+
+        var actionSettingType = (ActionSettingType)(byte)set.Header.ActionType;
+        var actionId = set.Header.ActionID;
+
+        foreach (var act in RotationSetting.IgnoreActions)
+        {
+            if (act == null) continue;
+            if (act.IsMatched(actionId, actionSettingType)) return true;
+        }
+        return false;
     }
 
     private static void RecordRotation(in ActionEffectSet set)
@@ -193,6 +221,7 @@ internal static class RotationHelper
     public static void Clear()
     {
         Index = 0;
+        SubIndex = 0;
         SuccessActions.Clear();
     }
 }

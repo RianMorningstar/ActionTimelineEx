@@ -50,6 +50,9 @@ public class Settings : IPluginConfiguration
     [UI("Draw Rotation", 1)]
     public bool DrawRotation { get; set; } = false;
 
+    [UI("Only Show when Weapon On", Parent = nameof(DrawRotation))]
+    public bool OnlyShowRotationWhenWeaponOn { get; set; } = true;
+
     [UI("Locked", Parent = nameof(DrawRotation))]
     public bool RotationLocked { get; set; } = false;
 
@@ -86,6 +89,20 @@ public class Settings : IPluginConfiguration
     [UI("Reverse Draw", Parent = nameof(VerticalDraw))]
     public bool Reverse { get; set; } = false;
 
+    [UI("Ignore Items", Parent = nameof(DrawRotation))]
+    public bool IgnoreItems { get; set; } = false;
+
+    [UI("Ignore System Actions", Parent = nameof(DrawRotation))]
+    public bool IgnoreSystemActions { get; set; } = false;
+
+    [UI("Ignore Role Actions", Parent = nameof(DrawRotation))]
+    public bool IgnoreRoleActions { get; set; } = false;
+
+    [UI("Ignore Limit Breaks", Parent = nameof(DrawRotation))]
+    public bool IgnoreLimitBreaks { get; set; } = false;
+
+    [UI("Ignore Duty Actions", Parent = nameof(DrawRotation))]
+    public bool IgnoreDutyActions { get; set; } = false;
     [JsonIgnore]
     [TimelineChoices]
     [UI("Rotation Choice", 3)]
