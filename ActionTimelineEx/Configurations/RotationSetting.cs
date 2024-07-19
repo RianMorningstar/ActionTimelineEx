@@ -18,6 +18,8 @@ public class RotationSetting
 
     public ActionSetting? GetNextAction(int index, byte subIndex)
     {
+        if (GCDs.Count == 0) return null;
+
         var thisIndex = index - 1;
         if (thisIndex >= GCDs.Count) return null;
 

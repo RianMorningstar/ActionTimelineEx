@@ -11,14 +11,9 @@ public class GCDAction : ActionSetting
 {
     internal override ActionSettingType Type => ActionSettingType.Action;
 
-    [UI]
-    public string Display
-    {
-        get
-        {
-            return string.Empty;
-        }
-    }
+    [Range(0, 20, ConfigUnitType.Seconds)]
+    [UI("Recast time override")]
+    public float GcdOverride { get; set; } = 0;
 
     [UI]
     public List<oGCDAction> oGCDs { get; set; } = [];

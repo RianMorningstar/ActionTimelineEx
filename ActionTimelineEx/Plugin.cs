@@ -174,6 +174,6 @@ public class Plugin : IDalamudPlugin
 
     public static void OpenConfigUi()
     {
-        _settingsWindow.IsOpen = true;
+        _settingsWindow.IsOpen = !_settingsWindow.IsOpen;
     }
 }

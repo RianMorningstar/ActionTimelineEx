@@ -4,6 +4,7 @@ using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
+using System;
 using System.Numerics;
 using XIVConfigUI;
 using XIVConfigUI.Attributes;
@@ -13,6 +14,22 @@ using Action = Lumina.Excel.GeneratedSheets.Action;
 namespace ActionTimelineEx.Configurations.Actions;
 internal class ActionSettingAttribute() : ListUIAttribute(0)
 {
+    private TimeSpan _time = TimeSpan.Zero;
+    public override string DrawIndex(object obj, int index)
+    {
+        if (obj is not GCDAction setting) return string.Empty;
+
+        if (index == 0) _time = TimeSpan.Zero;
+
+        var result = $"{(int)_time.TotalMinutes}:{_time.Seconds:D2}.{_time.Milliseconds.ToString()[0]}";
+        var time = setting.GcdOverride == 0
+            ? Plugin.Settings.RotationHelper.GcdTime
+            : setting.GcdOverride;
+
+        _time = _time.Add(TimeSpan.FromSeconds(time));
+        return result;
+    }
+
     public override uint GetIcon(object obj)
     {
         if (obj is not ActionSetting setting)

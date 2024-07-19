@@ -6,6 +6,8 @@ public class RotationsSetting
 
     public List<RotationSetting> RotationSettings { get; set; } = [];
 
+    public float GcdTime { get; set; } = 2.5f;
+
     [JsonIgnore]
     public RotationSetting RotationSetting
     {

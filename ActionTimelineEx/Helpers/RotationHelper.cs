@@ -53,16 +53,7 @@ internal static class RotationHelper
         _highLight.Color = Plugin.Settings.RotationHighlightColor;
         _highLight.HotbarIDs.Clear();
 
-        ActionSetting? action = null;
-        try
-        {
-            action = ActiveAction;
-        }
-        catch
-        {
-            return;
-        }
-
+        var action = ActiveAction;
         if (action == null) return;
         HotbarID? hotBar = null;
 
