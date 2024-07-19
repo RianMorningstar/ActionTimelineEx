@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.10](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.9...v1.4.10) (2024-07-19)
+
+
+### Bug Fixes
+
+* fixed some bugs. ([d2bfb15](https://github.com/ArchiDog1998/ActionTimelineEx/commit/d2bfb1525bc90a336541e4eae2776be0c9a1b951))
+* fixed some bugs. ([be19002](https://github.com/ArchiDog1998/ActionTimelineEx/commit/be190028411e1192c6a64070279d7d7c6214c974))
+
 ## [1.4.9](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.8...v1.4.9) (2024-07-18)
 
 
