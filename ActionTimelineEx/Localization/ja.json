@@ -160,5 +160,9 @@
   "ActionTimelineEx.Configurations.Actions.ActionSettingType.Item": "Item",
   "ActionTimelineEx.Configurations.Actions.oGCDActionDescription": "Infuriate (oGCD)",
   "ActionTimelineEx.Configurations.Actions.ActionSetting": "ActionSetting",
-  "ActionTimelineEx.Configurations.Actions.ActionSettingDescription": "Heavy Swing (GCD)"
+  "ActionTimelineEx.Configurations.Actions.ActionSettingDescription": "Heavy Swing (GCD)",
+  "ActionTimelineEx.Configurations.Actions.ActionSettingName.ActionID": "Action ID",
+  "ActionTimelineEx.Configurations.Actions.GCDActionName.RecastOverride": "Recast override time",
+  "ActionTimelineEx.Configurations.SettingsName.GcdTime": "Gcd Time",
+  "ActionTimelineEx.Configurations.Actions.GCDActionName.GcdOverride": "Recast time override"
 }
