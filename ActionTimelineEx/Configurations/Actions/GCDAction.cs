@@ -12,6 +12,15 @@ public class GCDAction : ActionSetting
     internal override ActionSettingType Type => ActionSettingType.Action;
 
     [UI]
+    public string Display
+    {
+        get
+        {
+            return string.Empty;
+        }
+    }
+
+    [UI]
     public List<oGCDAction> oGCDs { get; set; } = [];
 
     public float Draw(ImDrawListPtr drawList, Vector2 point, bool pass, ActionSetting? activeAction)

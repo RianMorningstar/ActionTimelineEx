@@ -22,7 +22,7 @@ internal static class RotationHelperWindow
         var flag = TimelineWindow._baseFlags;
         if (setting.RotationLocked)
         {
-            flag |= ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoMouseInputs;
+            flag |= ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove;
         }
 
         Vector4 bgColor = setting.RotationLocked ? setting.RotationLockedBackgroundColor : setting.RotationUnlockedBackgroundColor;
@@ -34,6 +34,12 @@ internal static class RotationHelperWindow
 
         if (ImGui.Begin("Rotation Helper Window", flag))
         {
+            //Double click to clear.
+            if (DrawHelper.IsInRect(ImGui.GetWindowPos(), ImGui.GetWindowSize()) && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+            {
+                RotationHelper.Clear();
+            }
+
             var padding = ImGui.GetStyle().WindowPadding;
             var border = ImGui.GetStyle().WindowBorderSize;
             ImGui.GetStyle().WindowPadding = default;

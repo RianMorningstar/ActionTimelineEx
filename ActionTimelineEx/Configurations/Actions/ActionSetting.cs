@@ -41,6 +41,9 @@ public abstract class ActionSetting
         }
     }
 
+    [UI("Action ID")]
+    public int ActionID { get => (int) ActionId; set => ActionId = (uint)value; }
+
     internal abstract  ActionSettingType Type { get; }
 
     [UI("Is this Action Highlight")]
