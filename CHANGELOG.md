@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.11](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.10...v1.4.11) (2024-07-22)
+
+
+### Bug Fixes
+
+* better gcd value checking. ([7710096](https://github.com/ArchiDog1998/ActionTimelineEx/commit/771009607dc99b7c310ba42a4838a139621e642e))
+* changed the way of saving  gcd recast override data. ([c0a088f](https://github.com/ArchiDog1998/ActionTimelineEx/commit/c0a088f3adaaff9a3bc05db9b10ad48ffdd302b5))
+* changed the way to get gcd time. ([2201ba5](https://github.com/ArchiDog1998/ActionTimelineEx/commit/2201ba532cf975c9fbdb2aa826fa665ad351f403))
+* fixed some bugs. ([c3577a2](https://github.com/ArchiDog1998/ActionTimelineEx/commit/c3577a281012bcac56250fe3314ca679ce7f7a5a))
+* simplify data recording. ([9ffe44c](https://github.com/ArchiDog1998/ActionTimelineEx/commit/9ffe44c6425a91db4f1bdaab20e897e6fd04ebc6))
+
 ## [1.4.10](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.9...v1.4.10) (2024-07-19)
 
 
