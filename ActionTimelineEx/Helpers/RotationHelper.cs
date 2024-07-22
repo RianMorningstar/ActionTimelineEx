@@ -19,39 +19,28 @@ internal static class RotationHelper
 
     internal static readonly List<ActionSetting> SuccessActions = [];
 
-    private static int _index;
-    public static int GcdUsedCount 
-    {
-        get => _index;
-        private set
-        {
-            if (_index == value) return;
-            _index = value;
+    public static int GcdUsedCount { get; private set; }
+    public static byte oGcdUsedCount { get; private set; }
 
-            UpdateHighlight();
-        }
+
+    public static void Init()
+    {
+        ActionEffect.ActionEffectEvent += ActionFromSelf;
+        Svc.DutyState.DutyWiped += DutyState_DutyWiped;
+        Svc.DutyState.DutyCompleted += DutyState_DutyWiped;
+        Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
+        ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
+        _highLight = new();
+        Svc.Framework.Update += Framework_Update;
     }
 
-    private static byte _subIndex = 0;
-    public static byte oGcdUsedCount
+    private static void Framework_Update(Dalamud.Plugin.Services.IFramework framework)
     {
-        get => _subIndex;
-        private set
-        {
-            if (_subIndex == value) return;
-            _subIndex = value;
-
-            UpdateHighlight();
-        }
-    }
-
-    private static void UpdateHighlight()
-    {
-        if (!Plugin.Settings.DrawRotation) return;
-
         if (_highLight == null) return;
         _highLight.Color = Plugin.Settings.RotationHighlightColor;
         _highLight.HotbarIDs.Clear();
+
+        if (!Plugin.Settings.DrawRotation) return;
 
         var action = ActiveAction;
         if (action == null) return;
@@ -83,23 +72,13 @@ internal static class RotationHelper
         _highLight.HotbarIDs.Add(hotBar.Value);
     }
 
-    public static void Init()
-    {
-        ActionEffect.ActionEffectEvent += ActionFromSelf;
-        Svc.DutyState.DutyWiped += DutyState_DutyWiped;
-        Svc.DutyState.DutyCompleted += DutyState_DutyWiped;
-        Svc.ClientState.TerritoryChanged += ClientState_TerritoryChanged;
-        ClientState_TerritoryChanged(Svc.ClientState.TerritoryType);
-        _highLight = new();
-        UpdateHighlight();
-    }
-
     public static void Dispose()
     {
         ActionEffect.ActionEffectEvent -= ActionFromSelf;
         Svc.DutyState.DutyWiped -= DutyState_DutyWiped;
         Svc.DutyState.DutyCompleted -= DutyState_DutyWiped;
         Svc.ClientState.TerritoryChanged -= ClientState_TerritoryChanged;
+        Svc.Framework.Update -= Framework_Update;
     }
 
     private static void ClientState_TerritoryChanged(ushort obj)

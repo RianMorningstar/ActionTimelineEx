@@ -10,7 +10,8 @@ namespace ActionTimelineEx.Windows;
 internal static class RotationHelperWindow
 {
     private static Vector2 _size = default;
-    private static bool _open = true, _changed = false;
+    internal static bool _open = true;
+    private static bool _changed = false;
     public static void Draw()
     {
         var setting = Plugin.Settings;
@@ -61,6 +62,8 @@ internal static class RotationHelperWindow
                 }
             }
 
+            var heightReduce = ImGui.GetCursorPosY();
+
             if (_open)
             {
                 ImGui.SameLine();
@@ -82,7 +85,7 @@ internal static class RotationHelperWindow
                 ImGui.GetStyle().WindowBorderSize = 0;
                 try
                 {
-                    DrawContent();
+                    RotationHelper.RotationSetting.Draw(heightReduce);
                 }
                 finally
                 {
@@ -92,10 +95,5 @@ internal static class RotationHelperWindow
                 }
             }
         }
-    }
-
-    private static void DrawContent()
-    {
-        RotationHelper.RotationSetting.Draw();
     }
 }

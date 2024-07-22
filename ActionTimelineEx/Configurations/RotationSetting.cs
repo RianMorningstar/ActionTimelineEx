@@ -36,21 +36,25 @@ public class RotationSetting
         return GCDs[Math.Max(0, index)];
     }
 
-    public void Draw()
+    public void Draw(float heightReduce)
     {
         var gcdHeight = Plugin.Settings.GCDIconSize;
         var spacing = Plugin.Settings.IconSpacing;
-        var drawList = ImGui.GetWindowDrawList();
+        var drawList = ImGui.GetBackgroundDrawList();
 
-        var pos = ImGui.GetWindowPos() + new Vector2(gcdHeight * 0.2f,
+        var wholeHeight = ImGui.GetWindowPos().Y - heightReduce;
+        var windowPos = ImGui.GetWindowPos() + Vector2.UnitY * heightReduce;
+
+        var pos = windowPos + new Vector2(gcdHeight * 0.2f,
             Plugin.Settings.VerticalDraw
             ? (Plugin.Settings.Reverse
-                ? ImGui.GetWindowSize().Y - gcdHeight * 1.4f
+                ? wholeHeight - gcdHeight * 1.4f
                 : gcdHeight * 0.2f)
-            : ImGui.GetWindowSize().Y / 2 - gcdHeight / 2);
-        var maxX = ImGui.GetWindowPos().X + ImGui.GetWindowSize().X;
-        var minY = ImGui.GetWindowPos().Y;
-        var maxY = minY + ImGui.GetWindowSize().Y;
+            : wholeHeight / 2 - gcdHeight / 2);
+
+        var maxX = windowPos.X + ImGui.GetWindowSize().X;
+        var minY = windowPos.Y;
+        var maxY = minY + wholeHeight;
         var minPosX = pos.X;
 
         var nextAction = RotationHelper.ActiveAction;

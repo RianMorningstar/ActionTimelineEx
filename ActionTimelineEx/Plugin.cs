@@ -110,10 +110,14 @@ public class Plugin : IDalamudPlugin
 
     public static void PluginCommand(string str)
     {
-        if (str == "reset")
+        switch(str)
         {
-            RotationHelper.Clear();
-            return;
+            case "reset":
+                RotationHelper.Clear();
+                return;
+            case "toggle":
+                RotationHelperWindow._open = !RotationHelperWindow._open;
+                return;
         }
         _settingsWindow.Toggle();
     }

@@ -125,7 +125,7 @@ public class Settings : IPluginConfiguration
     } 
 
 
-    [JsonProperty()]
+    [JsonProperty]
     private Dictionary<Job, RotationsSetting> _rotationHelpers = [];
 
     [JsonIgnore]
