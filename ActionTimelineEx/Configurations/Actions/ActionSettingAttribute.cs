@@ -25,7 +25,9 @@ internal class ActionSettingAttribute() : ListUIAttribute(0)
 
         var recastTime = Svc.Data.GetExcelSheet<Action>()?.GetRow(setting.ActionId)?.Recast100ms ?? 0;
 
-        var time = Plugin.Settings.RotationHelper.GcdTime / 2.5f * recastTime / 10f;
+        var time = setting.GcdOverride == 0
+            ? Plugin.Settings.RotationHelper.GcdTime / 2.5f * recastTime / 10f
+            : setting.GcdOverride;
 
         _time = _time.Add(TimeSpan.FromSeconds(time));
         return result;

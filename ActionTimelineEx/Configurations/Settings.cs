@@ -144,7 +144,7 @@ public class Settings : IPluginConfiguration
 
     private static readonly RotationsSetting EmptyHolder = new();
 
-    //public Dictionary<uint, float> ActionRecast { get; set; } = [];
+    public Dictionary<uint, float> ActionRecast { get; set; } = [];
 
     public int Version { get; set; } = 6;
 
