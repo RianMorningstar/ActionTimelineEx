@@ -67,7 +67,7 @@ public class Plugin : IDalamudPlugin
     public Plugin(IDalamudPluginInterface pluginInterface)
     {
         ECommonsMain.Init(pluginInterface, this);
-        XIVConfigUIMain.Init(pluginInterface, "/atle", "Opens the ActionTimelineEx configuration window.\n `/atle reset` to reset the rotation helper count.", PluginCommand, typeof(Settings), typeof(DrawingSettings), typeof(GroupItem), typeof(UiString));
+        XIVConfigUIMain.Init(pluginInterface, "/atle", "Opens the ActionTimelineEx configuration window.\n\"/atle reset\" to reset the rotation helper count.\n\"/atle toggle\" to toggle the rotation helper's visibility.", PluginCommand, typeof(Settings), typeof(DrawingSettings), typeof(GroupItem), typeof(UiString));
         XIVDrawerMain.Init(pluginInterface, "ActionTimelineExOverlay");
 
         Svc.PluginInterface.UiBuilder.Draw += Draw;
@@ -80,8 +80,9 @@ public class Plugin : IDalamudPlugin
         {
             Settings = pluginInterface.GetPluginConfig() as Settings ?? new Settings();
         }
-        catch
+        catch(Exception ex)
         {
+            Svc.Log.Error(ex, "Failed to load the configs!");
             Settings = new Settings();
         }
 

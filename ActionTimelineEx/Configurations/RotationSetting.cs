@@ -40,9 +40,9 @@ public class RotationSetting
     {
         var gcdHeight = Plugin.Settings.GCDIconSize;
         var spacing = Plugin.Settings.IconSpacing;
-        var drawList = ImGui.GetBackgroundDrawList();
+        var drawList = ImGui.GetWindowDrawList();
 
-        var wholeHeight = ImGui.GetWindowPos().Y - heightReduce;
+        var wholeHeight = ImGui.GetWindowSize().Y - heightReduce;
         var windowPos = ImGui.GetWindowPos() + Vector2.UnitY * heightReduce;
 
         var pos = windowPos + new Vector2(gcdHeight * 0.2f,

@@ -4,7 +4,6 @@ using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
-using System;
 using System.Numerics;
 using XIVConfigUI;
 using XIVConfigUI.Attributes;

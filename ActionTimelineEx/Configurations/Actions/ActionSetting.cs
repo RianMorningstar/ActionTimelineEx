@@ -27,6 +27,7 @@ public abstract class ActionSetting
 
     private uint _actionId;
 
+    [JsonIgnore]
     public bool IsEmpty => ActionId == 0;
 
     public uint ActionId
@@ -41,6 +42,7 @@ public abstract class ActionSetting
         }
     }
 
+    [JsonIgnore]
     [UI("Action ID")]
     public int ActionID { get => (int) ActionId; set => ActionId = (uint)value; }
 
