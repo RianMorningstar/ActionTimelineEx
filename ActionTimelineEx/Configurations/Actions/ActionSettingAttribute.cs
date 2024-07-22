@@ -22,9 +22,10 @@ internal class ActionSettingAttribute() : ListUIAttribute(0)
         if (index == 0) _time = TimeSpan.Zero;
 
         var result = $"{(int)_time.TotalMinutes}:{_time.Seconds:D2}.{_time.Milliseconds.ToString()[0]}";
-        var time = setting.GcdOverride == 0
-            ? Plugin.Settings.RotationHelper.GcdTime
-            : setting.GcdOverride;
+
+        var recastTime = Svc.Data.GetExcelSheet<Action>()?.GetRow(setting.ActionId)?.Recast100ms ?? 0;
+
+        var time = Plugin.Settings.RotationHelper.GcdTime / 2.5f * recastTime / 10f;
 
         _time = _time.Add(TimeSpan.FromSeconds(time));
         return result;

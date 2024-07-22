@@ -11,14 +11,14 @@ public class GCDAction : ActionSetting
 {
     internal override ActionSettingType Type => ActionSettingType.Action;
 
-    [JsonIgnore]
-    [Range(0, 20, ConfigUnitType.Seconds)]
-    [UI("Recast time override")]
-    public float GcdOverride
-    {
-        get => Plugin.Settings.ActionRecast.TryGetValue(ActionId, out var v) ? v : 0f;
-        set => Plugin.Settings.ActionRecast[ActionId] = value;
-    }
+    //[JsonIgnore]
+    //[Range(0, 20, ConfigUnitType.Seconds)]
+    //[UI("Recast time override")]
+    //public float GcdOverride
+    //{
+    //    get => Plugin.Settings.ActionRecast.TryGetValue(ActionId, out var v) ? v : 0f;
+    //    set => Plugin.Settings.ActionRecast[ActionId] = value;
+    //}
 
     [UI]
     public List<oGCDAction> oGCDs { get; set; } = [];
