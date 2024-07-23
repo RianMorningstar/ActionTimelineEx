@@ -89,6 +89,9 @@ public class Settings : IPluginConfiguration
     [UI("Reverse Draw", Parent = nameof(VerticalDraw))]
     public bool Reverse { get; set; } = false;
 
+    [UI("Draw Time", Parent = nameof(VerticalDraw))]
+    public bool DrawTime { get; set; } = false;
+
     [UI("Ignore Items", Parent = nameof(DrawRotation))]
     public bool IgnoreItems { get; set; } = false;
 

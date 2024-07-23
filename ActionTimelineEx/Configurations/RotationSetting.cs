@@ -1,6 +1,8 @@
 ﻿using ActionTimelineEx.Configurations.Actions;
 using ActionTimelineEx.Helpers;
+using ExCSS;
 using ImGuiNET;
+using System;
 using System.Numerics;
 using XIVConfigUI.Attributes;
 
@@ -59,11 +61,16 @@ public class RotationSetting
 
         var nextAction = RotationHelper.ActiveAction;
 
+        TimeSpan span = TimeSpan.Zero;
         for (var i = 0; i < GCDs.Count; i++)
         {
-            if (i < RotationHelper.GcdUsedCount - 1) continue;
-
             var item = GCDs[i];
+
+            if (i < RotationHelper.GcdUsedCount - 1)
+            {
+                span += TimeSpan.FromSeconds(item.Gcd);
+                continue;
+            }
 
             if (Plugin.Settings.VerticalDraw && i != 0)
             {
@@ -79,7 +86,7 @@ public class RotationSetting
                 }
             }
 
-            var width = item.Draw(drawList, pos, i < RotationHelper.GcdUsedCount, nextAction);
+            var width = item.Draw(drawList, pos, i < RotationHelper.GcdUsedCount, nextAction, ref span);
 
             pos += new Vector2(width + spacing, 0);
 

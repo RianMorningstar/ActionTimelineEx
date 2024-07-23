@@ -1,8 +1,10 @@
 ﻿using ActionTimelineEx.Helpers;
+using ECommons.DalamudServices;
 using ImGuiNET;
 using System.ComponentModel;
 using System.Numerics;
 using XIVConfigUI.Attributes;
+using Action = Lumina.Excel.GeneratedSheets.Action;
 
 namespace ActionTimelineEx.Configurations.Actions;
 
@@ -10,6 +12,19 @@ namespace ActionTimelineEx.Configurations.Actions;
 public class GCDAction : ActionSetting
 {
     internal override ActionSettingType Type => ActionSettingType.Action;
+
+
+    internal float Gcd
+    {
+        get
+        {
+            var recastTime = Svc.Data.GetExcelSheet<Action>()?.GetRow(ActionId)?.Recast100ms ?? 0;
+
+            return GcdOverride == 0
+            ? Plugin.Settings.RotationHelper.GcdTime / 2.5f * recastTime / 10f
+            : GcdOverride;
+        }
+    }
 
     [JsonIgnore]
     [Range(0, 20, ConfigUnitType.Seconds)]
@@ -23,8 +38,16 @@ public class GCDAction : ActionSetting
     [UI]
     public List<oGCDAction> oGCDs { get; set; } = [];
 
-    public float Draw(ImDrawListPtr drawList, Vector2 point, bool pass, ActionSetting? activeAction)
+    public float Draw(ImDrawListPtr drawList, Vector2 point, bool pass, ActionSetting? activeAction, ref TimeSpan time)
     {
+        if (Plugin.Settings.DrawTime)
+        {
+            var width = ImGui.CalcTextSize(time.GetString()).X + 5;
+            drawList.AddText(point, uint.MaxValue, time.GetString());
+            point += Vector2.UnitX * width;
+            time += TimeSpan.FromSeconds(Gcd);
+        }
+
         var gcd = Plugin.Settings.GCDIconSize;
         var ogcd = Plugin.Settings.OGCDIconSize;
         var spacing = Plugin.Settings.IconSpacing;
