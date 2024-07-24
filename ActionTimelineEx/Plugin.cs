@@ -78,7 +78,7 @@ public class Plugin : IDalamudPlugin
 
         try
         {
-            Settings = pluginInterface.GetPluginConfig() as Settings ?? new Settings();
+            Settings = JsonHelper.DeserializeObject<Settings>(File.ReadAllText(pluginInterface.ConfigFile.FullName)) ?? new Settings();
         }
         catch(Exception ex)
         {

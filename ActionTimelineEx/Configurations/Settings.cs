@@ -3,6 +3,7 @@ using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using System.Numerics;
+using XIVConfigUI;
 using XIVConfigUI.Attributes;
 
 namespace ActionTimelineEx.Configurations;
@@ -153,6 +154,6 @@ public class Settings : IPluginConfiguration
 
     public void Save()
     {
-        Svc.PluginInterface.SavePluginConfig(this);
+        File.WriteAllText(Svc.PluginInterface.ConfigFile.FullName, JsonHelper.SerializeObject(this));
     }
 }

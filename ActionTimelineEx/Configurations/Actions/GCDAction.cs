@@ -1,5 +1,6 @@
 ﻿using ActionTimelineEx.Helpers;
 using ECommons.DalamudServices;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using System.ComponentModel;
 using System.Numerics;
@@ -12,7 +13,6 @@ namespace ActionTimelineEx.Configurations.Actions;
 public class GCDAction : ActionSetting
 {
     internal override ActionSettingType Type => ActionSettingType.Action;
-
 
     internal float Gcd
     {
