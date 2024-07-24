@@ -1,5 +1,5 @@
 {
-  "ActionTimelineEx.DescriptionAboutCommand": "Opens the ActionTimelineEx configuration window.\n\"/atle reset\" to reset the rotation helper count.\n\"/atle toggle\" to toggle the rotation helper's visibility.",
+  "ActionTimelineEx.DescriptionAboutCommand": "Opens the ActionTimelineEx configuration window.\n\"/atle reset\" to reset the rotation helper count.",
   "ActionTimelineEx.Punchline": "Show your actions in real-time.",
   "XIVConfigUI.LocalString.Searching": "Search... ",
   "ActionTimelineEx.Windows.RotationHelperItem": "Rotation Helper",
