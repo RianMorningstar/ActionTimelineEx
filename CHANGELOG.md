@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.12](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.11...v1.4.12) (2024-07-24)
+
+
+### Bug Fixes
+
+* add draw time. ([8106cf7](https://github.com/ArchiDog1998/ActionTimelineEx/commit/8106cf75523376e7f32a8bb4ea1c28954932b0d7))
+* json save update! ([67928aa](https://github.com/ArchiDog1998/ActionTimelineEx/commit/67928aae67257733a3cb536a61819a6ea9f32e9d))
+* removed the toggle feature. You can use the macro. ([7d0fea7](https://github.com/ArchiDog1998/ActionTimelineEx/commit/7d0fea77612395d97b35a3b8a021da22ab056a61))
+
 ## [1.4.11](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.10...v1.4.11) (2024-07-22)
 
 
