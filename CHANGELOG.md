@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.13](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.12...v1.4.13) (2024-07-27)
+
+
+### Bug Fixes
+
+* fixed some rotation helper drawing things. ([15d5a05](https://github.com/ArchiDog1998/ActionTimelineEx/commit/15d5a05629e3d383ebff933948c9c53d18d2efb6))
+
 ## [1.4.12](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.11...v1.4.12) (2024-07-24)
 
 
