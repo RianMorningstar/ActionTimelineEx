@@ -1,11 +1,9 @@
 ﻿using ActionTimelineEx.Helpers;
-using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using System.ComponentModel;
 using System.Numerics;
 using XIVConfigUI.Attributes;
-using Action = Lumina.Excel.GeneratedSheets.Action;
 
 namespace ActionTimelineEx.Configurations.Actions;
 
@@ -14,26 +12,7 @@ public class GCDAction : ActionSetting
 {
     internal override ActionSettingType Type => ActionSettingType.Action;
 
-    internal float Gcd
-    {
-        get
-        {
-            var recastTime = Svc.Data.GetExcelSheet<Action>()?.GetRow(ActionId)?.Recast100ms ?? 0;
-
-            return GcdOverride == 0
-            ? Plugin.Settings.RotationHelper.GcdTime / 2.5f * recastTime / 10f
-            : GcdOverride;
-        }
-    }
-
-    [JsonIgnore]
-    [Range(0, 20, ConfigUnitType.Seconds)]
-    [UI("Recast time override")]
-    public float GcdOverride
-    {
-        get => Plugin.Settings.ActionRecast.TryGetValue(ActionId, out var v) ? v : 0f;
-        set => Plugin.Settings.ActionRecast[ActionId] = value;
-    }
+    internal float Gcd => ActionManager.GetAdjustedRecastTime(FFXIVClientStructs.FFXIV.Client.Game.ActionType.Action, ActionId) / 1000f;
 
     [UI]
     public List<oGCDAction> oGCDs { get; set; } = [];
