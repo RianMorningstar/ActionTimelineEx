@@ -58,6 +58,8 @@ public class Plugin : IDalamudPlugin
         { 13409, 1 }, //RDM Embolden.
 
         { 12699, 1 }, //SMN 2703.
+
+        { 13808, 1 }, //PCT Starry Muse
     };
     public static Settings Settings { get; private set; } = null!;
 

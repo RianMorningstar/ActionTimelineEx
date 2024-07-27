@@ -1,5 +1,4 @@
 ﻿using ActionTimelineEx.Configurations;
-using ActionTimelineEx.Helpers;
 using ActionTimelineEx.Timeline;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
@@ -31,13 +30,11 @@ internal static class TimelineWindow
 
         ImGui.SetNextWindowSize(new Vector2(560, 100) * ImGuiHelpers.GlobalScale, ImGuiCond.FirstUseEver);
         ImGui.SetNextWindowPos(new Vector2(200, 200) * ImGuiHelpers.GlobalScale, ImGuiCond.FirstUseEver);
+        using var border = ImRaii.PushStyle(ImGuiStyleVar.WindowBorderSize, 0);
+        using var padding = ImRaii.PushStyle(ImGuiStyleVar.WindowPadding, Vector2.Zero);
 
         if (ImGui.Begin($"Timeline: {index}", flag))
         {
-            var padding = ImGui.GetStyle().WindowPadding;
-            var border = ImGui.GetStyle().WindowBorderSize;
-            ImGui.GetStyle().WindowPadding = default;
-            ImGui.GetStyle().WindowBorderSize = 0;
             try
             {
                 DrawContent(setting);
@@ -45,8 +42,6 @@ internal static class TimelineWindow
             finally
             {
                 ImGui.End();
-                ImGui.GetStyle().WindowPadding = padding;
-                ImGui.GetStyle().WindowBorderSize = border;
             }
         }
     }

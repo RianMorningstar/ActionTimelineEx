@@ -31,6 +31,8 @@ internal static class RotationHelperWindow
         using var bgColorPush = ImRaii.PushColor(ImGuiCol.WindowBg, bgColor);
 
         ImGui.SetNextWindowSize(new Vector2(560, 100) * ImGuiHelpers.GlobalScale, ImGuiCond.FirstUseEver);
+        using var border = ImRaii.PushStyle(ImGuiStyleVar.WindowBorderSize, 0);
+        using var padding = ImRaii.PushStyle(ImGuiStyleVar.WindowPadding, Vector2.Zero);
 
         if (ImGui.Begin("Rotation Helper Window", flag))
         {
@@ -49,10 +51,6 @@ internal static class RotationHelperWindow
             }
 
             var heightReduce = ImGui.GetCursorPosY();
-            var padding = ImGui.GetStyle().WindowPadding;
-            var border = ImGui.GetStyle().WindowBorderSize;
-            ImGui.GetStyle().WindowPadding = default;
-            ImGui.GetStyle().WindowBorderSize = 0;
             try
             {
                 RotationHelper.RotationSetting.Draw(heightReduce);
@@ -60,8 +58,6 @@ internal static class RotationHelperWindow
             finally
             {
                 ImGui.End();
-                ImGui.GetStyle().WindowPadding = padding;
-                ImGui.GetStyle().WindowBorderSize = border;
             }
         }
     }
