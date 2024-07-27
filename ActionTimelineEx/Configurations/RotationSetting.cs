@@ -62,6 +62,8 @@ public class RotationSetting
         var nextAction = RotationHelper.ActiveAction;
 
         TimeSpan span = TimeSpan.Zero;
+        bool isNotFirst = false;
+
         for (var i = 0; i < GCDs.Count; i++)
         {
             var item = GCDs[i];
@@ -72,7 +74,7 @@ public class RotationSetting
                 continue;
             }
 
-            if (Plugin.Settings.VerticalDraw && i != 0)
+            if (Plugin.Settings.VerticalDraw && isNotFirst)
             {
                 pos.X = minPosX;
 
@@ -85,6 +87,8 @@ public class RotationSetting
                     pos.Y += gcdHeight + spacing;
                 }
             }
+
+            isNotFirst = true;
 
             var width = item.Draw(drawList, pos, i < RotationHelper.GcdUsedCount, nextAction, ref span);
 

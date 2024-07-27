@@ -43,7 +43,7 @@ public class GCDAction : ActionSetting
         if (Plugin.Settings.DrawTime)
         {
             var width = ImGui.CalcTextSize(time.GetString()).X + 5;
-            drawList.AddText(point, uint.MaxValue, time.GetString());
+            drawList.AddText(point, uint.MaxValue, time.GetString() + "   ");
             point += Vector2.UnitX * width;
             time += TimeSpan.FromSeconds(Gcd);
         }
