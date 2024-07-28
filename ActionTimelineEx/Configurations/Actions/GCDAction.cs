@@ -10,9 +10,20 @@ namespace ActionTimelineEx.Configurations.Actions;
 [Description("GCD")]
 public class GCDAction : ActionSetting
 {
-    internal override ActionSettingType Type => ActionSettingType.Action;
+    public override ActionSettingType Type => ActionSettingType.Action;
 
-    internal float Gcd => ActionManager.GetAdjustedRecastTime(FFXIVClientStructs.FFXIV.Client.Game.ActionType.Action, ActionId) / 1000f;
+    internal float Gcd => GcdOverride != 0 ? GcdOverride
+        : ActionManager.GetAdjustedRecastTime(FFXIVClientStructs.FFXIV.Client.Game.ActionType.Action, ActionId) / 1000f;
+
+    [JsonIgnore]
+    [Range(0, 20, ConfigUnitType.Seconds)]
+    [UI("Recast time override")]
+    public float GcdOverride
+    {
+        get => Plugin.Settings.ActionRecast.TryGetValue(ActionId, out var v) ? v : 0f;
+        set => Plugin.Settings.ActionRecast[ActionId] = value;
+    }
+
 
     [UI]
     public List<oGCDAction> oGCDs { get; set; } = [];
@@ -22,7 +33,7 @@ public class GCDAction : ActionSetting
         if (Plugin.Settings.DrawTime)
         {
             var width = ImGui.CalcTextSize(time.GetString()).X + 5;
-            drawList.AddText(point, uint.MaxValue, time.GetString() + "s  ");
+            drawList.AddText(point, uint.MaxValue, time.GetString());
             point += Vector2.UnitX * width;
             time += TimeSpan.FromSeconds(Gcd);
         }

@@ -41,6 +41,7 @@ internal static class RotationHelper
         _highLight.HotbarIDs.Clear();
 
         if (!Plugin.Settings.DrawRotation) return;
+        if (!Plugin.Settings.HighlightInHotbar) return;
 
         var action = ActiveAction;
         if (action == null) return;

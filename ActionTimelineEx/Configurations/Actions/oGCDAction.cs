@@ -21,5 +21,5 @@ public class oGCDAction : ActionSetting
 }
     }
 
-    internal override ActionSettingType Type => ActionType;
+    public override ActionSettingType Type => ActionType;
 }

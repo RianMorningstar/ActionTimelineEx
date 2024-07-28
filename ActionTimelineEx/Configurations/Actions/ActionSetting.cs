@@ -46,7 +46,8 @@ public abstract class ActionSetting
     [UI("Action ID")]
     public int ActionID { get => (int) ActionId; set => ActionId = (uint)value; }
 
-    internal abstract  ActionSettingType Type { get; }
+    [JsonIgnore]
+    public abstract  ActionSettingType Type { get; }
 
     [UI("Is this Action Highlight")]
     public bool Highlight { get; set; }

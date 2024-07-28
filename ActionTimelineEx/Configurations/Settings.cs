@@ -52,7 +52,10 @@ public class Settings : IPluginConfiguration
     public bool DrawRotation { get; set; } = false;
 
     [UI("Only Show when Weapon On", Parent = nameof(DrawRotation))]
-    public bool OnlyShowRotationWhenWeaponOn { get; set; } = true;
+    public bool OnlyShowRotationWhenWeaponOn { get; set; } = true; 
+    
+    [UI("Highlight in hot bar", Parent = nameof(DrawRotation))]
+    public bool HighlightInHotbar { get; set; } = true;
 
     [UI("Locked", Parent = nameof(DrawRotation))]
     public bool RotationLocked { get; set; } = false;
@@ -138,6 +141,8 @@ public class Settings : IPluginConfiguration
     }
 
     private static readonly RotationsSetting EmptyHolder = new();
+
+    public Dictionary<uint, float> ActionRecast { get; set; } = [];
 
     public int Version { get; set; } = 6;
 
