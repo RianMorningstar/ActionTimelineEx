@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.14](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.13...v1.4.14) (2024-07-28)
+
+
+### Bug Fixes
+
+* better way about getting recast. ([03c36cc](https://github.com/ArchiDog1998/ActionTimelineEx/commit/03c36cc23d6dad57cd10304dc3efcb6f9eebc50c))
+* drawing fix. ([a179c7a](https://github.com/ArchiDog1998/ActionTimelineEx/commit/a179c7aacdcd0629a8e5e57f4795d620516ce470))
+* remove the custom recast time. ([4178733](https://github.com/ArchiDog1998/ActionTimelineEx/commit/4178733806eaeacfed466c81ea9bd2d1ebf1dafb))
+* window style fix. ([35d3e81](https://github.com/ArchiDog1998/ActionTimelineEx/commit/35d3e81271aaa1f3b84d2ed5533617fda0a11ea1))
+
 ## [1.4.13](https://github.com/ArchiDog1998/ActionTimelineEx/compare/v1.4.12...v1.4.13) (2024-07-27)
 
 
