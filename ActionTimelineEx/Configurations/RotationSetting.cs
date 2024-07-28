@@ -1,8 +1,6 @@
 ﻿using ActionTimelineEx.Configurations.Actions;
 using ActionTimelineEx.Helpers;
-using ExCSS;
 using ImGuiNET;
-using System;
 using System.Numerics;
 using XIVConfigUI.Attributes;
 

@@ -70,6 +70,6 @@ internal static class ActionHelper
 
     internal static string GetString(this TimeSpan timespan)
     {
-        return $"{(int)timespan.TotalMinutes}:{timespan.Seconds:D2}.{timespan.Milliseconds.ToString()[0]}";
+        return $"{(int)timespan.TotalMinutes}:{timespan.Seconds:D2}.{timespan.Milliseconds.ToString("000")[0..1]}";
     }
 }

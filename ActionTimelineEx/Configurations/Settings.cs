@@ -120,15 +120,6 @@ public class Settings : IPluginConfiguration
     [UI("Record Rotation", 2)]
     public bool RecordRotation { get; set; } = false;
 
-    [JsonIgnore]
-    [UI("Gcd Time", 2)]
-    public float GcdTime 
-    { 
-        get => RotationHelper.GcdTime;
-        set => RotationHelper.GcdTime = value;
-    } 
-
-
     [JsonProperty]
     private Dictionary<Job, RotationsSetting> _rotationHelpers = [];
 
