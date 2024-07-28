@@ -165,5 +165,6 @@
   "ActionTimelineEx.Configurations.Actions.GCDActionName.RecastOverride": "Recast override time",
   "ActionTimelineEx.Configurations.SettingsName.GcdTime": "Gcd Time",
   "ActionTimelineEx.Configurations.Actions.GCDActionName.GcdOverride": "Recast time override",
-  "ActionTimelineEx.Configurations.SettingsName.DrawTime": "Draw Time"
+  "ActionTimelineEx.Configurations.SettingsName.DrawTime": "Draw Time",
+  "ActionTimelineEx.Configurations.SettingsName.HighlightInHotbar": "Highlight in hot bar"
 }
