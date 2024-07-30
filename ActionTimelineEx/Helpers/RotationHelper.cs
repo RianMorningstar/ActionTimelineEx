@@ -112,6 +112,7 @@ internal static class RotationHelper
 
         if (IsIgnored(set)) return;
 
+        var nextAction = RotationSetting.GetNextAction(GcdUsedCount, oGcdUsedCount);
         if (IsGcd(set))
         {
             oGcdUsedCount = 0;
@@ -122,7 +123,6 @@ internal static class RotationHelper
             oGcdUsedCount++;
         }
 
-        var nextAction = RotationSetting.GetNextAction(GcdUsedCount, oGcdUsedCount);
         if (nextAction == null) return;
 
         if (nextAction.IsMatched(actionId, actionSettingType))
