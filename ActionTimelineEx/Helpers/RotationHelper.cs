@@ -112,21 +112,17 @@ internal static class RotationHelper
 
         if (IsIgnored(set)) return;
 
-        ActionSetting? nextAction;
         if (IsGcd(set))
         {
-            nextAction = oGcdUsedCount == 0 ? RotationSetting.GetNextAction(GcdUsedCount, 0)
-                : RotationSetting.GetNextAction(GcdUsedCount + 1, 0);
-
             oGcdUsedCount = 0;
             GcdUsedCount++;
         }
         else
         {
-            nextAction = RotationSetting.GetNextAction(GcdUsedCount, oGcdUsedCount);
             oGcdUsedCount++;
         }
 
+        var nextAction = RotationSetting.GetNextAction(GcdUsedCount, oGcdUsedCount);
         if (nextAction == null) return;
 
         if (nextAction.IsMatched(actionId, actionSettingType))
@@ -135,7 +131,7 @@ internal static class RotationHelper
         }
         else if(Plugin.Settings.ShowWrongClick)
         {
-            Svc.Chat.PrintError($"Clicked the wrong action {set.Name}! You should Click {nextAction.DisplayName}!");
+            Svc.Chat.PrintError($"Clicked the wrong action {set.Name} ({set.Header.ActionID})! You should Click {nextAction.DisplayName} ({nextAction.ActionID})!");
         }
     }
 
