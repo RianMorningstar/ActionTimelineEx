@@ -13,7 +13,7 @@ A Final Fantasy XIV Dalamud Plugin that shows a timeline with the actions you us
 Download it at this url:
 
 ```
-https://raw.githubusercontent.com/ArchiDog1998/DalamudPlugins/main/pluginmaster.json
+https://raw.githubusercontent.com/RianMorningstar/DalamudPlugins/main/pluginmaster.json
 ```
 
 ## Disclaimer
