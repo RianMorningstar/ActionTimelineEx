@@ -3,7 +3,7 @@
 	url = https://github.com/NightmareXIV/ECommons
 [submodule "XIVConfigUI"]
 	path = XIVConfigUI
-	url = https://github.com/ArchiDog1998/XIVConfigUI
+	url = https://github.com/Morningstar/XIVConfigUI
 [submodule "XIVDrawer"]
 	path = XIVDrawer
-	url = https://github.com/ArchiDog1998/XIVDrawer
+	url = https://github.com/Morningstar/XIVDrawer
